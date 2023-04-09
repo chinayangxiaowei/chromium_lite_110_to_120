@@ -1,0 +1,24 @@
+This is a testharness.js-based test.
+PASS Can set 'scroll-snap-type' to CSS-wide keywords: initial
+PASS Can set 'scroll-snap-type' to CSS-wide keywords: inherit
+PASS Can set 'scroll-snap-type' to CSS-wide keywords: unset
+PASS Can set 'scroll-snap-type' to CSS-wide keywords: revert
+PASS Can set 'scroll-snap-type' to var() references:  var(--A)
+PASS Can set 'scroll-snap-type' to the 'none' keyword: none
+PASS Can set 'scroll-snap-type' to the 'x' keyword: x
+PASS Can set 'scroll-snap-type' to the 'y' keyword: y
+PASS Can set 'scroll-snap-type' to the 'block' keyword: block
+PASS Can set 'scroll-snap-type' to the 'inline' keyword: inline
+PASS Can set 'scroll-snap-type' to the 'both' keyword: both
+PASS Setting 'scroll-snap-type' to a length throws TypeError
+PASS Setting 'scroll-snap-type' to a percent throws TypeError
+PASS Setting 'scroll-snap-type' to a time throws TypeError
+PASS Setting 'scroll-snap-type' to an angle throws TypeError
+PASS Setting 'scroll-snap-type' to a flexible length throws TypeError
+PASS Setting 'scroll-snap-type' to a number throws TypeError
+PASS Setting 'scroll-snap-type' to a URL throws TypeError
+PASS Setting 'scroll-snap-type' to a transform throws TypeError
+PASS 'scroll-snap-type' does not supported 'x mandatory'
+FAIL 'scroll-snap-type' does not supported 'inline proximity' assert_class_string: Unsupported value must be a CSSStyleValue and not one of its subclasses expected "[object CSSStyleValue]" but got "[object CSSKeywordValue]"
+Harness: the test ran to completion.
+

@@ -1,0 +1,25 @@
+This is a testharness.js-based test.
+PASS Can set 'font-variant-alternates' to CSS-wide keywords: initial
+PASS Can set 'font-variant-alternates' to CSS-wide keywords: inherit
+PASS Can set 'font-variant-alternates' to CSS-wide keywords: unset
+PASS Can set 'font-variant-alternates' to CSS-wide keywords: revert
+PASS Can set 'font-variant-alternates' to var() references:  var(--A)
+PASS Can set 'font-variant-alternates' to the 'normal' keyword: normal
+FAIL Can set 'font-variant-alternates' to the 'historical-forms' keyword: historical-forms Failed to execute 'set' on 'StylePropertyMap': Invalid type for property
+PASS Setting 'font-variant-alternates' to a length throws TypeError
+PASS Setting 'font-variant-alternates' to a percent throws TypeError
+PASS Setting 'font-variant-alternates' to a time throws TypeError
+PASS Setting 'font-variant-alternates' to an angle throws TypeError
+PASS Setting 'font-variant-alternates' to a flexible length throws TypeError
+PASS Setting 'font-variant-alternates' to a number throws TypeError
+PASS Setting 'font-variant-alternates' to a URL throws TypeError
+PASS Setting 'font-variant-alternates' to a transform throws TypeError
+PASS 'font-variant-alternates' does not supported 'stylistic(foo)'
+PASS 'font-variant-alternates' does not supported 'styleset(foo)'
+PASS 'font-variant-alternates' does not supported 'character-variant(foo)'
+PASS 'font-variant-alternates' does not supported 'swash(foo)'
+PASS 'font-variant-alternates' does not supported 'ornaments(foo)'
+PASS 'font-variant-alternates' does not supported 'annotation(foo)'
+PASS 'font-variant-alternates' does not supported 'swash(foo) annotation(foo2)'
+Harness: the test ran to completion.
+

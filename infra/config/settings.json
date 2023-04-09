@@ -1,0 +1,17 @@
+{
+    "project": "chromium-m110",
+    "project_title": "Chromium M110",
+    "ref": "refs/branch-heads/5481",
+    "chrome_project": "chrome-m110",
+    "is_main": false,
+    "platforms": {
+        "cros": {
+            "description": "beta/stable",
+            "sheriff_rotation": "chrome_browser_release"
+        },
+        "fuchsia": {
+            "description": "fuchsia LTS",
+            "sheriff_rotation": "fuchsia"
+        }
+    }
+}
