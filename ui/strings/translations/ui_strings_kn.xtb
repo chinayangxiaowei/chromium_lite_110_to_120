@@ -76,6 +76,7 @@
 <translation id="3157931365184549694">ಮರುಸ್ಥಾಪನೆ</translation>
 <translation id="3183922693828471536">ಇಲ್ಲಿಗೆ ಸ್ಕ್ರೋಲ್ ಮಾಡಿ</translation>
 <translation id="3234408098842461169">ಕೆಳಗಿನ ಬಾಣದ ಗುರುತು</translation>
+<translation id="3240426699337459095">ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ</translation>
 <translation id="3291688615589870984">{DAYS,plural, =1{1 ದಿನ}one{# ದಿನಗಳು}other{# ದಿನಗಳು}}</translation>
 <translation id="3295886253693811851">ಈ ಸಾಧನದಿಂದ ಕರೆ ಮಾಡಿ</translation>
 <translation id="3306688585798492231">ಅಂತರ್ನಿರ್ಮಿತ ಡಿಸ್‌ಪ್ಲೇ</translation>
@@ -182,7 +183,7 @@
 <translation id="7879499977785298635">ನಿರ್ಬಂಧಿಸಬೇಡಿ</translation>
 <translation id="7907591526440419938">ಫೈಲ್ ತೆರೆಯಿರಿ</translation>
 <translation id="7969046989155602842">ಕಮಾಂಡ್</translation>
-<translation id="8074552109918343525">{MAX_UNREAD_NOTIFICATIONS,plural, =1{1 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ನೋಟಿಫಿಕೇಶನ್}one{# ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ನೋಟಿಫಿಕೇಶನ್‍ಗಳು}other{# ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ನೋಟಿಫಿಕೇಶನ್‍ಗಳು}}</translation>
+<translation id="8074552109918343525">{MAX_UNREAD_NOTIFICATIONS,plural, =1{1 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ಅಧಿಸೂಚನೆ}one{# ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ಅಧಿಸೂಚನೆಗಳು}other{# ಕ್ಕಿಂತ ಹೆಚ್ಚು ಓದದಿರುವ ಅಧಿಸೂಚನೆಗಳು}}</translation>
 <translation id="8086866675552927481">{MINUTES,plural, =1{1ನಿ ದಲ್ಲಿ}one{#ನಿ ಗಳಲ್ಲಿ}other{#ನಿ ಗಳಲ್ಲಿ}}</translation>
 <translation id="8087772101393322318"><ph name="KEY_MODIFIER_NAME" />+<ph name="KEY_COMBO_NAME" /></translation>
 <translation id="8090736967111090568"><ph name="ORIGIN" /> ನಿಂದ ಸಂಖ್ಯೆ</translation>

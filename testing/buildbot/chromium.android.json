@@ -120,7 +120,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -174,7 +174,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -502,7 +502,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -557,7 +557,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -888,7 +888,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -942,7 +942,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -1164,117 +1164,140 @@
     "junit_tests": [
       {
         "name": "android_webview_junit_tests",
+        "swarming": {},
         "test": "android_webview_junit_tests",
         "test_id_prefix": "ninja://android_webview/test:android_webview_junit_tests/"
       },
       {
         "name": "base_junit_tests",
+        "swarming": {},
         "test": "base_junit_tests",
         "test_id_prefix": "ninja://base:base_junit_tests/"
       },
       {
         "name": "build_junit_tests",
+        "swarming": {},
         "test": "build_junit_tests",
         "test_id_prefix": "ninja://build/android:build_junit_tests/"
       },
       {
         "name": "chrome_java_test_pagecontroller_junit_tests",
+        "swarming": {},
         "test": "chrome_java_test_pagecontroller_junit_tests",
         "test_id_prefix": "ninja://chrome/test/android:chrome_java_test_pagecontroller_junit_tests/"
       },
       {
         "name": "chrome_junit_tests",
+        "swarming": {},
         "test": "chrome_junit_tests",
         "test_id_prefix": "ninja://chrome/android:chrome_junit_tests/"
       },
       {
         "name": "components_junit_tests",
+        "swarming": {},
         "test": "components_junit_tests",
         "test_id_prefix": "ninja://components:components_junit_tests/"
       },
       {
         "name": "content_junit_tests",
+        "swarming": {},
         "test": "content_junit_tests",
         "test_id_prefix": "ninja://content/public/android:content_junit_tests/"
       },
       {
         "name": "device_junit_tests",
+        "swarming": {},
         "test": "device_junit_tests",
         "test_id_prefix": "ninja://device:device_junit_tests/"
       },
       {
         "name": "junit_unit_tests",
+        "swarming": {},
         "test": "junit_unit_tests",
         "test_id_prefix": "ninja://testing/android/junit:junit_unit_tests/"
       },
       {
         "name": "keyboard_accessory_junit_tests",
+        "swarming": {},
         "test": "keyboard_accessory_junit_tests",
         "test_id_prefix": "ninja://chrome/android/features/keyboard_accessory:keyboard_accessory_junit_tests/"
       },
       {
         "name": "media_base_junit_tests",
+        "swarming": {},
         "test": "media_base_junit_tests",
         "test_id_prefix": "ninja://media/base/android:media_base_junit_tests/"
       },
       {
         "name": "module_installer_junit_tests",
+        "swarming": {},
         "test": "module_installer_junit_tests",
         "test_id_prefix": "ninja://components/module_installer/android:module_installer_junit_tests/"
       },
       {
         "name": "net_junit_tests",
+        "swarming": {},
         "test": "net_junit_tests",
         "test_id_prefix": "ninja://net/android:net_junit_tests/"
       },
       {
         "name": "paint_preview_junit_tests",
+        "swarming": {},
         "test": "paint_preview_junit_tests",
         "test_id_prefix": "ninja://components/paint_preview/player/android:paint_preview_junit_tests/"
       },
       {
         "name": "password_check_junit_tests",
+        "swarming": {},
         "test": "password_check_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/password_check/android:password_check_junit_tests/"
       },
       {
         "name": "password_manager_junit_tests",
+        "swarming": {},
         "test": "password_manager_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/password_manager/android:password_manager_junit_tests/"
       },
       {
         "name": "services_junit_tests",
+        "swarming": {},
         "test": "services_junit_tests",
         "test_id_prefix": "ninja://services:services_junit_tests/"
       },
       {
         "name": "touch_to_fill_junit_tests",
+        "swarming": {},
         "test": "touch_to_fill_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/touch_to_fill/android:touch_to_fill_junit_tests/"
       },
       {
         "name": "ui_junit_tests",
+        "swarming": {},
         "test": "ui_junit_tests",
         "test_id_prefix": "ninja://ui/android:ui_junit_tests/"
       },
       {
         "name": "webapk_client_junit_tests",
+        "swarming": {},
         "test": "webapk_client_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/libs/client:webapk_client_junit_tests/"
       },
       {
         "name": "webapk_shell_apk_h2o_junit_tests",
+        "swarming": {},
         "test": "webapk_shell_apk_h2o_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/shell_apk:webapk_shell_apk_h2o_junit_tests/"
       },
       {
         "name": "webapk_shell_apk_junit_tests",
+        "swarming": {},
         "test": "webapk_shell_apk_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/shell_apk:webapk_shell_apk_junit_tests/"
       },
       {
         "experiment_percentage": 100,
         "name": "weblayer_junit_tests",
+        "swarming": {},
         "test": "weblayer_junit_tests",
         "test_id_prefix": "ninja://weblayer/browser/java:weblayer_junit_tests/"
       }
@@ -1309,11 +1332,13 @@
     "junit_tests": [
       {
         "name": "cast_base_junit_tests",
+        "swarming": {},
         "test": "cast_base_junit_tests",
         "test_id_prefix": "ninja://chromecast/base:cast_base_junit_tests/"
       },
       {
         "name": "cast_shell_junit_tests",
+        "swarming": {},
         "test": "cast_shell_junit_tests",
         "test_id_prefix": "ninja://chromecast/browser/android:cast_shell_junit_tests/"
       }
@@ -6161,7 +6186,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -6233,7 +6258,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -6399,6 +6424,7 @@
     "gtest_tests": [
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6458,6 +6484,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -6522,6 +6549,7 @@
       {
         "args": [
           "--test-launcher-batch-limit=1",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6582,6 +6610,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6641,6 +6670,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "-v",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
         ],
@@ -6685,6 +6715,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -6745,6 +6776,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6804,6 +6836,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6863,6 +6896,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6922,6 +6956,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -6983,6 +7018,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7042,6 +7078,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7102,6 +7139,7 @@
       {
         "args": [
           "--gtest_filter=-*UsingRealWebcam*",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7161,6 +7199,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7220,6 +7259,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7280,6 +7320,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7340,6 +7381,7 @@
       {
         "args": [
           "--gtest_filter=-org.chromium.chrome.browser.contextualsearch.ContextualSearchManagerTest.test*ExternalNavigationWithUserGesture*:org.chromium.shape_detection.*",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7411,6 +7453,7 @@
       {
         "args": [
           "--gtest_filter=org.chromium.chrome.browser.contextualsearch.ContextualSearchManagerTest.test*ExternalNavigationWithUserGesture*:org.chromium.shape_detection.*",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7477,12 +7520,14 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
           "--git-revision=${got_revision}",
           "--test-launcher-filter-file=../../testing/buildbot/filters/android.emulator_12.chrome_public_unit_test_apk.filter"
         ],
+        "ci_only": true,
         "merge": {
           "args": [
             "--bucket",
@@ -7544,6 +7589,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7603,6 +7649,71 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
+          "--use-persistent-shell",
+          "--gs-results-bucket=chromium-result-details",
+          "--recover-devices",
+          "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "merge": {
+          "args": [
+            "--bucket",
+            "chromium-result-details",
+            "--test-name",
+            "components_browsertests_persistent_shell"
+          ],
+          "script": "//build/android/pylib/results/presentation/test_results_presentation.py"
+        },
+        "name": "components_browsertests_persistent_shell",
+        "resultdb": {
+          "enable": true,
+          "has_native_resultdb_integration": true
+        },
+        "swarming": {
+          "can_use_on_swarming_builders": true,
+          "dimension_sets": [
+            {
+              "cores": "8",
+              "cpu": "x86-64",
+              "device_os": null,
+              "device_type": null,
+              "os": "Ubuntu-18.04",
+              "pool": "chromium.tests.avd"
+            }
+          ],
+          "named_caches": [
+            {
+              "name": "generic_android31",
+              "path": ".android_emulator/generic_android31"
+            }
+          ],
+          "optional_dimensions": {
+            "60": [
+              {
+                "caches": "generic_android31"
+              }
+            ]
+          },
+          "output_links": [
+            {
+              "link": [
+                "https://luci-logdog.appspot.com/v/?s",
+                "=android%2Fswarming%2Flogcats%2F",
+                "${TASK_ID}%2F%2B%2Funified_logcats"
+              ],
+              "name": "shard #${SHARD_INDEX} logcats"
+            }
+          ],
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+        },
+        "test": "components_browsertests",
+        "test_id_prefix": "ninja://components:components_browsertests/"
+      },
+      {
+        "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7664,6 +7775,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7727,6 +7839,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7790,6 +7903,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7850,6 +7964,72 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
+          "--use-persistent-shell",
+          "--gs-results-bucket=chromium-result-details",
+          "--recover-devices",
+          "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "merge": {
+          "args": [
+            "--bucket",
+            "chromium-result-details",
+            "--test-name",
+            "content_unittests_persistent_shell"
+          ],
+          "script": "//build/android/pylib/results/presentation/test_results_presentation.py"
+        },
+        "name": "content_unittests_persistent_shell",
+        "resultdb": {
+          "enable": true,
+          "has_native_resultdb_integration": true
+        },
+        "swarming": {
+          "can_use_on_swarming_builders": true,
+          "dimension_sets": [
+            {
+              "cores": "8",
+              "cpu": "x86-64",
+              "device_os": null,
+              "device_type": null,
+              "os": "Ubuntu-18.04",
+              "pool": "chromium.tests.avd"
+            }
+          ],
+          "named_caches": [
+            {
+              "name": "generic_android31",
+              "path": ".android_emulator/generic_android31"
+            }
+          ],
+          "optional_dimensions": {
+            "60": [
+              {
+                "caches": "generic_android31"
+              }
+            ]
+          },
+          "output_links": [
+            {
+              "link": [
+                "https://luci-logdog.appspot.com/v/?s",
+                "=android%2Fswarming%2Flogcats%2F",
+                "${TASK_ID}%2F%2B%2Funified_logcats"
+              ],
+              "name": "shard #${SHARD_INDEX} logcats"
+            }
+          ],
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 3
+        },
+        "test": "content_unittests",
+        "test_id_prefix": "ninja://content/test:content_unittests/"
+      },
+      {
+        "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -7910,6 +8090,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -7969,6 +8150,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -8029,6 +8211,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8088,6 +8271,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8147,6 +8331,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8206,6 +8391,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8265,6 +8451,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8325,6 +8512,7 @@
       {
         "args": [
           "--use-cmd-decoder=validating",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -8386,6 +8574,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -8446,6 +8635,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8505,6 +8695,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8564,6 +8755,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8623,6 +8815,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8682,6 +8875,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8741,6 +8935,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8800,6 +8995,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8859,6 +9055,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -8919,6 +9116,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -8978,6 +9176,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9037,6 +9236,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9096,6 +9296,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9157,6 +9358,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -9217,6 +9419,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9276,6 +9479,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb",
@@ -9337,6 +9541,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9396,6 +9601,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9455,6 +9661,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9514,6 +9721,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9573,6 +9781,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9632,6 +9841,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9691,6 +9901,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9750,6 +9961,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9809,6 +10021,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9868,6 +10081,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9928,6 +10142,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -9987,6 +10202,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10046,6 +10262,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10106,6 +10323,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10160,13 +10378,79 @@
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
-          "shards": 7
+          "shards": 10
         },
         "test": "webview_instrumentation_test_apk",
         "test_id_prefix": "ninja://android_webview/test:webview_instrumentation_test_apk/"
       },
       {
         "args": [
+          "--use-persistent-shell",
+          "--use-persistent-shell",
+          "--gs-results-bucket=chromium-result-details",
+          "--recover-devices",
+          "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "merge": {
+          "args": [
+            "--bucket",
+            "chromium-result-details",
+            "--test-name",
+            "webview_instrumentation_test_apk_persistent_shell"
+          ],
+          "script": "//build/android/pylib/results/presentation/test_results_presentation.py"
+        },
+        "name": "webview_instrumentation_test_apk_persistent_shell",
+        "resultdb": {
+          "enable": true,
+          "has_native_resultdb_integration": true
+        },
+        "swarming": {
+          "can_use_on_swarming_builders": true,
+          "dimension_sets": [
+            {
+              "cores": "8",
+              "cpu": "x86-64",
+              "device_os": null,
+              "device_type": null,
+              "os": "Ubuntu-18.04",
+              "pool": "chromium.tests.avd"
+            }
+          ],
+          "named_caches": [
+            {
+              "name": "generic_android31",
+              "path": ".android_emulator/generic_android31"
+            }
+          ],
+          "optional_dimensions": {
+            "60": [
+              {
+                "caches": "generic_android31"
+              }
+            ]
+          },
+          "output_links": [
+            {
+              "link": [
+                "https://luci-logdog.appspot.com/v/?s",
+                "=android%2Fswarming%2Flogcats%2F",
+                "${TASK_ID}%2F%2B%2Funified_logcats"
+              ],
+              "name": "shard #${SHARD_INDEX} logcats"
+            }
+          ],
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 10
+        },
+        "test": "webview_instrumentation_test_apk",
+        "test_id_prefix": "ninja://android_webview/test:webview_instrumentation_test_apk/"
+      },
+      {
+        "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10191,7 +10475,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -10239,6 +10523,7 @@
           "--exclude-annotation",
           "AppModeFull",
           "--test-apk-as-instant",
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10263,7 +10548,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -10308,6 +10593,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10367,6 +10653,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10426,6 +10713,7 @@
       },
       {
         "args": [
+          "--use-persistent-shell",
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
@@ -10487,6 +10775,7 @@
     "isolated_scripts": [
       {
         "args": [
+          "--use-persistent-shell",
           "--avd-config=../../tools/android/avd/proto/generic_android31.textpb"
         ],
         "isolate_name": "private_code_failure_test",
@@ -14225,7 +14514,8 @@
         "args": [
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
-          "--avd-config=../../tools/android/avd/proto/generic_android32_foldable.textpb"
+          "--avd-config=../../tools/android/avd/proto/generic_android32_foldable.textpb",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/android.emulator_12l.webview_instrumentation_test_apk.filter"
         ],
         "merge": {
           "args": [
@@ -14276,7 +14566,7 @@
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
-          "shards": 7
+          "shards": 9
         },
         "test": "webview_instrumentation_test_apk",
         "test_id_prefix": "ninja://android_webview/test:webview_instrumentation_test_apk/"
@@ -18096,7 +18386,8 @@
         "args": [
           "--gs-results-bucket=chromium-result-details",
           "--recover-devices",
-          "--avd-config=../../tools/android/avd/proto/generic_android33.textpb"
+          "--avd-config=../../tools/android/avd/proto/generic_android33.textpb",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/android.emulator_13.webview_instrumentation_test_apk.filter"
         ],
         "merge": {
           "args": [
@@ -18147,7 +18438,7 @@
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
-          "shards": 7
+          "shards": 9
         },
         "test": "webview_instrumentation_test_apk",
         "test_id_prefix": "ninja://android_webview/test:webview_instrumentation_test_apk/"
@@ -18178,7 +18469,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -18250,7 +18541,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -18320,7 +18611,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -21460,6 +21751,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "android_webview_junit_tests",
         "test_id_prefix": "ninja://android_webview/test:android_webview_junit_tests/"
       },
@@ -21469,6 +21761,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "base_junit_tests",
         "test_id_prefix": "ninja://base:base_junit_tests/"
       },
@@ -21478,6 +21771,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "build_junit_tests",
         "test_id_prefix": "ninja://build/android:build_junit_tests/"
       },
@@ -21487,6 +21781,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "chrome_java_test_pagecontroller_junit_tests",
         "test_id_prefix": "ninja://chrome/test/android:chrome_java_test_pagecontroller_junit_tests/"
       },
@@ -21496,6 +21791,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "chrome_junit_tests",
         "test_id_prefix": "ninja://chrome/android:chrome_junit_tests/"
       },
@@ -21505,6 +21801,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "components_junit_tests",
         "test_id_prefix": "ninja://components:components_junit_tests/"
       },
@@ -21514,6 +21811,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "content_junit_tests",
         "test_id_prefix": "ninja://content/public/android:content_junit_tests/"
       },
@@ -21523,6 +21821,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "device_junit_tests",
         "test_id_prefix": "ninja://device:device_junit_tests/"
       },
@@ -21532,6 +21831,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "junit_unit_tests",
         "test_id_prefix": "ninja://testing/android/junit:junit_unit_tests/"
       },
@@ -21541,6 +21841,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "keyboard_accessory_junit_tests",
         "test_id_prefix": "ninja://chrome/android/features/keyboard_accessory:keyboard_accessory_junit_tests/"
       },
@@ -21550,6 +21851,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "media_base_junit_tests",
         "test_id_prefix": "ninja://media/base/android:media_base_junit_tests/"
       },
@@ -21559,6 +21861,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "module_installer_junit_tests",
         "test_id_prefix": "ninja://components/module_installer/android:module_installer_junit_tests/"
       },
@@ -21568,6 +21871,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "net_junit_tests",
         "test_id_prefix": "ninja://net/android:net_junit_tests/"
       },
@@ -21577,6 +21881,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "paint_preview_junit_tests",
         "test_id_prefix": "ninja://components/paint_preview/player/android:paint_preview_junit_tests/"
       },
@@ -21586,6 +21891,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "password_check_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/password_check/android:password_check_junit_tests/"
       },
@@ -21595,6 +21901,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "password_manager_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/password_manager/android:password_manager_junit_tests/"
       },
@@ -21604,6 +21911,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "services_junit_tests",
         "test_id_prefix": "ninja://services:services_junit_tests/"
       },
@@ -21613,6 +21921,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "touch_to_fill_junit_tests",
         "test_id_prefix": "ninja://chrome/browser/touch_to_fill/android:touch_to_fill_junit_tests/"
       },
@@ -21622,6 +21931,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "ui_junit_tests",
         "test_id_prefix": "ninja://ui/android:ui_junit_tests/"
       },
@@ -21631,6 +21941,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "webapk_client_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/libs/client:webapk_client_junit_tests/"
       },
@@ -21640,6 +21951,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "webapk_shell_apk_h2o_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/shell_apk:webapk_shell_apk_h2o_junit_tests/"
       },
@@ -21649,6 +21961,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "webapk_shell_apk_junit_tests",
         "test_id_prefix": "ninja://chrome/android/webapk/shell_apk:webapk_shell_apk_junit_tests/"
       },
@@ -21659,6 +21972,7 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
+        "swarming": {},
         "test": "weblayer_junit_tests",
         "test_id_prefix": "ninja://weblayer/browser/java:weblayer_junit_tests/"
       }
@@ -28807,6 +29121,7 @@
           "--avd-config=../../tools/android/avd/proto/generic_android24.textpb",
           "--gtest_filter=-PacLibraryTest.ActualPacMyIpAddress*"
         ],
+        "ci_only": true,
         "isolate_profile_data": true,
         "merge": {
           "args": [
@@ -29625,7 +29940,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -30836,7 +31151,8 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
-        "script": "check_network_annotations.py"
+        "script": "check_network_annotations.py",
+        "swarming": {}
       }
     ]
   },
@@ -31356,7 +31672,7 @@
           ],
           "quickrun_shards": 6,
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
-          "shards": 3
+          "shards": 4
         },
         "test": "android_browsertests",
         "test_id_prefix": "ninja://chrome/test:android_browsertests/"
@@ -32007,7 +32323,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -32139,7 +32455,8 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
-        "script": "check_network_annotations.py"
+        "script": "check_network_annotations.py",
+        "swarming": {}
       }
     ]
   },
@@ -35916,7 +36233,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -36207,7 +36524,8 @@
           "enable": true,
           "has_native_resultdb_integration": true
         },
-        "script": "check_network_annotations.py"
+        "script": "check_network_annotations.py",
+        "swarming": {}
       }
     ]
   },
@@ -36239,7 +36557,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [
@@ -36311,7 +36629,7 @@
             {
               "cipd_package": "chromium/android_webview/tools/cts_archive",
               "location": "android_webview/tools/cts_archive",
-              "revision": "APYMYksv9eNAkU6osFvNXN38pMO1Q1kScjeecePr7NgC"
+              "revision": "D9ziv4Z61qHwterMTFEoPeCZzFNyUfMnWAlYuxEKlM8C"
             }
           ],
           "dimension_sets": [

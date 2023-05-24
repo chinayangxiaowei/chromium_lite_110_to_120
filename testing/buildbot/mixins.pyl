@@ -127,9 +127,11 @@
 
 {
   '10-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android29.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android29.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -148,9 +150,11 @@
     },
   },
   '11-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android30.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android30.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -169,9 +173,11 @@
     },
   },
   '12-x64-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android31.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android31.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -190,9 +196,11 @@
     },
   },
   '12l-x64-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android32_foldable.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android32_foldable.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -211,9 +219,11 @@
     },
   },
   '13-x64-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android33.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android33.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -253,9 +263,11 @@
     },
   },
   'blink_tests_write_run_histories': {
-    'args': [
-      '--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json',
+      ],
+    },
   },
   'bullhead': {
     'swarming': {
@@ -313,9 +325,11 @@
         },
       ],
     },
-    'args': [
-      '--magic-vm-cache=magic_cros_vm_cache',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--magic-vm-cache=magic_cros_vm_cache',
+      ],
+    },
   },
   'chromeos-betty': {
     'swarming': {
@@ -344,9 +358,11 @@
         },
       ],
     },
-    'args': [
-      '--magic-vm-cache=magic_cros_vm_cache',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--magic-vm-cache=magic_cros_vm_cache',
+      ],
+    },
   },
   'chromeos-betty-finch': {
     'swarming': {
@@ -375,9 +391,11 @@
         },
       ],
     },
-    'args': [
-      '--magic-vm-cache=magic_cros_vm_cache',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--magic-vm-cache=magic_cros_vm_cache',
+      ],
+    },
   },
   'chromeos-jacuzzi': {
     'swarming': {
@@ -398,7 +416,7 @@
   },
   'chromeos-kevin-skylab': {
     'cros_board': 'kevin',
-    'cros_img': 'kevin-public/R110-15277.0.0',
+    'cros_img': 'kevin-public/R113-15384.0.0',
     'bucket': 'chromiumos-image-archive',
     'timeout_sec': 10800,
   },
@@ -437,9 +455,11 @@
         },
       ],
     },
-    'args': [
-      '--magic-vm-cache=magic_cros_reven_vm_cache',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--magic-vm-cache=magic_cros_reven_vm_cache',
+      ],
+    },
   },
   'chromium-tester-dev-service-account': {
     'swarming': {
@@ -457,20 +477,24 @@
     'ci_only': True,
   },
   'dawn_end2end_gpu_test': {
-    'args': [
-      '--use-gpu-in-tests',
-      # Dawn test retries deliberately disabled to prevent flakiness.
-      '--test-launcher-retry-limit=0',
-      '--exclusive-device-type-preference=discrete,integrated',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--use-gpu-in-tests',
+        # Dawn test retries deliberately disabled to prevent flakiness.
+        '--test-launcher-retry-limit=0',
+        '--exclusive-device-type-preference=discrete,integrated',
+      ],
+    },
   },
   'disable_check_flakiness_web_tests': {
      'check_flakiness_for_new_tests': False,
   },
   'disable_field_trial_config_for_earl_grey': {
-    'args': [
-      '--extra-app-args=--disable-field-trial-config',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--extra-app-args=--disable-field-trial-config',
+      ],
+    },
   },
   'docker': {
     'swarming': {
@@ -516,14 +540,25 @@
     },
   },
   'fuchsia-code-coverage': {
-    'args': [
-      '--code-coverage-dir=${ISOLATED_OUTDIR}'
-    ],
+    '$mixin_append': {
+      'args': [
+        '--code-coverage-dir=${ISOLATED_OUTDIR}'
+      ],
+    },
+  },
+  'fuchsia-persistent-emulator': {
+    '$mixin_append': {
+      'args': [
+        '--everlasting'
+      ],
+    },
   },
   'fuchsia_logs': {
-    'args': [
-      '--logs-dir=${ISOLATED_OUTDIR}/logs',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--logs-dir=${ISOLATED_OUTDIR}/logs',
+      ],
+    },
   },
   'gpu-swarming-pool': {
     'swarming': {
@@ -550,20 +585,26 @@
     },
   },
   'ios_custom_webkit': {
-    'args': [
-      '--args-json',
-      '{"test_args": ["--run-with-custom-webkit"]}'
-    ],
+    '$mixin_append': {
+      'args': [
+        '--args-json',
+        '{"test_args": ["--run-with-custom-webkit"]}'
+      ],
+    },
   },
   'ios_output_disabled_tests': {
-    'args': [
-      '--output-disabled-tests',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--output-disabled-tests',
+      ],
+    },
   },
   'ios_restart_device': {
-    'args': [
-      '--restart',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--restart',
+      ],
+    },
   },
   'ios_runtime_cache_14_4': {
     '$mixin_append': {
@@ -589,36 +630,28 @@
       },
     },
   },
-  'ios_runtime_cache_15_0': {
+  'ios_runtime_cache_15_5': {
     '$mixin_append': {
       'swarming': {
         'named_caches': [
           {
-            'name': 'runtime_ios_15_0',
-            'path': 'Runtime-ios-15.0',
+            'name': 'runtime_ios_15_5',
+            'path': 'Runtime-ios-15.5',
           },
         ],
       },
     },
   },
-  'ios_runtime_cache_15_5': {
-    'swarming': {
-      'named_caches': [
-        {
-          'name': 'runtime_ios_15_5',
-          'path': 'Runtime-ios-15.5',
-        },
-      ],
-    },
-  },
   'ios_runtime_cache_16_2': {
-    'swarming': {
-      'named_caches': [
-        {
-          'name': 'runtime_ios_16_2',
-          'path': 'Runtime-ios-16.2',
-        },
-      ],
+    '$mixin_append': {
+      'swarming': {
+        'named_caches': [
+          {
+            'name': 'runtime_ios_16_2',
+            'path': 'Runtime-ios-16.2',
+          },
+        ],
+      },
     },
   },
   'isolate_profile_data': {
@@ -633,9 +666,11 @@
     },
   },
   'kitkat-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android19.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android19.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -739,9 +774,11 @@
     },
   },
   'lollipop-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android22.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android22.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -812,31 +849,13 @@
       },
     },
   },
-  # TODO (crbug/1448671): remove the 3 OR mixins below after Mac13 upgrade completes
-  'mac_12_or_13_arm64': {
-    'swarming': {
-      'dimensions': {
-        'cpu': 'arm64',
-        'os': 'Mac-12|Mac-13',
-      },
-    },
-  },
-  # this can be replaced with mac_13_x64 mixins after upgrade completes. Mac13 machines
-  # are automatically on T2 or above
-  'mac_12_or_13_t2_x64': {
+  # TODO (crbug/1351123): Adding ONLY for iOS to specify T2 only due to xcode14
+  'mac_12_t2_x64': {
     'swarming': {
       'dimensions': {
         'cpu': 'x86-64',
         'mac_model': 'Macmini8,1',
-        'os': 'Mac-12|Mac-13',
-      },
-    },
-  },
-  'mac_12_or_13_x64': {
-    'swarming': {
-      'dimensions': {
-        'cpu': 'x86-64',
-        'os': 'Mac-12|Mac-13',
+        'os': 'Mac-12',
       },
     },
   },
@@ -941,9 +960,9 @@
     'swarming': {
       'dimensions': {
         'cpu': 'x86-64',
-        'gpu': '1002:6821',
+        'gpu': '1002:67ef',
         'hidpi': '1',
-        'os': 'Mac-12.1',
+        'os': 'Mac-13.2.1',
         'pool': 'chromium.tests.gpu',
         'display_attached': '1',
       },
@@ -1017,9 +1036,11 @@
     },
   },
   'marshmallow-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android23.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android23.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -1061,9 +1082,11 @@
     },
   },
   'nougat-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android24.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android24.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -1082,9 +1105,11 @@
     },
   },
   'oreo-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android27.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android27.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -1120,15 +1145,19 @@
     },
   },
   'out_dir_arg': {
-    'args': [
-      '--out-dir',
-      '${ISOLATED_OUTDIR}'
-    ],
+    '$mixin_append': {
+      'args': [
+        '--out-dir',
+        '${ISOLATED_OUTDIR}'
+      ],
+    },
   },
   'pie-x86-emulator': {
-    'args': [
-      '--avd-config=../../tools/android/avd/proto/generic_android28.textpb',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--avd-config=../../tools/android/avd/proto/generic_android28.textpb',
+      ],
+    },
     'swarming': {
       # soft affinity so that bots with caches will be picked first
       'optional_dimensions': {
@@ -1162,10 +1191,12 @@
     },
   },
   'record_failed_tests': {
-    'args': [
-      '--record-video',
-      'failed_only',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--record-video',
+        'failed_only',
+      ],
+    },
   },
   's_generic': {
     'swarming': {
@@ -1189,19 +1220,21 @@
     },
   },
   'skia_gold_test': {
-    'args': [
-      '--git-revision=${got_revision}',
-      # BREAK GLASS IN CASE OF EMERGENCY
-      # Uncommenting this argument will bypass all interactions with Skia
-      # Gold in any tests that use it. This is meant as a temporary
-      # emergency stop in case of a Gold outage that's affecting the bots.
-      # '--bypass-skia-gold-functionality',
-    ],
-    'precommit_args': [
-      '--gerrit-issue=${patch_issue}',
-      '--gerrit-patchset=${patch_set}',
-      '--buildbucket-id=${buildbucket_build_id}',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--git-revision=${got_revision}',
+        # BREAK GLASS IN CASE OF EMERGENCY
+        # Uncommenting this argument will bypass all interactions with Skia
+        # Gold in any tests that use it. This is meant as a temporary
+        # emergency stop in case of a Gold outage that's affecting the bots.
+        # '--bypass-skia-gold-functionality',
+      ],
+      'precommit_args': [
+        '--gerrit-issue=${patch_issue}',
+        '--gerrit-patchset=${patch_set}',
+        '--buildbucket-id=${buildbucket_build_id}',
+      ],
+    }
   },
   'swarming_containment_auto': {
     'swarming': {
@@ -1237,10 +1270,12 @@
     },
   },
   'vr_instrumentation_test': {
-    'args': [
-      '--remove-system-package=com.google.vr.vrcore',
-      '--additional-apk=//third_party/gvr-android-sdk/test-apks/vr_services/vr_services_current.apk',
-    ],
+     '$mixin_append': {
+       'args': [
+          '--remove-system-package=com.google.vr.vrcore',
+          '--additional-apk=//third_party/gvr-android-sdk/test-apks/vr_services/vr_services_current.apk',
+       ],
+     },
   },
   'walleye': {
     # Pixel 2
@@ -1252,18 +1287,20 @@
     },
   },
   'webgpu_cts': {
-    'args': [
-      # crbug.com/953991 Ensure WebGPU is ready before running tests
-      '--initialize-webgpu-adapter-at-startup-timeout-ms=60000',
-    ],
-    'win64_args': [ '--target=Release_x64' ],
-    'mac_args': [
-      '--platform=mac-mac11'
-    ],
-    'linux_args': [
-      '--no-xvfb',
-      '--additional-driver-flag=--enable-features=Vulkan',
-    ],
+    '$mixin_append': {
+      'args': [
+        # crbug.com/953991 Ensure WebGPU is ready before running tests
+        '--initialize-webgpu-adapter-at-startup-timeout-ms=60000',
+      ],
+      'win64_args': [ '--target=Release_x64' ],
+      'mac_args': [
+        '--platform=mac-mac11'
+      ],
+      'linux_args': [
+        '--no-xvfb',
+        '--additional-driver-flag=--enable-features=Vulkan',
+      ],
+    },
     'merge': {
       'args': [
         '--verbose',
@@ -1275,13 +1312,15 @@
     },
   },
   'webgpu_telemetry_cts': {
-    'args': [
-      '--extra-browser-args=--force_high_performance_gpu',
-      '$$MAGIC_SUBSTITUTION_GPUParallelJobs',
-    ],
-    'linux_args': [
-      '--extra-browser-args=--enable-features=Vulkan',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--extra-browser-args=--force_high_performance_gpu',
+        '$$MAGIC_SUBSTITUTION_GPUParallelJobs',
+      ],
+      'linux_args': [
+        '--extra-browser-args=--enable-features=Vulkan',
+      ],
+    },
   },
   'win10': {
     'swarming': {
@@ -1391,6 +1430,20 @@
       },
     },
   },
+  'win_arm64': {
+    'swarming': {
+      'dimensions': {
+        # TODO(https://crbug.com/1422826): Update the right cpu value.
+        'cpu': None,
+        'os': 'Windows-11',
+        'pool': 'chrome.tests.arm64',
+      },
+      # The resources are limited in the pool.
+      # The slowest test is expected to run >9 hours.
+      'expiration': 64800,  # 18 hours
+      'hard_timeout': 43200,  # 12 hours
+    },
+  },
   'x86-64': {
     'swarming': {
       'dimensions': {
@@ -1400,10 +1453,12 @@
   },
   # Default Xcode 14 beta.
   'xcode_14_beta': {
-    'args': [
-      '--xcode-build-version',
-      '14c18'
-    ],
+    '$mixin_append': {
+      'args': [
+        '--xcode-build-version',
+        '14c18'
+      ],
+    },
     'swarming': {
       'named_caches': [
         {
@@ -1415,10 +1470,12 @@
   },
   # Xcode 14 on iOS main.
   'xcode_14_main': {
-    'args': [
-      '--xcode-build-version',
-      '14c18'
-    ],
+    '$mixin_append': {
+      'args': [
+        '--xcode-build-version',
+        '14c18'
+      ],
+    },
     'swarming': {
       'named_caches': [
         {
@@ -1429,19 +1486,25 @@
     },
   },
   'xcode_14_readline_timeout': {
-    'args': [
-      '--readline-timeout',
-      '600',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--readline-timeout',
+        '600',
+      ],
+    },
   },
   'xcode_parallelization': {
-    'args': [
-      '--xcode-parallelization',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--xcode-parallelization',
+      ],
+    },
   },
   'xctest': {
-    'args': [
-      '--xctest',
-    ],
+    '$mixin_append': {
+      'args': [
+        '--xctest',
+      ],
+    },
   },
 }
