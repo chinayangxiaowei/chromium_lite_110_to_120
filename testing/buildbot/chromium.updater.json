@@ -7,14 +7,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Ubuntu-18.04",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Ubuntu-18.04",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -28,14 +29,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Ubuntu-18.04",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Ubuntu-18.04",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -74,14 +76,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.13.6",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.13.6",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -91,14 +94,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.13.6",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.13.6",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -112,14 +116,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.13.6",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.13.6",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -129,14 +134,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.13.6",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.13.6",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -150,14 +156,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.14.6",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.14.6",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -167,14 +174,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.14.6",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.14.6",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -188,14 +196,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.14.6",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.14.6",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -205,14 +214,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.14.6",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.14.6",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -226,14 +236,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.15",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.15",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -243,14 +254,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.15",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.15",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -264,14 +276,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.15",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.15",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -281,14 +294,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-10.15",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-10.15",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -302,14 +316,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-11",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-11",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -319,14 +334,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-11",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-11",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -340,14 +356,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-11",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-11",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -357,14 +374,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-11",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-11",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -378,14 +396,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-11|Mac-10.16",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-11|Mac-10.16",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -395,14 +414,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-11|Mac-10.16",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-11|Mac-10.16",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -416,14 +436,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-11|Mac-10.16",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-11|Mac-10.16",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -433,14 +454,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-11|Mac-10.16",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-11|Mac-10.16",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -454,14 +476,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-12",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-12",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -471,14 +494,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-12",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-12",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -492,14 +516,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-12",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-12",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -509,14 +534,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-12",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-12",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -530,14 +556,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-13",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-13",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -547,14 +574,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "arm64",
-            "os": "Mac-13",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "arm64",
+              "os": "Mac-13",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -568,14 +596,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-13",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-13",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -585,14 +614,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Mac-13",
-            "pool": "chromium.updater.mac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Mac-13",
+              "pool": "chromium.updater.mac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -616,15 +646,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -634,15 +665,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -656,15 +688,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -674,15 +707,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -696,15 +730,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -714,15 +749,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -736,15 +772,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -754,14 +791,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_win_uac",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Windows-10",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Windows-10",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_win_uac",
@@ -775,15 +813,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -793,15 +832,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10-19045",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10-19045",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -815,15 +855,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-10",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-10",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -833,14 +874,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_win_uac",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Windows-10",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Windows-10",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_win_uac",
@@ -854,15 +896,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-11-22000",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-11-22000",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",
@@ -872,14 +915,15 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_win_uac",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "os": "Windows-11-22000",
-            "pool": "chromium.win.uac"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "os": "Windows-11-22000",
+              "pool": "chromium.win.uac"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_win_uac",
@@ -893,15 +937,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-11-22000",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-11-22000",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests",
@@ -911,15 +956,16 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "updater_tests_system",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86-64",
-            "integrity": "high",
-            "os": "Windows-11-22000",
-            "pool": "chromium.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86-64",
+              "integrity": "high",
+              "os": "Windows-11-22000",
+              "pool": "chromium.tests"
+            }
+          ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "updater_tests_system",

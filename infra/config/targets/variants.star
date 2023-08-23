@@ -406,7 +406,7 @@ targets.variant(
         dimensions = {
             "cpu": "x86",
             "kvm": "1",
-            "os": "Ubuntu-18.04",
+            "os": "Ubuntu-22.04",
         },
     ),
 )
@@ -417,22 +417,6 @@ targets.variant(
     args = [
         "--deploy-lacros",
     ],
-)
-
-targets.variant(
-    name = "LACROS_BETTY_PI_ARC",
-    identifier = "betty-pi-arc",
-    args = [
-        "--board=betty-pi-arc",
-        "--use-vm",
-    ],
-    swarming = targets.swarming(
-        dimensions = {
-            "cpu": "x86",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-        },
-    ),
 )
 
 targets.variant(
@@ -458,10 +442,12 @@ targets.variant(
         "--flash",
     ],
     swarming = targets.swarming(
-        dimensions = {
-            "os": "ChromeOS",
-            "device_type": "jacuzzi",
-        },
+        dimension_sets = [
+            {
+                "os": "ChromeOS",
+                "device_type": "jacuzzi",
+            },
+        ],
     ),
 )
 

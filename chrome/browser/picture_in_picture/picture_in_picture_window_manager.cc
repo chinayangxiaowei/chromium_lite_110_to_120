@@ -131,12 +131,9 @@ PictureInPictureWindowManager::EnterVideoPictureInPicture(
   return content::PictureInPictureResult::kSuccess;
 }
 
-bool PictureInPictureWindowManager::ExitPictureInPicture() {
-  if (pip_window_controller_) {
+void PictureInPictureWindowManager::ExitPictureInPicture() {
+  if (pip_window_controller_)
     CloseWindowInternal();
-    return true;
-  }
-  return false;
 }
 
 void PictureInPictureWindowManager::FocusInitiator() {

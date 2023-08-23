@@ -10,7 +10,6 @@
 #include "base/task/cancelable_task_tracker.h"
 #include "base/time/time.h"
 #include "base/timer/timer.h"
-#include "chrome/browser/download/download_commands.h"
 #include "chrome/browser/download/download_ui_model.h"
 #include "chrome/browser/ui/download/download_item_mode.h"
 #include "chrome/browser/ui/views/controls/hover_button.h"
@@ -21,13 +20,8 @@
 #include "ui/views/controls/button/button.h"
 #include "ui/views/view.h"
 
-namespace ui {
-class Event;
-}
-
 namespace views {
 class ImageView;
-class InputEventActivationProtector;
 class Label;
 class MdTextButton;
 class ImageButton;
@@ -49,9 +43,9 @@ class DownloadBubbleRowView : public views::View,
   explicit DownloadBubbleRowView(
       DownloadUIModel::DownloadUIModelPtr model,
       DownloadBubbleRowListView* row_list_view,
-      DownloadBubbleUIController* bubble_controller,
-      DownloadBubbleNavigationHandler* navigation_handler,
-      Browser* browser,
+      base::WeakPtr<DownloadBubbleUIController> bubble_controller,
+      base::WeakPtr<DownloadBubbleNavigationHandler> navigation_handler,
+      base::WeakPtr<Browser> browser,
       int fixed_width);
   DownloadBubbleRowView(const DownloadBubbleRowView&) = delete;
   DownloadBubbleRowView& operator=(const DownloadBubbleRowView&) = delete;
@@ -69,7 +63,6 @@ class DownloadBubbleRowView : public views::View,
   gfx::Size CalculatePreferredSize() const override;
   void AddLayerToRegion(ui::Layer* layer, views::LayerRegion region) override;
   void RemoveLayerFromRegions(ui::Layer* layer) override;
-  void VisibilityChanged(views::View* starting_from, bool is_visible) override;
 
   // Overrides views::FocusChangeListener
   void OnWillChangeFocus(views::View* before, views::View* now) override;
@@ -102,11 +95,7 @@ class DownloadBubbleRowView : public views::View,
     ui_info_ = ui_info;
   }
 
-  bool IsQuickActionButtonVisibleForTesting(DownloadCommands::Command command);
-  views::ImageButton* GetQuickActionButtonForTesting(
-      DownloadCommands::Command command);
-  void SetInputProtectorForTesting(
-      std::unique_ptr<views::InputEventActivationProtector> input_protector);
+  void SimulateMainButtonClickForTesting(const ui::Event& event);
 
  protected:
   // Overrides ui::LayerDelegate:
@@ -158,12 +147,9 @@ class DownloadBubbleRowView : public views::View,
   void SetIconFromImage(gfx::Image icon);
   void SetIconFromImageModel(const ui::ImageModel& icon);
 
-  // Called when the transparent button (covering the whole row) is pressed.
-  void OnMainButtonPressed(const ui::Event& event);
-  // Called when the button on the side of the row (the "main page button") or a
-  // quick action button is pressed.
-  void OnActionButtonPressed(DownloadCommands::Command command,
-                             const ui::Event& event);
+  void OnCancelButtonPressed();
+  void OnDiscardButtonPressed();
+  void OnMainButtonPressed();
 
   void AnnounceInProgressAlert();
 
@@ -228,11 +214,11 @@ class DownloadBubbleRowView : public views::View,
   raw_ptr<DownloadBubbleRowListView> row_list_view_ = nullptr;
 
   // Controller for keeping track of downloads.
-  raw_ptr<DownloadBubbleUIController> bubble_controller_ = nullptr;
+  base::WeakPtr<DownloadBubbleUIController> bubble_controller_ = nullptr;
 
-  raw_ptr<DownloadBubbleNavigationHandler> navigation_handler_ = nullptr;
+  base::WeakPtr<DownloadBubbleNavigationHandler> navigation_handler_ = nullptr;
 
-  raw_ptr<Browser> browser_ = nullptr;
+  base::WeakPtr<Browser> browser_ = nullptr;
 
   download::DownloadItemMode mode_;
   download::DownloadItem::DownloadState state_;
@@ -269,9 +255,6 @@ class DownloadBubbleRowView : public views::View,
 
   // Tracks tasks requesting file icons.
   base::CancelableTaskTracker cancelable_task_tracker_;
-
-  // Mitigates the risk of clickjacking by enforcing a delay in click input.
-  std::unique_ptr<views::InputEventActivationProtector> input_protector_;
 
   // TODO(crbug.com/1349528): The size constraint is not passed down from the
   // views tree in the first round of layout, so setting a fixed width to bound

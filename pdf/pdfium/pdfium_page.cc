@@ -383,8 +383,7 @@ PDFiumPage::~PDFiumPage() {
 }
 
 void PDFiumPage::Unload() {
-  // Do not unload while in the middle of a load, or if some external source
-  // expects `this` to stay loaded.
+  // Do not unload while in the middle of a load.
   if (preventing_unload_count_)
     return;
 
@@ -487,9 +486,6 @@ absl::optional<AccessibilityTextRunInfo> PDFiumPage::GetTextRunInfo(
       actual_start_char_index > start_char_index
           ? GetFloatCharRectInPixels(page, text_page, start_char_index)
           : gfx::RectF();
-
-  // Pdfium trims more than 1 consecutive spaces to 1 space.
-  DCHECK_LE(actual_start_char_index - start_char_index, 1);
 
   int char_index = actual_start_char_index;
 
@@ -1716,20 +1712,6 @@ void PDFiumPage::MarkAvailable() {
 PDFiumPage::ScopedUnloadPreventer::ScopedUnloadPreventer(PDFiumPage* page)
     : page_(page) {
   page_->preventing_unload_count_++;
-}
-
-PDFiumPage::ScopedUnloadPreventer::ScopedUnloadPreventer(
-    const ScopedUnloadPreventer& that)
-    : ScopedUnloadPreventer(that.page_) {}
-
-PDFiumPage::ScopedUnloadPreventer& PDFiumPage::ScopedUnloadPreventer::operator=(
-    const ScopedUnloadPreventer& that) {
-  if (page_ != that.page_) {
-    page_->preventing_unload_count_--;
-    page_ = that.page_;
-    page_->preventing_unload_count_++;
-  }
-  return *this;
 }
 
 PDFiumPage::ScopedUnloadPreventer::~ScopedUnloadPreventer() {

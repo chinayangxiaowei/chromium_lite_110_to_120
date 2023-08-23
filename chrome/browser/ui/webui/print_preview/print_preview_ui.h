@@ -43,6 +43,7 @@ namespace printing {
 
 class PrintPreviewHandler;
 
+// PrintPreviewUI lives on the UI thread.
 class PrintPreviewUI : public ConstrainedWebDialogUI,
                        public mojom::PrintPreviewUI {
  public:
@@ -89,6 +90,16 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
 
   const std::u16string& initiator_title() const { return initiator_title_; }
 
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  bool source_is_arc() const { return source_is_arc_; }
+#endif
+
+  bool source_is_modifiable() const { return source_is_modifiable_; }
+
+  bool source_has_selection() const { return source_has_selection_; }
+
+  bool print_selection_only() const { return print_selection_only_; }
+
   int pages_per_sheet() const { return pages_per_sheet_; }
 
   const gfx::Rect& printable_area() const { return printable_area_; }
@@ -110,9 +121,12 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
   // Save pdf pages temporarily before ready to do N-up conversion.
   void AddPdfPageForNupConversion(base::ReadOnlySharedMemoryRegion pdf_page);
 
+  // Set initial settings for PrintPreviewUI.
+  static void SetInitialParams(content::WebContents* print_preview_dialog,
+                               const mojom::RequestPrintPreviewParams& params);
+
   // Determines whether to cancel a print preview request based on the request
   // id.
-  // Can be called from any thread.
   static bool ShouldCancelRequest(const absl::optional<int32_t>& preview_ui_id,
                                   int request_id);
 
@@ -192,6 +206,8 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
   // OnJavascriptDisallowed().
   void ClearPreviewUIId();
 
+  base::WeakPtr<PrintPreviewUI> GetWeakPointer();
+
  protected:
   // Alternate constructor for tests
   PrintPreviewUI(content::WebUI* web_ui,
@@ -223,8 +239,6 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
   void NotifyUIPreviewDocumentReady(
       int request_id,
       scoped_refptr<base::RefCountedMemory> data_bytes);
-
-  bool ShouldUseCompositor() const;
 
   // Callbacks for print compositor client.
   void OnPrepareForDocumentToPdfDone(int32_t request_id,
@@ -270,6 +284,20 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
 
   // Weak pointer to the WebUI handler.
   const raw_ptr<PrintPreviewHandler> handler_;
+
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  // Indicates whether the source document is from ARC.
+  bool source_is_arc_ = false;
+#endif
+
+  // Indicates whether the source document can be modified.
+  bool source_is_modifiable_ = true;
+
+  // Indicates whether the source document has selection.
+  bool source_has_selection_ = false;
+
+  // Indicates whether only the selection should be printed.
+  bool print_selection_only_ = false;
 
   // Keeps track of whether OnClosePrintPreviewDialog() has been called or not.
   bool dialog_closed_ = false;

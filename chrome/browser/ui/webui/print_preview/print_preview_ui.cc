@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include "base/check.h"
 #include "base/containers/flat_map.h"
 #include "base/containers/id_map.h"
 #include "base/files/file_path.h"
@@ -15,10 +16,10 @@
 #include "base/lazy_instance.h"
 #include "base/memory/ref_counted_memory.h"
 #include "base/metrics/histogram_functions.h"
+#include "base/no_destructor.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
-#include "base/synchronization/lock.h"
 #include "base/values.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
@@ -95,7 +96,7 @@ namespace printing {
 namespace {
 
 #if BUILDFLAG(IS_MAC)
-const char16_t kBasicPrintShortcut[] = u"\u0028\u21e7\u2318\u0050\u0029";
+const char16_t kBasicPrintShortcut[] = u"(\u2325\u2318P)";
 #elif !BUILDFLAG(IS_CHROMEOS)
 const char16_t kBasicPrintShortcut[] = u"(Ctrl+Shift+P)";
 #endif
@@ -123,61 +124,23 @@ bool IsValidPageNumber(uint32_t page_number, uint32_t page_count) {
   return page_number < page_count;
 }
 
+bool ShouldUseCompositor(PrintPreviewUI* print_preview_ui) {
+  return IsOopifEnabled() && print_preview_ui->source_is_modifiable();
+}
+
 WebContents* GetInitiator(content::WebUI* web_ui) {
-  PrintPreviewDialogController* dialog_controller =
-      PrintPreviewDialogController::GetInstance();
-  if (!dialog_controller)
-    return nullptr;
+  auto* dialog_controller = PrintPreviewDialogController::GetInstance();
+  CHECK(dialog_controller);
   return dialog_controller->GetInitiator(web_ui->GetWebContents());
 }
 
-// Thread-safe wrapper around a base::flat_map to keep track of mappings from
-// PrintPreviewUI IDs to most recent print preview request IDs.
-class PrintPreviewRequestIdMapWithLock {
- public:
-  PrintPreviewRequestIdMapWithLock() {}
+// Mapping from PrintPreviewUI ID to print preview request ID.
+using PrintPreviewRequestIdMap = base::flat_map<int, int>;
 
-  PrintPreviewRequestIdMapWithLock(const PrintPreviewRequestIdMapWithLock&) =
-      delete;
-  PrintPreviewRequestIdMapWithLock& operator=(
-      const PrintPreviewRequestIdMapWithLock&) = delete;
-
-  ~PrintPreviewRequestIdMapWithLock() {}
-
-  // Gets the value for |preview_id|.
-  // Returns true and sets |out_value| on success.
-  bool Get(int32_t preview_id, int* out_value) {
-    base::AutoLock lock(lock_);
-    PrintPreviewRequestIdMap::const_iterator it = map_.find(preview_id);
-    if (it == map_.end())
-      return false;
-    *out_value = it->second;
-    return true;
-  }
-
-  // Sets the |value| for |preview_id|.
-  void Set(int32_t preview_id, int value) {
-    base::AutoLock lock(lock_);
-    map_[preview_id] = value;
-  }
-
-  // Erases the entry for |preview_id|.
-  void Erase(int32_t preview_id) {
-    base::AutoLock lock(lock_);
-    map_.erase(preview_id);
-  }
-
- private:
-  // Mapping from PrintPreviewUI ID to print preview request ID.
-  using PrintPreviewRequestIdMap = base::flat_map<int, int>;
-
-  PrintPreviewRequestIdMap map_;
-  base::Lock lock_;
-};
-
-// Written to on the UI thread, read from any thread.
-base::LazyInstance<PrintPreviewRequestIdMapWithLock>::DestructorAtExit
-    g_print_preview_request_id_map = LAZY_INSTANCE_INITIALIZER;
+PrintPreviewRequestIdMap& GetPrintPreviewRequestIdMap() {
+  static base::NoDestructor<PrintPreviewRequestIdMap> map;
+  return *map;
+}
 
 // PrintPreviewUI IDMap used to avoid exposing raw pointer addresses to WebUI.
 // Only accessed on the UI thread.
@@ -465,14 +428,20 @@ bool PrintPreviewUI::IsBound() const {
 }
 
 void PrintPreviewUI::ClearPreviewUIId() {
+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+
   if (!id_)
     return;
 
   receiver_.reset();
   PrintPreviewDataService::GetInstance()->RemoveEntry(*id_);
-  g_print_preview_request_id_map.Get().Erase(*id_);
+  GetPrintPreviewRequestIdMap().erase(*id_);
   g_print_preview_ui_id_map.Get().Remove(*id_);
   id_.reset();
+}
+
+base::WeakPtr<PrintPreviewUI> PrintPreviewUI::GetWeakPointer() {
+  return weak_ptr_factory_.GetWeakPtr();
 }
 
 void PrintPreviewUI::GetPrintPreviewDataForIndex(
@@ -536,19 +505,6 @@ void PrintPreviewUI::NotifyUIPreviewDocumentReady(
     g_test_delegate->PreviewDocumentReady(web_ui()->GetWebContents());
   }
   handler_->OnPrintPreviewReady(*id_, request_id);
-}
-
-bool PrintPreviewUI::ShouldUseCompositor() const {
-  if (!IsOopifEnabled()) {
-    return false;
-  }
-
-  auto* dialog_controller = PrintPreviewDialogController::GetInstance();
-  CHECK(dialog_controller);
-  const mojom::RequestPrintPreviewParams* request_params =
-      dialog_controller->GetRequestParams(web_ui()->GetWebContents());
-  CHECK(request_params);
-  return request_params->is_modifiable;
 }
 
 void PrintPreviewUI::OnCompositePdfPageDone(
@@ -728,15 +684,36 @@ void PrintPreviewUI::AddPdfPageForNupConversion(
 }
 
 // static
+void PrintPreviewUI::SetInitialParams(
+    content::WebContents* print_preview_dialog,
+    const mojom::RequestPrintPreviewParams& params) {
+  if (!print_preview_dialog || !print_preview_dialog->GetWebUI())
+    return;
+
+  PrintPreviewUI* print_preview_ui = print_preview_dialog->GetWebUI()
+                                         ->GetController()
+                                         ->GetAs<PrintPreviewUI>();
+  CHECK(print_preview_ui);
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  print_preview_ui->source_is_arc_ = params.is_from_arc;
+#endif
+  print_preview_ui->source_is_modifiable_ = params.is_modifiable;
+  print_preview_ui->source_has_selection_ = params.has_selection;
+  print_preview_ui->print_selection_only_ = params.selection_only;
+}
+
+// static
 bool PrintPreviewUI::ShouldCancelRequest(
     const absl::optional<int32_t>& preview_ui_id,
     int request_id) {
+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+
   if (!preview_ui_id)
     return true;
-  int current_id = -1;
-  if (!g_print_preview_request_id_map.Get().Get(*preview_ui_id, &current_id))
-    return true;
-  return request_id != current_id;
+
+  auto& map = GetPrintPreviewRequestIdMap();
+  auto it = map.find(*preview_ui_id);
+  return it == map.end() || request_id != it->second;
 }
 
 absl::optional<int32_t> PrintPreviewUI::GetIDForPrintPreviewUI() const {
@@ -770,12 +747,14 @@ void PrintPreviewUI::OnInitiatorClosed() {
 }
 
 void PrintPreviewUI::OnPrintPreviewRequest(int request_id) {
+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+
   if (!initial_preview_start_time_.is_null()) {
     base::UmaHistogramTimes(
         "PrintPreview.InitializationTime",
         base::TimeTicks::Now() - initial_preview_start_time_);
   }
-  g_print_preview_request_id_map.Get().Set(*id_, request_id);
+  GetPrintPreviewRequestIdMap()[*id_] = request_id;
 }
 
 void PrintPreviewUI::DidStartPreview(mojom::DidStartPreviewParamsPtr params,
@@ -863,8 +842,11 @@ bool PrintPreviewUI::OnPendingPreviewPage(uint32_t page_number) {
 }
 
 void PrintPreviewUI::OnCancelPendingPreviewRequest() {
-  if (id_)
-    g_print_preview_request_id_map.Get().Set(*id_, -1);
+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+
+  if (id_) {
+    GetPrintPreviewRequestIdMap()[*id_] = -1;
+  }
 }
 
 void PrintPreviewUI::OnPrintPreviewFailed(int request_id) {
@@ -915,9 +897,8 @@ void PrintPreviewUI::DidPrepareDocumentForPreview(int32_t document_cookie,
   // Determine if document composition from individual pages with the print
   // compositor is the desired configuration. Issue a preparation call to the
   // PrintCompositeClient if that hasn't been done yet. Otherwise, return early.
-  if (!ShouldUseCompositor()) {
+  if (!ShouldUseCompositor(this))
     return;
-  }
 
   WebContents* web_contents = GetInitiator(web_ui());
   if (!web_contents)
@@ -959,7 +940,7 @@ void PrintPreviewUI::DidPreviewPage(mojom::DidPreviewPageParamsPtr params,
     return;
   }
 
-  if (ShouldUseCompositor()) {
+  if (ShouldUseCompositor(this)) {
     // Don't bother compositing if this request has been cancelled already.
     if (ShouldCancelRequest(id_, request_id))
       return;
@@ -1001,7 +982,8 @@ void PrintPreviewUI::MetafileReadyForPrinting(
   // Always try to stop the worker.
   StopWorker(params->document_cookie);
 
-  const bool composite_document_using_individual_pages = ShouldUseCompositor();
+  const bool composite_document_using_individual_pages =
+      ShouldUseCompositor(this);
   const base::ReadOnlySharedMemoryRegion& metafile =
       params->content->metafile_data_region;
 
@@ -1096,9 +1078,11 @@ void PrintPreviewUI::ClearAllPreviewDataForTest() {
 }
 
 void PrintPreviewUI::SetPreviewUIId() {
+  DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
   DCHECK(!id_);
+
   id_ = g_print_preview_ui_id_map.Get().Add(this);
-  g_print_preview_request_id_map.Get().Set(*id_, -1);
+  GetPrintPreviewRequestIdMap()[*id_] = -1;
 }
 
 }  // namespace printing

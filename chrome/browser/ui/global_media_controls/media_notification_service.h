@@ -15,6 +15,7 @@
 #include "chrome/browser/ui/global_media_controls/media_item_ui_device_selector_delegate.h"
 #include "chrome/browser/ui/global_media_controls/media_notification_device_provider.h"
 #include "chrome/browser/ui/global_media_controls/presentation_request_notification_producer.h"
+#include "chrome/browser/ui/global_media_controls/supplemental_device_picker_producer.h"
 #include "components/global_media_controls/public/media_session_item_producer.h"
 #include "components/global_media_controls/public/media_session_item_producer_observer.h"
 #include "components/global_media_controls/public/mojom/device_service.mojom.h"
@@ -103,6 +104,9 @@ class MediaNotificationService
           host_receiver,
       mojo::PendingRemote<global_media_controls::mojom::DeviceListClient>
           client_remote) override;
+  void SetDevicePickerProvider(
+      mojo::PendingRemote<global_media_controls::mojom::DevicePickerProvider>
+          provider_remote) override;
 
 #if BUILDFLAG(IS_CHROMEOS)
   // Show the Global Media Controls dialog in Ash.
@@ -118,7 +122,6 @@ class MediaNotificationService
   friend class MediaNotificationServiceTest;
   friend class MediaNotificationServiceCastTest;
   friend class MediaToolbarButtonControllerTest;
-  friend class PresentationRequestNotificationProducerTest;
   FRIEND_TEST_ALL_PREFIXES(MediaNotificationServiceCastTest,
                            CreateCastDialogControllerWithRemotePlayback);
 
@@ -157,11 +160,15 @@ class MediaNotificationService
 
   void RemoveDeviceListHost(int host);
 
+  const raw_ptr<Profile> profile_;
+
   std::unique_ptr<global_media_controls::MediaItemManager> item_manager_;
 
   std::unique_ptr<global_media_controls::MediaSessionItemProducer>
       media_session_item_producer_;
   std::unique_ptr<CastMediaNotificationProducer> cast_notification_producer_;
+  std::unique_ptr<SupplementalDevicePickerProducer>
+      supplemental_device_picker_producer_;
   std::unique_ptr<PresentationRequestNotificationProducer>
       presentation_request_notification_producer_;
 

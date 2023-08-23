@@ -11,11 +11,12 @@
 #import "base/metrics/user_metrics_action.h"
 #import "base/notreached.h"
 #import "base/strings/sys_string_conversions.h"
-#import "ios/chrome/browser/application_context/application_context.h"
-#import "ios/chrome/browser/main/browser.h"
 #import "ios/chrome/browser/sessions/ios_chrome_tab_restore_service_factory.h"
 #import "ios/chrome/browser/sessions/session_restoration_browser_agent.h"
 #import "ios/chrome/browser/shared/coordinator/alert/action_sheet_coordinator.h"
+#import "ios/chrome/browser/shared/model/application_context/application_context.h"
+#import "ios/chrome/browser/shared/model/browser/browser.h"
+#import "ios/chrome/browser/shared/model/web_state_list/web_state_list.h"
 #import "ios/chrome/browser/snapshots/snapshot_browser_agent.h"
 #import "ios/chrome/browser/tabs/inactive_tabs/features.h"
 #import "ios/chrome/browser/ui/settings/settings_navigation_controller.h"
@@ -23,7 +24,6 @@
 #import "ios/chrome/browser/ui/tab_switcher/tab_grid/inactive_tabs/inactive_tabs_mediator.h"
 #import "ios/chrome/browser/ui/tab_switcher/tab_grid/inactive_tabs/inactive_tabs_user_education_coordinator.h"
 #import "ios/chrome/browser/ui/tab_switcher/tab_grid/inactive_tabs/inactive_tabs_view_controller.h"
-#import "ios/chrome/browser/web_state_list/web_state_list.h"
 #import "ios/chrome/common/ui/util/constraints_ui_util.h"
 #import "ios/chrome/grit/ios_strings.h"
 #import "ui/base/l10n/l10n_util.h"
@@ -95,6 +95,10 @@ const CGFloat kMinForwardVelocityToDismiss = 100;
 // dismissal of the view controller, when the swiped position is already more
 // than half of the screen's width.
 const CGFloat kMinBackwardVelocityToCancelDismiss = 10;
+// When closing all inactive tabs via the confirmation dialog, the Inactive Tabs
+// grid is popped, but to avoid having it emptied immediately (producing a
+// glitch), delay the closing of the tabs in the mediator.
+const base::TimeDelta kCloseAllInactiveTabsDelay = base::Seconds(0.3);
 
 // NSUserDefaults key to check whether the user education screen has ever been
 // shown. The associated value in user defaults is a BOOL.
@@ -202,6 +206,7 @@ NSString* const kInactiveTabsUserEducationShownOnce =
     return;
   }
   self.showing = YES;
+  base::RecordAction(base::UserMetricsAction("MobileInactiveTabGridEntered"));
 
   // Create the view controller.
   self.viewController = [[InactiveTabsViewController alloc] init];
@@ -262,6 +267,7 @@ NSString* const kInactiveTabsUserEducationShownOnce =
   if (!self.showing) {
     return;
   }
+  base::RecordAction(base::UserMetricsAction("MobileInactiveTabGridExited"));
 
   [self.userEducationCoordinator stop];
   self.userEducationCoordinator = nil;
@@ -637,7 +643,14 @@ NSString* const kInactiveTabsUserEducationShownOnce =
 // Called when the user confirmed wanting to close all inactive tabs.
 - (void)closeAllInactiveTabs {
   [_delegate inactiveTabsCoordinatorDidFinish:self];
-  [self.mediator closeAllItems];
+  // To prevent the Inactive Tabs grid from being immediately emptied, defer the
+  // closing to after the view is popped.
+  __weak __typeof(self) weakSelf = self;
+  base::SequencedTaskRunner::GetCurrentDefault()->PostDelayedTask(
+      FROM_HERE, base::BindOnce(^{
+        [weakSelf.mediator closeAllItems];
+      }),
+      kCloseAllInactiveTabsDelay);
 }
 
 // Presents the Inactive Tabs settings modally in their own navigation

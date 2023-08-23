@@ -9,7 +9,6 @@
 
 #include "base/check_op.h"
 #include "base/containers/contains.h"
-#include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/string_piece.h"
@@ -18,7 +17,6 @@
 #include "components/link_header_util/link_header_util.h"
 #include "components/payments/core/csp_checker.h"
 #include "components/payments/core/error_logger.h"
-#include "components/payments/core/features.h"
 #include "components/payments/core/native_error_strings.h"
 #include "components/payments/core/url_util.h"
 #include "net/base/load_flags.h"
@@ -252,16 +250,8 @@ void PaymentManifestDownloader::OnURLLoaderCompleteInternal(
   DCHECK_EQ(Download::Type::RESPONSE_BODY_OR_LINK_HEADER, download->type);
 
   if (!headers) {
-    if (base::FeatureList::IsEnabled(
-            features::kPaymentHandlerRequireLinkHeader)) {
-      // HTTP GET response has no headers; respond with error because the
-      // payment method manifest load must have a Link header.
-      RespondWithError(errors::kNoLinkHeader, final_url, *log_,
-                       std::move(download->callback));
-    } else {
-      RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
-                         final_url, *log_, std::move(download->callback));
-    }
+    RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
+                       final_url, *log_, std::move(download->callback));
     return;
   }
 
@@ -275,16 +265,8 @@ void PaymentManifestDownloader::OnURLLoaderCompleteInternal(
   std::string link_header;
   headers->GetNormalizedHeader("link", &link_header);
   if (link_header.empty()) {
-    if (base::FeatureList::IsEnabled(
-            features::kPaymentHandlerRequireLinkHeader)) {
-      // HTTP GET response has no "Link" header; respond with error because the
-      // payment method manifest load must have a Link header.
-      RespondWithError(errors::kNoLinkHeader, final_url, *log_,
-                       std::move(download->callback));
-    } else {
-      RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
-                         final_url, *log_, std::move(download->callback));
-    }
+    RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
+                       final_url, *log_, std::move(download->callback));
     return;
   }
 
@@ -335,17 +317,8 @@ void PaymentManifestDownloader::OnURLLoaderCompleteInternal(
     }
   }
 
-  if (base::FeatureList::IsEnabled(
-          features::kPaymentHandlerRequireLinkHeader)) {
-    // HTTP GET response has no "Link" header that has a
-    // rel="payment-method-manifest" entry; respond with error because the
-    // payment method manifest load must have a Link header.
-    RespondWithError(errors::kNoLinkHeader, final_url, *log_,
-                     std::move(download->callback));
-  } else {
-    RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
-                       final_url, *log_, std::move(download->callback));
-  }
+  RespondWithContent(response_body, errors::kNoContentAndNoLinkHeader,
+                     final_url, *log_, std::move(download->callback));
 }
 
 network::SimpleURLLoader* PaymentManifestDownloader::GetLoaderForTesting() {

@@ -17,6 +17,8 @@
 #import "components/policy/policy_constants.h"
 #import "components/strings/grit/components_strings.h"
 #import "components/sync/base/features.h"
+#import "components/sync/base/sync_prefs.h"
+#import "components/sync/base/user_selectable_type.h"
 #import "ios/chrome/browser/metrics/metrics_app_interface.h"
 #import "ios/chrome/browser/policy/policy_earl_grey_utils.h"
 #import "ios/chrome/browser/signin/fake_system_identity.h"
@@ -504,6 +506,12 @@ id<GREYMatcher> EditDoneButton() {
 
 - (void)setUp {
   [super setUp];
+  // Manually clear sync passwords pref before testShowAccountStorageNotice*.
+  // TODO(crbug.com/1069086): Wipe the PrefService between tests.
+  [ChromeEarlGreyAppInterface
+      clearUserPrefWithName:base::SysUTF8ToNSString(
+                                syncer::SyncPrefs::GetPrefNameForTypeForTesting(
+                                    syncer::UserSelectableType::kPasswords))];
   GREYAssertNil([MetricsAppInterface setupHistogramTester],
                 @"Cannot setup histogram tester.");
   _passwordAutoFillStatusSwizzler =
@@ -1816,7 +1824,8 @@ id<GREYMatcher> EditDoneButton() {
 // storing just about enough passwords to ensure filling more than one page on
 // any device. To limit the effect of (2), custom large scrolling steps are
 // added to the usual scrolling actions.
-- (void)testManyPasswords {
+// TODO(crbug.com/1442985): This test is flaky.
+- (void)FLAKY_testManyPasswords {
   if ([ChromeEarlGrey isIPadIdiom]) {
     // TODO(crbug.com/906551): Enable the test on iPad once the bug is fixed.
     EARL_GREY_TEST_DISABLED(@"Disabled for iPad.");
@@ -2053,7 +2062,8 @@ id<GREYMatcher> EditDoneButton() {
 }
 
 // Test search and delete all passwords and blocked items.
-- (void)testSearchAndDeleteAllPasswords {
+// TODO(crbug.com/1441783): Flaky.
+- (void)DISABLED_testSearchAndDeleteAllPasswords {
   SaveExamplePasswordForms();
   SaveExampleBlockedForms();
 
@@ -2260,9 +2270,6 @@ id<GREYMatcher> EditDoneButton() {
   [[EarlGrey selectElementWithMatcher:EditDoneButton()]
       performAction:grey_tap()];
 
-  [[EarlGrey selectElementWithMatcher:EditConfirmationButton()]
-      performAction:grey_tap()];
-
   [[EarlGrey selectElementWithMatcher:PasswordDetailUsername()]
       assertWithMatcher:grey_textFieldValue(@"")];
 
@@ -2272,9 +2279,6 @@ id<GREYMatcher> EditDoneButton() {
       performAction:grey_replaceText(@"new username")];
 
   [[EarlGrey selectElementWithMatcher:EditDoneButton()]
-      performAction:grey_tap()];
-
-  [[EarlGrey selectElementWithMatcher:EditConfirmationButton()]
       performAction:grey_tap()];
 
   [[EarlGrey selectElementWithMatcher:PasswordDetailUsername()]

@@ -14,16 +14,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "aura_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -49,16 +50,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "base_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -86,16 +88,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "capture_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -121,16 +124,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "cc_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -157,20 +161,21 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "chrome_all_tast_tests",
         "resultdb": {
           "enable": true,
           "has_native_resultdb_integration": true
         },
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "idempotent": false,
           "io_timeout": 3600,
           "named_caches": [
@@ -199,16 +204,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "crypto_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -235,20 +241,21 @@
         "merge": {
           "script": "//tools/perf/process_perf_results.py"
         },
-        "name": "disk_usage_tast_test",
         "resultdb": {
           "enable": true,
           "has_native_resultdb_integration": true
         },
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "idempotent": false,
           "named_caches": [
             {
@@ -275,16 +282,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "display_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -317,16 +325,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "fake_libva_driver_unittest",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -352,16 +361,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "google_apis_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -387,16 +397,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "ipc_tests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -422,16 +433,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "latency_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -457,16 +469,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "libcups_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -493,16 +506,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "media_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -528,16 +542,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "midi_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -563,16 +578,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "mojo_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -600,7 +616,6 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "net_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
           "cipd_packages": [
@@ -615,13 +630,15 @@
               "revision": "git_revision:0f694cdc06ba054b9960aa1ae9766e45b53d02c1"
             }
           ],
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -649,16 +666,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "ozone_gl_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -685,16 +703,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "ozone_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -720,16 +739,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "pdf_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -755,16 +775,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "printing_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -792,16 +813,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "profile_provider_unittest",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -827,16 +849,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "sql_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -862,16 +885,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "url_unittests",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -905,16 +929,17 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "vaapi_unittest",
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "named_caches": [
             {
               "name": "cros_vm",
@@ -955,13 +980,15 @@
         },
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "idempotent": false,
           "named_caches": [
             {
@@ -1001,13 +1028,15 @@
         },
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests"
+            }
+          ],
           "idempotent": false,
           "named_caches": [
             {
@@ -1041,20 +1070,21 @@
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
-        "name": "chrome_variations_tast_tests",
         "resultdb": {
           "enable": true,
           "has_native_resultdb_integration": true
         },
         "swarming": {
           "can_use_on_swarming_builders": true,
-          "dimensions": {
-            "cpu": "x86",
-            "gce": "1",
-            "kvm": "1",
-            "os": "Ubuntu-18.04",
-            "pool": "chrome.tests.finch"
-          },
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests.finch"
+            }
+          ],
           "idempotent": false,
           "named_caches": [
             {
@@ -1074,6 +1104,56 @@
         "test": "chrome_variations_tast_tests",
         "test_id_prefix": "ninja://chromeos:chrome_variations_tast_tests/"
       }
+    ],
+    "isolated_scripts": [
+      {
+        "args": [
+          "--target-platform=cros",
+          "--magic-vm-cache=magic_cros_vm_cache",
+          "--git-revision=${got_revision}"
+        ],
+        "isolate_name": "variations_desktop_smoke_tests",
+        "merge": {
+          "script": "//testing/merge_scripts/standard_isolated_script_merge.py"
+        },
+        "name": "variations_desktop_smoke_tests",
+        "precommit_args": [
+          "--gerrit-issue=${patch_issue}",
+          "--gerrit-patchset=${patch_set}",
+          "--buildbucket-id=${buildbucket_build_id}"
+        ],
+        "resultdb": {
+          "enable": true,
+          "result_format": "single"
+        },
+        "swarming": {
+          "can_use_on_swarming_builders": true,
+          "dimension_sets": [
+            {
+              "cpu": "x86",
+              "gce": "1",
+              "kvm": "1",
+              "os": "Ubuntu-18.04",
+              "pool": "chrome.tests.finch"
+            }
+          ],
+          "named_caches": [
+            {
+              "name": "cros_vm",
+              "path": "magic_cros_vm_cache"
+            }
+          ],
+          "optional_dimensions": {
+            "60": [
+              {
+                "caches": "cros_vm"
+              }
+            ]
+          },
+          "service_account": "chrome-tester@chops-service-accounts.iam.gserviceaccount.com"
+        },
+        "test_id_prefix": "ninja://chrome/test/variations:variations_desktop_smoke_tests/"
+      }
     ]
   },
   "chromeos-brya-chrome-skylab-fyi": {
@@ -1086,13 +1166,26 @@
       {
         "autotest_name": "tast.chrome-from-tls",
         "cros_board": "brya",
-        "cros_img": "brya-release/R114-15407.0.0",
+        "cros_img": "brya-release/R115-15460.0.0",
         "name": "chrome_all_tast_tests BRYA_RELEASE_LKGM",
         "shards": 10,
         "tast_expr": "(\"group:mainline\" && \"dep:chrome\" && !informational)",
         "test": "chrome_all_tast_tests",
         "test_id_prefix": "ninja://chromeos:chrome_all_tast_tests/",
         "timeout_sec": 21600,
+        "variant_id": "BRYA_RELEASE_LKGM"
+      },
+      {
+        "autotest_name": "tast.chrome-from-tls",
+        "cros_board": "brya",
+        "cros_img": "brya-release/R115-15460.0.0",
+        "experiment_percentage": 100,
+        "name": "chrome_criticalstaging_tast_tests BRYA_RELEASE_LKGM",
+        "shards": 10,
+        "tast_expr": "(\"group:mainline\" && \"dep:chrome\" && informational && \"group:criticalstaging\")",
+        "test": "chrome_criticalstaging_tast_tests",
+        "test_id_prefix": "ninja://chromeos:chrome_criticalstaging_tast_tests/",
+        "timeout_sec": 7200,
         "variant_id": "BRYA_RELEASE_LKGM"
       }
     ]
@@ -1107,7 +1200,7 @@
       {
         "autotest_name": "tast.chrome-from-tls",
         "cros_board": "jacuzzi",
-        "cros_img": "jacuzzi-release/R114-15419.0.0",
+        "cros_img": "jacuzzi-release/R115-15460.0.0",
         "name": "chrome_all_tast_tests JACUZZI_RELEASE_CHROME_FROM_TLS_LKGM",
         "shards": 10,
         "tast_expr": "(\"group:mainline\" && !informational)",
@@ -1128,7 +1221,7 @@
       {
         "autotest_name": "tast.chrome-from-tls",
         "cros_board": "octopus",
-        "cros_img": "octopus-release/R114-15408.0.0",
+        "cros_img": "octopus-release/R115-15460.0.0",
         "name": "chrome_all_tast_tests OCTOPUS_RELEASE_CHROME_FROM_TLS_LKGM",
         "shards": 10,
         "tast_expr": "(\"group:mainline\" && !informational)",
@@ -1149,7 +1242,7 @@
       {
         "autotest_name": "tast.chrome-from-tls",
         "cros_board": "trogdor",
-        "cros_img": "trogdor-release/R114-15407.0.0",
+        "cros_img": "trogdor-release/R115-15460.0.0",
         "name": "chrome_all_tast_tests TROGDOR_RELEASE_LKGM",
         "shards": 10,
         "tast_expr": "(\"group:mainline\" && \"dep:chrome\" && !informational)",
@@ -1170,7 +1263,7 @@
       {
         "autotest_name": "tast.chrome-from-tls",
         "cros_board": "volteer",
-        "cros_img": "volteer-release/R114-15407.0.0",
+        "cros_img": "volteer-release/R115-15460.0.0",
         "name": "chrome_all_tast_tests VOLTEER_RELEASE_LKGM",
         "shards": 10,
         "tast_expr": "(\"group:mainline\" && \"dep:chrome\" && !informational)",
@@ -1188,13 +1281,13 @@
     "skylab_tests": [
       {
         "cros_board": "octopus",
-        "cros_img": "octopus-release/R112-15359.37.0",
-        "name": "lacros_fyi_tast_tests OCTOPUS_RELEASE_BETA",
+        "cros_img": "octopus-release/R114-15410.0.0",
+        "name": "lacros_fyi_tast_tests OCTOPUS_RELEASE_LKGM",
         "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
         "test": "lacros_fyi_tast_tests",
         "test_id_prefix": "ninja://chromeos/lacros:lacros_fyi_tast_tests/",
         "timeout_sec": 10800,
-        "variant_id": "OCTOPUS_RELEASE_BETA"
+        "variant_id": "OCTOPUS_RELEASE_LKGM"
       },
       {
         "cros_board": "octopus",
@@ -1208,13 +1301,13 @@
       },
       {
         "cros_board": "octopus",
-        "cros_img": "octopus-release/R114-15410.0.0",
-        "name": "lacros_fyi_tast_tests OCTOPUS_RELEASE_LKGM",
+        "cros_img": "octopus-release/R112-15359.37.0",
+        "name": "lacros_fyi_tast_tests OCTOPUS_RELEASE_BETA",
         "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
         "test": "lacros_fyi_tast_tests",
         "test_id_prefix": "ninja://chromeos/lacros:lacros_fyi_tast_tests/",
         "timeout_sec": 10800,
-        "variant_id": "OCTOPUS_RELEASE_LKGM"
+        "variant_id": "OCTOPUS_RELEASE_BETA"
       },
       {
         "cros_board": "octopus",
@@ -1228,12 +1321,12 @@
       },
       {
         "cros_board": "octopus",
-        "cros_img": "octopus-release/R112-15359.37.0",
-        "name": "ozone_unittests OCTOPUS_RELEASE_BETA",
+        "cros_img": "octopus-release/R114-15410.0.0",
+        "name": "ozone_unittests OCTOPUS_RELEASE_LKGM",
         "test": "ozone_unittests",
         "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
         "timeout_sec": 3600,
-        "variant_id": "OCTOPUS_RELEASE_BETA"
+        "variant_id": "OCTOPUS_RELEASE_LKGM"
       },
       {
         "cros_board": "octopus",
@@ -1246,12 +1339,12 @@
       },
       {
         "cros_board": "octopus",
-        "cros_img": "octopus-release/R114-15410.0.0",
-        "name": "ozone_unittests OCTOPUS_RELEASE_LKGM",
+        "cros_img": "octopus-release/R112-15359.37.0",
+        "name": "ozone_unittests OCTOPUS_RELEASE_BETA",
         "test": "ozone_unittests",
         "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
         "timeout_sec": 3600,
-        "variant_id": "OCTOPUS_RELEASE_LKGM"
+        "variant_id": "OCTOPUS_RELEASE_BETA"
       },
       {
         "cros_board": "octopus",
@@ -1271,13 +1364,13 @@
     "skylab_tests": [
       {
         "cros_board": "hana",
-        "cros_img": "hana-release/R112-15359.37.0",
-        "name": "lacros_all_tast_tests HANA_RELEASE_BETA",
+        "cros_img": "hana-release/R114-15410.0.0",
+        "name": "lacros_all_tast_tests HANA_RELEASE_LKGM",
         "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
         "test": "lacros_all_tast_tests",
         "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
         "timeout_sec": 10800,
-        "variant_id": "HANA_RELEASE_BETA"
+        "variant_id": "HANA_RELEASE_LKGM"
       },
       {
         "cros_board": "hana",
@@ -1291,13 +1384,13 @@
       },
       {
         "cros_board": "hana",
-        "cros_img": "hana-release/R114-15410.0.0",
-        "name": "lacros_all_tast_tests HANA_RELEASE_LKGM",
+        "cros_img": "hana-release/R112-15359.37.0",
+        "name": "lacros_all_tast_tests HANA_RELEASE_BETA",
         "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
         "test": "lacros_all_tast_tests",
         "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
         "timeout_sec": 10800,
-        "variant_id": "HANA_RELEASE_LKGM"
+        "variant_id": "HANA_RELEASE_BETA"
       },
       {
         "cros_board": "hana",
@@ -1311,16 +1404,6 @@
       },
       {
         "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R112-15359.37.0",
-        "name": "lacros_all_tast_tests STRONGBAD_RELEASE_BETA",
-        "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
-        "test": "lacros_all_tast_tests",
-        "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
-        "timeout_sec": 10800,
-        "variant_id": "STRONGBAD_RELEASE_BETA"
-      },
-      {
-        "cros_board": "strongbad",
         "cros_img": "strongbad-release/R114-15410.0.0",
         "name": "lacros_all_tast_tests STRONGBAD_RELEASE_LKGM",
         "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
@@ -1328,16 +1411,6 @@
         "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
         "timeout_sec": 10800,
         "variant_id": "STRONGBAD_RELEASE_LKGM"
-      },
-      {
-        "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R111-15329.59.0",
-        "name": "lacros_all_tast_tests STRONGBAD_RELEASE_STABLE",
-        "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
-        "test": "lacros_all_tast_tests",
-        "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
-        "timeout_sec": 10800,
-        "variant_id": "STRONGBAD_RELEASE_STABLE"
       },
       {
         "cros_board": "strongbad",
@@ -1350,22 +1423,24 @@
         "variant_id": "strongbad_RELEASE_DEV"
       },
       {
-        "cros_board": "hana",
-        "cros_img": "hana-release/R112-15359.37.0",
-        "name": "ozone_unittests HANA_RELEASE_BETA",
-        "test": "ozone_unittests",
-        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "HANA_RELEASE_BETA"
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R112-15359.37.0",
+        "name": "lacros_all_tast_tests STRONGBAD_RELEASE_BETA",
+        "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
+        "test": "lacros_all_tast_tests",
+        "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
+        "timeout_sec": 10800,
+        "variant_id": "STRONGBAD_RELEASE_BETA"
       },
       {
-        "cros_board": "hana",
-        "cros_img": "hana-release/R113-15393.12.0",
-        "name": "ozone_unittests HANA_RELEASE_DEV",
-        "test": "ozone_unittests",
-        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "HANA_RELEASE_DEV"
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R111-15329.59.0",
+        "name": "lacros_all_tast_tests STRONGBAD_RELEASE_STABLE",
+        "tast_expr": "(\"group:mainline\" && \"dep:lacros\" && !informational)",
+        "test": "lacros_all_tast_tests",
+        "test_id_prefix": "ninja://chromeos/lacros:lacros_all_tast_tests/",
+        "timeout_sec": 10800,
+        "variant_id": "STRONGBAD_RELEASE_STABLE"
       },
       {
         "cros_board": "hana",
@@ -1378,21 +1453,30 @@
       },
       {
         "cros_board": "hana",
+        "cros_img": "hana-release/R113-15393.12.0",
+        "name": "ozone_unittests HANA_RELEASE_DEV",
+        "test": "ozone_unittests",
+        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "HANA_RELEASE_DEV"
+      },
+      {
+        "cros_board": "hana",
+        "cros_img": "hana-release/R112-15359.37.0",
+        "name": "ozone_unittests HANA_RELEASE_BETA",
+        "test": "ozone_unittests",
+        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "HANA_RELEASE_BETA"
+      },
+      {
+        "cros_board": "hana",
         "cros_img": "hana-release/R111-15329.59.0",
         "name": "ozone_unittests HANA_RELEASE_STABLE",
         "test": "ozone_unittests",
         "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
         "timeout_sec": 3600,
         "variant_id": "HANA_RELEASE_STABLE"
-      },
-      {
-        "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R112-15359.37.0",
-        "name": "ozone_unittests STRONGBAD_RELEASE_BETA",
-        "test": "ozone_unittests",
-        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "STRONGBAD_RELEASE_BETA"
       },
       {
         "cros_board": "strongbad",
@@ -1405,15 +1489,6 @@
       },
       {
         "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R111-15329.59.0",
-        "name": "ozone_unittests STRONGBAD_RELEASE_STABLE",
-        "test": "ozone_unittests",
-        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "STRONGBAD_RELEASE_STABLE"
-      },
-      {
-        "cros_board": "strongbad",
         "cros_img": "strongbad-release/R113-15393.12.0",
         "name": "ozone_unittests strongbad_RELEASE_DEV",
         "test": "ozone_unittests",
@@ -1422,22 +1497,22 @@
         "variant_id": "strongbad_RELEASE_DEV"
       },
       {
-        "cros_board": "hana",
-        "cros_img": "hana-release/R112-15359.37.0",
-        "name": "viz_unittests HANA_RELEASE_BETA",
-        "test": "viz_unittests",
-        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R112-15359.37.0",
+        "name": "ozone_unittests STRONGBAD_RELEASE_BETA",
+        "test": "ozone_unittests",
+        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
         "timeout_sec": 3600,
-        "variant_id": "HANA_RELEASE_BETA"
+        "variant_id": "STRONGBAD_RELEASE_BETA"
       },
       {
-        "cros_board": "hana",
-        "cros_img": "hana-release/R113-15393.12.0",
-        "name": "viz_unittests HANA_RELEASE_DEV",
-        "test": "viz_unittests",
-        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R111-15329.59.0",
+        "name": "ozone_unittests STRONGBAD_RELEASE_STABLE",
+        "test": "ozone_unittests",
+        "test_id_prefix": "ninja://ui/ozone:ozone_unittests/",
         "timeout_sec": 3600,
-        "variant_id": "HANA_RELEASE_DEV"
+        "variant_id": "STRONGBAD_RELEASE_STABLE"
       },
       {
         "cros_board": "hana",
@@ -1450,21 +1525,30 @@
       },
       {
         "cros_board": "hana",
+        "cros_img": "hana-release/R113-15393.12.0",
+        "name": "viz_unittests HANA_RELEASE_DEV",
+        "test": "viz_unittests",
+        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "HANA_RELEASE_DEV"
+      },
+      {
+        "cros_board": "hana",
+        "cros_img": "hana-release/R112-15359.37.0",
+        "name": "viz_unittests HANA_RELEASE_BETA",
+        "test": "viz_unittests",
+        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "HANA_RELEASE_BETA"
+      },
+      {
+        "cros_board": "hana",
         "cros_img": "hana-release/R111-15329.59.0",
         "name": "viz_unittests HANA_RELEASE_STABLE",
         "test": "viz_unittests",
         "test_id_prefix": "ninja://components/viz:viz_unittests/",
         "timeout_sec": 3600,
         "variant_id": "HANA_RELEASE_STABLE"
-      },
-      {
-        "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R112-15359.37.0",
-        "name": "viz_unittests STRONGBAD_RELEASE_BETA",
-        "test": "viz_unittests",
-        "test_id_prefix": "ninja://components/viz:viz_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "STRONGBAD_RELEASE_BETA"
       },
       {
         "cros_board": "strongbad",
@@ -1477,21 +1561,30 @@
       },
       {
         "cros_board": "strongbad",
-        "cros_img": "strongbad-release/R111-15329.59.0",
-        "name": "viz_unittests STRONGBAD_RELEASE_STABLE",
-        "test": "viz_unittests",
-        "test_id_prefix": "ninja://components/viz:viz_unittests/",
-        "timeout_sec": 3600,
-        "variant_id": "STRONGBAD_RELEASE_STABLE"
-      },
-      {
-        "cros_board": "strongbad",
         "cros_img": "strongbad-release/R113-15393.12.0",
         "name": "viz_unittests strongbad_RELEASE_DEV",
         "test": "viz_unittests",
         "test_id_prefix": "ninja://components/viz:viz_unittests/",
         "timeout_sec": 3600,
         "variant_id": "strongbad_RELEASE_DEV"
+      },
+      {
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R112-15359.37.0",
+        "name": "viz_unittests STRONGBAD_RELEASE_BETA",
+        "test": "viz_unittests",
+        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "STRONGBAD_RELEASE_BETA"
+      },
+      {
+        "cros_board": "strongbad",
+        "cros_img": "strongbad-release/R111-15329.59.0",
+        "name": "viz_unittests STRONGBAD_RELEASE_STABLE",
+        "test": "viz_unittests",
+        "test_id_prefix": "ninja://components/viz:viz_unittests/",
+        "timeout_sec": 3600,
+        "variant_id": "STRONGBAD_RELEASE_STABLE"
       }
     ]
   }

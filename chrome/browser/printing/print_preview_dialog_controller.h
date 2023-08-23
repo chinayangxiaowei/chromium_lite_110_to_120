@@ -7,11 +7,9 @@
 
 #include <map>
 
-#include "base/check.h"
 #include "base/functional/callback.h"
 #include "base/memory/ref_counted.h"
 #include "chrome/browser/tab_contents/web_contents_collection.h"
-#include "components/printing/common/print.mojom.h"
 
 class GURL;
 
@@ -48,23 +46,17 @@ class PrintPreviewDialogController
   static bool IsPrintPreviewContentURL(const GURL& url);
 
   // Initiates print preview for `initiator`.
-  void PrintPreview(content::WebContents* initiator,
-                    const mojom::RequestPrintPreviewParams& params);
+  void PrintPreview(content::WebContents* initiator);
 
   // Returns the preview dialog for `contents`.
   // Returns `contents` if `contents` is a preview dialog.
-  // Returns nullptr if no preview dialog exists for `contents`.
+  // Returns NULL if no preview dialog exists for `contents`.
   content::WebContents* GetPrintPreviewForContents(
       content::WebContents* contents) const;
 
   // Returns the initiator for `preview_dialog`.
-  // Returns nullptr if no initiator exists for `preview_dialog`.
+  // Returns NULL if no initiator exists for `preview_dialog`.
   content::WebContents* GetInitiator(content::WebContents* preview_dialog);
-
-  // Returns the request data associated with `preview_dialog`.
-  // Returns nullptr if no data exists for `preview_dialog`.
-  const mojom::RequestPrintPreviewParams* GetRequestParams(
-      content::WebContents* preview_dialog) const;
 
   // Runs `callback` on the dialog of each active print preview operation.
   void ForEachPreviewDialog(
@@ -77,24 +69,6 @@ class PrintPreviewDialogController
   content::WebContents* GetOrCreatePreviewDialogForTesting(
       content::WebContents* initiator);
 
-#if defined(UNIT_TEST)
-  // Exposes a way for tests to manually specify the initiator to preview_dialog
-  // relationship. For use in tests that create their own preview dialogs.
-  void AssociateWebContentsesForTesting(content::WebContents* initiator,
-                                        content::WebContents* preview_dialog) {
-    CHECK(initiator);
-    CHECK(preview_dialog);
-    preview_dialog_map_[preview_dialog].initiator = initiator;
-    preview_dialog_map_[preview_dialog].request_params.is_modifiable = true;
-  }
-  void DisassociateWebContentsesForTesting(
-      content::WebContents* preview_dialog) {
-    CHECK(preview_dialog);
-    size_t erased_count = preview_dialog_map_.erase(preview_dialog);
-    CHECK(erased_count);
-  }
-#endif
-
   bool is_creating_print_preview_dialog() const {
     return is_creating_print_preview_dialog_;
   }
@@ -102,16 +76,11 @@ class PrintPreviewDialogController
  private:
   friend class base::RefCounted<PrintPreviewDialogController>;
 
-  // Tracks the initiator, as well as some of its Print Preview properties.
-  struct InitiatorData {
-    raw_ptr<content::WebContents> initiator;
-    mojom::RequestPrintPreviewParams request_params;
-  };
-
-  // 1:1 relationship between a print preview dialog and its initiator data.
+  // 1:1 relationship between a print preview dialog and its initiator tab.
   // Key: Print preview dialog.
-  // Value: Initiator data.
-  using PrintPreviewDialogMap = std::map<content::WebContents*, InitiatorData>;
+  // Value: Initiator.
+  using PrintPreviewDialogMap =
+      std::map<content::WebContents*, content::WebContents*>;
 
   ~PrintPreviewDialogController() override;
 
@@ -139,14 +108,12 @@ class PrintPreviewDialogController
 
   // Gets/Creates the print preview dialog for `initiator`.
   content::WebContents* GetOrCreatePreviewDialog(
-      content::WebContents* initiator,
-      const mojom::RequestPrintPreviewParams& params);
+      content::WebContents* initiator);
 
   // Creates a new print preview dialog if GetOrCreatePreviewDialog() cannot
   // find a print preview dialog for `initiator`.
   content::WebContents* CreatePrintPreviewDialog(
-      content::WebContents* initiator,
-      const mojom::RequestPrintPreviewParams& params);
+      content::WebContents* initiator);
 
   // Helper function to store the title of the initiator associated with
   // `preview_dialog` in `preview_dialog`'s PrintPreviewUI.

@@ -68,9 +68,5 @@ BASE_FEATURE(kPaymentHandlerMinimalHeaderUX,
              "PaymentHandlerMinimalHeaderUX",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-BASE_FEATURE(kPaymentHandlerRequireLinkHeader,
-             "PaymentHandlerRequireLinkHeader",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 }  // namespace features
 }  // namespace payments

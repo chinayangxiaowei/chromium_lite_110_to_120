@@ -16,64 +16,64 @@
   },
   'LACROS_VERSION_SKEW_CANARY': {
     'identifier': 'Lacros version skew testing ash canary',
-    'description': 'Run with ash-chrome version 117.0.5899.0',
+    'description': 'Run with ash-chrome version 117.0.5912.0',
     'args': [
-      '--ash-chrome-path-override=../../lacros_version_skew_tests_v117.0.5899.0/test_ash_chrome',
+      '--ash-chrome-path-override=../../lacros_version_skew_tests_v117.0.5912.0/test_ash_chrome',
     ],
     'swarming': {
       'cipd_packages': [
         {
           'cipd_package': 'chromium/testing/linux-ash-chromium/x86_64/ash.zip',
-          'location': 'lacros_version_skew_tests_v117.0.5899.0',
-          'revision': 'version:117.0.5899.0',
+          'location': 'lacros_version_skew_tests_v117.0.5912.0',
+          'revision': 'version:117.0.5912.0',
         },
       ],
     },
   },
   'LACROS_VERSION_SKEW_DEV': {
     'identifier': 'Lacros version skew testing ash dev',
-    'description': 'Run with ash-chrome version 116.0.5845.39',
+    'description': 'Run with ash-chrome version 117.0.5906.0',
     'args': [
-      '--ash-chrome-path-override=../../lacros_version_skew_tests_v116.0.5845.39/test_ash_chrome',
+      '--ash-chrome-path-override=../../lacros_version_skew_tests_v117.0.5906.0/test_ash_chrome',
     ],
     'swarming': {
       'cipd_packages': [
         {
           'cipd_package': 'chromium/testing/linux-ash-chromium/x86_64/ash.zip',
-          'location': 'lacros_version_skew_tests_v116.0.5845.39',
-          'revision': 'version:116.0.5845.39',
+          'location': 'lacros_version_skew_tests_v117.0.5906.0',
+          'revision': 'version:117.0.5906.0',
         },
       ],
     },
   },
   'LACROS_VERSION_SKEW_BETA': {
     'identifier': 'Lacros version skew testing ash beta',
-    'description': 'Run with ash-chrome version 115.0.5790.94',
+    'description': 'Run with ash-chrome version 116.0.5845.46',
     'args': [
-      '--ash-chrome-path-override=../../lacros_version_skew_tests_v115.0.5790.94/test_ash_chrome',
+      '--ash-chrome-path-override=../../lacros_version_skew_tests_v116.0.5845.46/test_ash_chrome',
     ],
     'swarming': {
       'cipd_packages': [
         {
           'cipd_package': 'chromium/testing/linux-ash-chromium/x86_64/ash.zip',
-          'location': 'lacros_version_skew_tests_v115.0.5790.94',
-          'revision': 'version:115.0.5790.94',
+          'location': 'lacros_version_skew_tests_v116.0.5845.46',
+          'revision': 'version:116.0.5845.46',
         },
       ],
     },
   },
   'LACROS_VERSION_SKEW_STABLE': {
     'identifier': 'Lacros version skew testing ash stable',
-    'description': 'Run with ash-chrome version 114.0.5735.239',
+    'description': 'Run with ash-chrome version 115.0.5790.131',
     'args': [
-      '--ash-chrome-path-override=../../lacros_version_skew_tests_v114.0.5735.239/test_ash_chrome',
+      '--ash-chrome-path-override=../../lacros_version_skew_tests_v115.0.5790.131/test_ash_chrome',
     ],
     'swarming': {
       'cipd_packages': [
         {
           'cipd_package': 'chromium/testing/linux-ash-chromium/x86_64/ash.zip',
-          'location': 'lacros_version_skew_tests_v114.0.5735.239',
-          'revision': 'version:114.0.5735.239',
+          'location': 'lacros_version_skew_tests_v115.0.5790.131',
+          'revision': 'version:115.0.5790.131',
         },
       ],
     },
@@ -373,7 +373,7 @@
     'identifier': 'BRYA_RELEASE_LKGM',
     'skylab': {
       'cros_board': 'brya',
-      'cros_img': 'brya-release/R114-15407.0.0',
+      'cros_img': 'brya-release/R115-15460.0.0',
       'autotest_name': 'tast.chrome-from-tls',
       'shards': 10,
     },
@@ -506,13 +506,6 @@
       'cros_img': 'hana-release/R111-15329.59.0',
     },
   },
-  'CROS_HEROBRINE_RELEASE_LKGM': {
-    'identifier': 'HEROBRINE_RELEASE_LKGM',
-    'skylab': {
-      'cros_board': 'herobrine',
-      'cros_img': 'herobrine-release/R114-15410.0.0',
-    },
-  },
   'CROS_JACUZZI_RELEASE_LKGM': {
     'identifier': 'JACUZZI_RELEASE_LKGM',
     'skylab': {
@@ -538,7 +531,7 @@
     'identifier': 'JACUZZI_RELEASE_CHROME_FROM_TLS_LKGM',
     'skylab': {
       'cros_board': 'jacuzzi',
-      'cros_img': 'jacuzzi-release/R114-15419.0.0',
+      'cros_img': 'jacuzzi-release/R115-15460.0.0',
       'autotest_name': 'tast.chrome-from-tls',
       'tast_expr': '("group:mainline" && !informational)',
       'shards': 10,
@@ -597,7 +590,7 @@
     'identifier': 'OCTOPUS_RELEASE_CHROME_FROM_TLS_LKGM',
     'skylab': {
       'cros_board': 'octopus',
-      'cros_img': 'octopus-release/R114-15408.0.0',
+      'cros_img': 'octopus-release/R115-15460.0.0',
       'autotest_name': 'tast.chrome-from-tls',
       'tast_expr': '("group:mainline" && !informational)',
       'shards': 10,
@@ -663,7 +656,7 @@
     'identifier': 'TROGDOR_RELEASE_LKGM',
     'skylab': {
       'cros_board': 'trogdor',
-      'cros_img': 'trogdor-release/R114-15407.0.0',
+      'cros_img': 'trogdor-release/R115-15460.0.0',
       'autotest_name': 'tast.chrome-from-tls',
       'shards': 10,
     },
@@ -672,7 +665,7 @@
     'identifier': 'VOLTEER_RELEASE_LKGM',
     'skylab': {
       'cros_board': 'volteer',
-      'cros_img': 'volteer-release/R114-15407.0.0',
+      'cros_img': 'volteer-release/R115-15460.0.0',
       'autotest_name': 'tast.chrome-from-tls',
       'shards': 10,
     },
@@ -687,7 +680,7 @@
       'dimensions': {
         'cpu': 'x86',
         'kvm': '1',
-        'os': 'Ubuntu-18.04',
+        'os': 'Ubuntu-22.04',
       },
     },
   },
@@ -696,20 +689,6 @@
     'args': [
       '--deploy-lacros',
     ],
-  },
-  'LACROS_BETTY_PI_ARC': {
-    'identifier': 'betty-pi-arc',
-    'args': [
-      '--board=betty-pi-arc',
-      '--use-vm',
-    ],
-    'swarming': {
-      'dimensions': {
-        'cpu': 'x86',
-        'kvm': '1',
-        'os': 'Ubuntu-18.04',
-      },
-    },
   },
   'LACROS_EVE': {
     'identifier': 'eve',
@@ -731,10 +710,12 @@
       '--flash',
     ],
     'swarming': {
-      'dimensions': {
-        'os': 'ChromeOS',
-        'device_type': 'jacuzzi',
-      },
+      'dimension_sets': [
+        {
+          'os': 'ChromeOS',
+          'device_type': 'jacuzzi',
+        },
+      ],
     },
   },
   'WIN10_INTEL_UHD_630_STABLE': {

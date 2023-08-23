@@ -22,6 +22,7 @@
 #include "chrome/browser/web_applications/web_app_command_manager.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
 #include "chrome/browser/web_applications/web_app_id.h"
+#include "chrome/browser/web_applications/web_app_install_info.h"
 #include "chrome/browser/web_applications/web_app_install_utils.h"
 #include "chrome/browser/web_applications/web_app_utils.h"
 #include "chrome/browser/web_applications/web_contents/web_app_data_retriever.h"
@@ -52,7 +53,6 @@
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/profiles/profile_manager.h"
 #include "chrome/browser/web_applications/web_app_provider.h"
-#include "chromeos/constants/chromeos_features.h"
 #include "chromeos/crosapi/mojom/arc.mojom.h"
 #include "chromeos/crosapi/mojom/web_app_service.mojom.h"
 #include "chromeos/lacros/lacros_service.h"
@@ -129,7 +129,7 @@ mojo::Remote<crosapi::mojom::Arc>* GetArcRemoteWithMinVersion(
     uint32_t minVersion) {
   auto* lacros_service = chromeos::LacrosService::Get();
   if (lacros_service && lacros_service->IsAvailable<crosapi::mojom::Arc>() &&
-      lacros_service->GetInterfaceVersion(crosapi::mojom::Arc::Uuid_) >=
+      lacros_service->GetInterfaceVersion<crosapi::mojom::Arc>() >=
           static_cast<int>(minVersion)) {
     return &lacros_service->GetRemote<crosapi::mojom::Arc>();
   }
@@ -196,12 +196,9 @@ void FetchManifestAndInstallCommand::StartWithLock(
         base::BindOnce(&FetchManifestAndInstallCommand::OnGetWebAppInstallInfo,
                        weak_ptr_factory_.GetWeakPtr()));
   } else {
-    web_app_info_ = std::make_unique<WebAppInstallInfo>();
     FetchManifest();
   }
 }
-
-void FetchManifestAndInstallCommand::OnSyncSourceRemoved() {}
 
 void FetchManifestAndInstallCommand::OnShutdown() {
   Abort(webapps::InstallResultCode::kCancelledOnWebAppProviderShuttingDown);
@@ -300,6 +297,9 @@ void FetchManifestAndInstallCommand::OnDidPerformInstallableCheck(
     return;
   }
   if (opt_manifest) {
+    if (!web_app_info_) {
+      web_app_info_ = std::make_unique<WebAppInstallInfo>(opt_manifest->id);
+    }
     UpdateWebAppInfoFromManifest(*opt_manifest, manifest_url,
                                  web_app_info_.get());
     LogInstallInfo();
@@ -323,7 +323,7 @@ void FetchManifestAndInstallCommand::OnDidPerformInstallableCheck(
   const bool skip_page_favicons =
       opt_manifest_ && !opt_manifest_->icons.empty();
 
-  app_id_ = GenerateAppId(web_app_info_->manifest_id, web_app_info_->start_url);
+  app_id_ = GenerateAppIdFromManifestId(web_app_info_->manifest_id);
 
   app_lock_description_ =
       command_manager()->lock_manager().UpgradeAndAcquireLock(
@@ -502,8 +502,8 @@ void FetchManifestAndInstallCommand::OnDialogCompleted(
   finalize_options.add_to_quick_launch_bar = kAddAppsToQuickLaunchBarByDefault;
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
-  if (base::FeatureList::IsEnabled(
-          chromeos::features::kExperimentalWebAppProfileIsolation)) {
+  if (ResolveExperimentalWebAppIsolationFeature() ==
+      ExperimentalWebAppIsolationMode::kProfile) {
     app_profile_path_ = absl::make_optional(GenerateWebAppProfilePath(app_id_));
     finalize_options.chromeos_data.emplace();
     finalize_options.chromeos_data->app_profile_path = app_profile_path_;
@@ -541,8 +541,6 @@ void FetchManifestAndInstallCommand::OnInstallFinalizedMaybeReparentTab(
           ->GetPrefs(),
       app_id, install_surface_);
 
-  RecordAppBanner(web_contents_.get(), web_app_info_->start_url);
-
   bool error = os_hooks_errors[OsHookType::kShortcuts];
   DCHECK(app_lock_);
   const bool can_reparent_tab =
@@ -572,8 +570,8 @@ void FetchManifestAndInstallCommand::OnInstallCompleted(
   // `web_app_info_` might be moved after this point. This is ok since we don't
   // need it here any more.
   if (app_profile_path_) {
-    CHECK(base::FeatureList::IsEnabled(
-        chromeos::features::kExperimentalWebAppProfileIsolation));
+    CHECK(ResolveExperimentalWebAppIsolationFeature() ==
+          ExperimentalWebAppIsolationMode::kProfile);
     // Create the app profile and install the same app inside it too.
     g_browser_process->profile_manager()->CreateProfileAsync(
         app_profile_path_.value(),
@@ -602,10 +600,7 @@ void FetchManifestAndInstallCommand::OnInstallCompleted(
 }
 
 void FetchManifestAndInstallCommand::LogInstallInfo() {
-  debug_log_.Set("manifest_id",
-                 web_app_info_->manifest_id.has_value()
-                     ? base::Value(web_app_info_->manifest_id.value())
-                     : base::Value());
+  debug_log_.Set("manifest_id", web_app_info_->manifest_id.spec());
   debug_log_.Set("start_url", web_app_info_->start_url.spec());
   debug_log_.Set("name", web_app_info_->title);
 }

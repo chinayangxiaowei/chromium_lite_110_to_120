@@ -62,9 +62,6 @@ class DownloadBubbleUIController {
   std::vector<DownloadUIModel::DownloadUIModelPtr> GetPartialView();
 
   // Process button press on the bubble.
-  // TODO(chlily): `is_main_view` should be named `is_primary_view`. It
-  // distinguishes the primary page from the (security) subpage, not the main vs
-  // partial flavors of the primary view.
   void ProcessDownloadButtonPress(DownloadUIModel* model,
                                   DownloadCommands::Command command,
                                   bool is_main_view);
@@ -74,6 +71,9 @@ class DownloadBubbleUIController {
 
   // Returns whether the incognito icon should be shown for the download.
   bool ShouldShowIncognitoIcon(const DownloadUIModel* model) const;
+
+  // Returns whether the guest account icon should be shown for the download.
+  bool ShouldShowGuestIcon(const DownloadUIModel* model) const;
 
   // Schedules the ephemeral warning download to be canceled. It will only be
   // canceled if it continues to be an ephemeral warning that hasn't been acted
@@ -102,6 +102,8 @@ class DownloadBubbleUIController {
   }
 
   DownloadBubbleUpdateService* update_service() { return update_service_; }
+
+  base::WeakPtr<DownloadBubbleUIController> GetWeakPtr();
 
  private:
   friend class DownloadBubbleUIControllerTest;
