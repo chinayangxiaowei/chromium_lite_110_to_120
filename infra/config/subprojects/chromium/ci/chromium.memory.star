@@ -373,9 +373,6 @@ linux_memory_builder(
     ),
     cores = 16,
     ssd = True,
-    # TODO(crbug.com/1324240) Enable when it's stable.
-    sheriff_rotations = args.ignore_default(None),
-    tree_closing = False,
     console_view_entry = consoles.console_view_entry(
         category = "lacros|asan",
         short_name = "asan",
@@ -535,6 +532,7 @@ ci.builder(
         ),
         build_gs_bucket = "chromium-memory-archive",
     ),
+    os = os.LINUX_FOCAL,
     console_view_entry = consoles.console_view_entry(
         category = "linux|webkit",
         short_name = "msn",
@@ -648,7 +646,7 @@ ci.builder(
         ),
     ),
     cores = None,
-    os = os.MAC_12,
+    os = os.MAC_DEFAULT,
     sheriff_rotations = args.ignore_default(sheriff_rotations.IOS),
     console_view_entry = consoles.console_view_entry(
         category = "iOS",

@@ -35,6 +35,7 @@
 #include "chrome/browser/lifetime/application_lifetime_desktop.h"
 #include "chrome/browser/net/profile_network_context_service.h"
 #include "chrome/browser/net/profile_network_context_service_factory.h"
+#include "chrome/browser/policy/policy_test_utils.h"
 #include "chrome/browser/preloading/prefetch/no_state_prefetch/no_state_prefetch_link_manager_factory.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/renderer_context_menu/render_view_context_menu.h"
@@ -47,6 +48,7 @@
 #include "chrome/common/chrome_switches.h"
 #include "chrome/common/pref_names.h"
 #include "chrome/common/webui_url_constants.h"
+#include "chrome/test/base/tracing.h"
 #include "chrome/test/base/ui_test_utils.h"
 #include "components/download/public/common/download_task_runner.h"
 #include "components/find_in_page/find_tab_helper.h"
@@ -55,6 +57,7 @@
 #include "components/guest_view/browser/guest_view_manager_factory.h"
 #include "components/guest_view/browser/test_guest_view_manager.h"
 #include "components/no_state_prefetch/browser/no_state_prefetch_link_manager.h"
+#include "components/policy/policy_constants.h"
 #include "components/prefs/pref_service.h"
 #include "components/safe_browsing/core/browser/db/fake_database_manager.h"
 #include "components/security_interstitials/content/security_interstitial_tab_helper.h"
@@ -101,6 +104,7 @@
 #include "extensions/browser/api/declarative_webrequest/webrequest_constants.h"
 #include "extensions/browser/api/extensions_api_client.h"
 #include "extensions/browser/app_window/native_app_window.h"
+#include "extensions/browser/guest_view/guest_view_feature_util.h"
 #include "extensions/browser/guest_view/web_view/web_view_guest.h"
 #include "extensions/browser/guest_view/web_view/web_view_renderer_state.h"
 #include "extensions/browser/process_map.h"
@@ -910,6 +914,44 @@ INSTANTIATE_TEST_SUITE_P(WebViewTests,
                          WebViewAccessibilityTest,
                          testing::Bool(),
                          WebViewTest::DescribeParams);
+
+// Used to test that enterprise policy can revert MPArch related changes. For
+// ease of testing, instead of further parameterizing the tests which actually
+// exercise the behaviour differences, we only check the method which computes
+// whether the changes take effect.
+class WebViewPolicyTest : public policy::PolicyTest {
+ public:
+  WebViewPolicyTest() {
+    scoped_feature_list_.InitAndEnableFeature(
+        extensions_features::kWebviewTagMPArchBehavior);
+  }
+
+  void SetPermissiveBehaviorPolicy(bool allowed) {
+    policy::PolicyMap policies;
+    SetPolicy(&policies,
+              policy::key::kChromeAppsWebViewPermissiveBehaviorAllowed,
+              base::Value(allowed));
+    UpdateProviderPolicy(policies);
+  }
+
+ private:
+  base::test::ScopedFeatureList scoped_feature_list_;
+};
+
+IN_PROC_BROWSER_TEST_F(WebViewPolicyTest, MPArchBehaviorRevertedByPolicy) {
+  SetPermissiveBehaviorPolicy(true);
+
+  EXPECT_FALSE(
+      extensions::AreWebviewMPArchBehaviorsEnabled(browser()->profile()));
+}
+
+IN_PROC_BROWSER_TEST_F(WebViewPolicyTest,
+                       ExplicitlyDisabledBehaviorPolicyHasNoEffect) {
+  SetPermissiveBehaviorPolicy(false);
+
+  EXPECT_TRUE(
+      extensions::AreWebviewMPArchBehaviorsEnabled(browser()->profile()));
+}
 
 class WebViewNewWindowTest
     : public WebViewTestBase,
@@ -1950,6 +1992,18 @@ IN_PROC_BROWSER_TEST_P(WebViewNewWindowTest,
   EXPECT_EQ(other_guest_rfh, other_guest_rfh->GetOutermostMainFrame());
   EXPECT_EQ(unattached_guest_rfh,
             unattached_guest_rfh->GetOutermostMainFrame());
+  // GetParentOrOuterDocumentOrEmbedder does escape GuestViews.
+  EXPECT_EQ(embedder_main_frame,
+            other_guest_rfh->GetParentOrOuterDocumentOrEmbedder());
+  EXPECT_EQ(embedder_main_frame,
+            other_guest_rfh->GetOutermostMainFrameOrEmbedder());
+  // The unattached guest should still be considered to have an embedder.
+  EXPECT_EQ(embedder_main_frame,
+            unattached_guest_rfh->GetParentOrOuterDocumentOrEmbedder());
+  EXPECT_EQ(embedder_main_frame,
+            unattached_guest_rfh->GetOutermostMainFrameOrEmbedder());
+  EXPECT_EQ(embedder,
+            unattached_guest->web_contents()->GetResponsibleWebContents());
 }
 
 IN_PROC_BROWSER_TEST_P(WebViewTest, Shim_TestContentLoadEvent) {
@@ -3862,16 +3916,7 @@ IN_PROC_BROWSER_TEST_P(WebViewTest, Dialog_TestConfirmDialogDefaultCancel) {
              NO_TEST_SERVER);
 }
 
-// Disable due to runloop time out. https://crbug.com/937461
-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-#define MAYBE_Dialog_TestConfirmDialogDefaultGCCancel \
-  DISABLED_Dialog_TestConfirmDialogDefaultGCCancel
-#else
-#define MAYBE_Dialog_TestConfirmDialogDefaultGCCancel \
-  Dialog_TestConfirmDialogDefaultGCCancel
-#endif
-IN_PROC_BROWSER_TEST_P(WebViewTest,
-                       MAYBE_Dialog_TestConfirmDialogDefaultGCCancel) {
+IN_PROC_BROWSER_TEST_P(WebViewTest, Dialog_TestConfirmDialogDefaultGCCancel) {
   TestHelper("testConfirmDialogDefaultGCCancel",
              "web_view/dialog",
              NO_TEST_SERVER);
@@ -4347,11 +4392,7 @@ IN_PROC_BROWSER_TEST_P(WebViewTest, BasicPostMessage) {
 }
 
 // Tests that webviews do get garbage collected.
-// This test is disabled because it relies on garbage collections triggered from
-// window.gc() to run precisely. This is not the case with unified heap where
-// they need to conservatively scan the stack, potentially keeping objects
-// alive. https://crbug.com/843903
-IN_PROC_BROWSER_TEST_P(WebViewTest, DISABLED_Shim_TestGarbageCollect) {
+IN_PROC_BROWSER_TEST_P(WebViewTest, Shim_TestGarbageCollect) {
   TestHelper("testGarbageCollect", "web_view/shim", NO_TEST_SERVER);
   GetGuestViewManager()->WaitForSingleViewGarbageCollected();
 }
@@ -5611,6 +5652,63 @@ IN_PROC_BROWSER_TEST_P(WebViewTest, LoadDisallowedExtensionURLInSubframe) {
   EXPECT_EQ(blink::IdentifiableToken(
                 extensions::ExtensionResourceAccessResult::kFailure),
             entry->metrics.begin()->second);
+}
+
+class PopupWaiter : public content::WebContentsObserver {
+ public:
+  PopupWaiter(content::WebContents* opener, base::OnceClosure on_popup)
+      : content::WebContentsObserver(opener), on_popup_(std::move(on_popup)) {}
+
+  // WebContentsObserver:
+  // Note that `DidOpenRequestedURL` is used as it fires precisely after a new
+  // WebContents is created but before it is shown. This timing is necessary for
+  // the `ShutdownWithUnshownPopup` test.
+  void DidOpenRequestedURL(content::WebContents* new_contents,
+                           content::RenderFrameHost* source_render_frame_host,
+                           const GURL& url,
+                           const content::Referrer& referrer,
+                           WindowOpenDisposition disposition,
+                           ui::PageTransition transition,
+                           bool started_from_context_menu,
+                           bool renderer_initiated) override {
+    if (on_popup_) {
+      std::move(on_popup_).Run();
+    }
+  }
+
+ private:
+  base::OnceClosure on_popup_;
+};
+
+// Test destroying an opener webview while the created window has not been
+// shown by the renderer. Between the time of the renderer creating and showing
+// the new window, the created guest WebContents is owned by content/ and not by
+// WebViewGuest. See `WebContentsImpl::pending_contents_` for details. When we
+// destroy the new WebViewGuest, content/ must ensure that the guest WebContents
+// is destroyed safely.
+//
+// This test is conceptually similar to
+// testNewWindowOpenerDestroyedWhileUnattached, but for this test, we have
+// precise timing requirements that need to be controlled by the browser such
+// that we shutdown while the new window is pending.
+//
+// Regression test for https://crbug.com/1442516
+IN_PROC_BROWSER_TEST_P(WebViewTest, ShutdownWithUnshownPopup) {
+  ASSERT_TRUE(StartEmbeddedTestServer());
+
+  // Core classes in content often record trace events during destruction.
+  // Enable tracing to test that writing traces with partially destructed
+  // objects is done safely.
+  ASSERT_TRUE(tracing::BeginTracing("content,navigation"));
+
+  LoadAppWithGuest("web_view/simple");
+
+  base::RunLoop run_loop;
+  PopupWaiter popup_waiter(GetGuestWebContents(), run_loop.QuitClosure());
+  content::ExecuteScriptAsync(GetGuestRenderFrameHost(),
+                              "window.open(location.href);");
+  run_loop.Run();
+  CloseAppWindow(GetFirstAppWindow());
 }
 
 IN_PROC_BROWSER_TEST_P(WebViewTest, InsertIntoDetachedIframe) {

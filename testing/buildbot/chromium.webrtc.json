@@ -306,7 +306,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -330,38 +330,13 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
         "test": "browser_tests",
         "test_id_prefix": "ninja://chrome/test:browser_tests/"
-      },
-      {
-        "args": [
-          "--enable-logging",
-          "--v=1",
-          "--test-launcher-jobs=1",
-          "--test-launcher-print-test-stdio=always"
-        ],
-        "merge": {
-          "args": [],
-          "script": "//testing/merge_scripts/standard_gtest_merge.py"
-        },
-        "swarming": {
-          "can_use_on_swarming_builders": true,
-          "dimension_sets": [
-            {
-              "cpu": "x86-64",
-              "os": "Mac-12",
-              "pool": "WebRTC-chromium"
-            }
-          ],
-          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
-        },
-        "test": "capture_unittests",
-        "test_id_prefix": "ninja://media/capture:capture_unittests/"
       },
       {
         "args": [
@@ -376,7 +351,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -400,7 +375,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -425,7 +400,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -446,7 +421,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -467,7 +442,7 @@
           "dimension_sets": [
             {
               "cpu": "x86-64",
-              "os": "Mac-12"
+              "os": "Mac-12|Mac-13"
             }
           ],
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"

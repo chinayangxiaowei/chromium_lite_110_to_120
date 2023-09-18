@@ -69,7 +69,6 @@ ci.builder(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
@@ -82,7 +81,6 @@ ci.builder(
         short_name = "bld",
     ),
     cq_mirrors_console_view = "mirrors",
-    goma_backend = None,
     reclient_instance = reclient.instance.DEFAULT_TRUSTED,
     reclient_jobs = reclient.jobs.DEFAULT,
 )
@@ -236,7 +234,6 @@ ci.thin_tester(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
@@ -264,7 +261,6 @@ ci.thin_tester(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
@@ -292,7 +288,6 @@ ci.thin_tester(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
@@ -320,7 +315,6 @@ ci.thin_tester(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
@@ -346,7 +340,6 @@ ci.thin_tester(
             config = "chromium",
             apply_configs = [
                 "mb",
-                "goma_use_local",  # to mitigate compile step timeout (crbug.com/1056935)
             ],
             build_config = builder_config.build_config.RELEASE,
             target_bits = 64,
