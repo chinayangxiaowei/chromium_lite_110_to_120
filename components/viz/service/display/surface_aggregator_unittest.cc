@@ -455,8 +455,8 @@ class SurfaceAggregatorTest : public testing::Test, public DisplayTimeSource {
     auto* quad = pass->CreateAndAppendDrawQuad<CompositorRenderPassDrawQuad>();
     quad->SetAll(shared_state, output_rect, output_rect,
                  /*needs_blending=*/true, render_pass_id, kInvalidResourceId,
-                 gfx::RectF(), gfx::Size(), gfx::Vector2dF(), gfx::PointF(),
-                 gfx::RectF(),
+                 gfx::RectF(), gfx::Size(), gfx::Vector2dF(1.0f, 1.0f),
+                 gfx::PointF(), gfx::RectF(),
                  /*force_anti_aliasing_off=*/false,
                  /*backdrop_filter_quality=*/1.0f, intersects_damage_under);
   }
@@ -5523,11 +5523,8 @@ TEST_F(SurfaceAggregatorPartialSwapTest, IgnoreOutside) {
     auto* filter_pass = root_pass_list[1].get();
     filter_pass->shared_quad_state_list.front()
         ->quad_to_target_transform.Translate(10, 10);
-    // Create 3 pixel-moving filters with the same max pixel movement.
     filter_pass->filters.Append(cc::FilterOperation::CreateBlurFilter(2));
-    filter_pass->filters.Append(cc::FilterOperation::CreateDropShadowFilter(
-        gfx::Point(0, 0), 2, SkColors::kTransparent));
-    filter_pass->filters.Append(cc::FilterOperation::CreateZoomFilter(2, 4));
+
     auto* root_pass = root_pass_list[2].get();
     // Set the root damage rect which doesn't intersect with the expanded
     // filter_pass quad (-4, -4, 13, 13) (filter quad (0, 0, 5, 5) + blur filter
@@ -5585,11 +5582,8 @@ TEST_F(SurfaceAggregatorPartialSwapTest, IgnoreOutside) {
     auto* filter_pass = root_pass_list[1].get();
     filter_pass->shared_quad_state_list.front()
         ->quad_to_target_transform.Translate(10, 10);
-    // Create 3 pixel-moving filters with the same max pixel movement.
     filter_pass->filters.Append(cc::FilterOperation::CreateBlurFilter(10));
-    filter_pass->filters.Append(cc::FilterOperation::CreateDropShadowFilter(
-        gfx::Point(0, 0), 10, SkColors::kTransparent));
-    filter_pass->filters.Append(cc::FilterOperation::CreateZoomFilter(2, 20));
+
     auto* root_pass = root_pass_list[2].get();
     // Make the root damage rect intersect with the expanded filter_pass quad
     // (filter quad (0, 0, 5, 5) + blur filter pixel movement (10 * 3) = (-30,
@@ -6209,11 +6203,8 @@ TEST_F(SurfaceAggregatorPartialSwapTest, AllowSkipAndIgnoreOutside) {
     auto* filter_pass = root_pass_list[1].get();
     filter_pass->shared_quad_state_list.front()
         ->quad_to_target_transform.Translate(10, 10);
-    // Create 3 pixel-moving filters with the same max pixel movement.
     filter_pass->filters.Append(cc::FilterOperation::CreateBlurFilter(10));
-    filter_pass->filters.Append(cc::FilterOperation::CreateDropShadowFilter(
-        gfx::Point(0, 0), 10, SkColors::kTransparent));
-    filter_pass->filters.Append(cc::FilterOperation::CreateZoomFilter(2, 20));
+
     auto* root_pass = root_pass_list[2].get();
     // Make the root damage rect intersect with the expanded filter_pass quad
     // (filter quad (0, 0, 5, 5) + blur filter pixel movement (10 * 3) = (-30,
@@ -8368,6 +8359,62 @@ TEST_F(SurfaceAggregatorValidSurfaceTest, RenderPassHasPerQuadDamage) {
       }
       i++;
     }
+  }
+}
+
+// Per quad damage can appear on quads that have the same 'shared_quad_state'.
+// We need to make sure this will generate independent damage in the output
+// listing.
+TEST_F(SurfaceAggregatorValidSurfaceTest, PerQuadDamageSameSharedQuadState) {
+  gfx::Rect quad_rects[] = {gfx::Rect(60, 0, 40, 40), gfx::Rect(0, 0, 50, 50)};
+
+  gfx::Rect damage_rects[] = {gfx::Rect(60, 0, 30, 30),
+                              gfx::Rect(0, 0, 20, 20)};
+
+  auto pass = CompositorRenderPass::Create();
+  pass->SetNew(CompositorRenderPassId{1}, gfx::Rect(0, 0, 200, 200),
+               gfx::Rect(), gfx::Transform());
+
+  auto* sqs = pass->CreateAndAppendSharedQuadState();
+  pass->has_per_quad_damage = true;
+
+  for (int i = 0; i < 2; i++) {
+    auto* texure_quad = pass->CreateAndAppendDrawQuad<TextureDrawQuad>();
+
+    float vertex_opacity[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    const gfx::PointF kUVTopLeft(0.1f, 0.2f);
+    const gfx::PointF kUVBottomRight(1.0f, 1.0f);
+    texure_quad->SetNew(
+        sqs, quad_rects[i], quad_rects[i], false /*needs_blending*/,
+        ResourceId(1), false /*premultiplied_alpha*/, kUVTopLeft,
+        kUVBottomRight, SkColors::kTransparent, vertex_opacity,
+        false /*flipped*/, false /*nearest_neighbor*/,
+        false /*secure_output_only*/, gfx::ProtectedVideoType::kClear);
+
+    texure_quad->damage_rect = damage_rects[i];
+  }
+
+  CompositorFrame root_frame =
+      CompositorFrameBuilder().AddRenderPass(std::move(pass)).Build();
+
+  PopulateTransferableResources(root_frame);
+  root_sink_->SubmitCompositorFrame(root_surface_id_.local_surface_id(),
+                                    std::move(root_frame));
+  auto aggregated_frame = AggregateFrame(root_surface_id_);
+  auto* output_root_pass = aggregated_frame.render_pass_list.back().get();
+
+  EXPECT_EQ(output_root_pass->quad_list.size(), 2u);
+  EXPECT_GE(aggregated_frame.surface_damage_rect_list_.size(), 2u);
+
+  int draw_rect_index = 0;
+  for (auto* quad : output_root_pass->quad_list) {
+    auto* quad_sqs = quad->shared_quad_state;
+    EXPECT_TRUE(quad_sqs->overlay_damage_index.has_value());
+    EXPECT_EQ(
+        aggregated_frame
+            .surface_damage_rect_list_[quad_sqs->overlay_damage_index.value()],
+        damage_rects[draw_rect_index]);
+    draw_rect_index++;
   }
 }
 

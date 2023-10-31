@@ -9,6 +9,7 @@
 #import "ios/chrome/browser/net/crurl.h"
 #import "ios/chrome/browser/shared/public/commands/application_commands.h"
 #import "ios/chrome/browser/shared/public/commands/open_new_tab_command.h"
+#import "ios/chrome/browser/shared/public/features/features.h"
 #import "ios/chrome/browser/shared/ui/table_view/chrome_table_view_styler.h"
 #import "ios/chrome/browser/shared/ui/table_view/table_view_utils.h"
 #import "ios/chrome/browser/shared/ui/util/uikit_ui_util.h"
@@ -20,10 +21,6 @@
 #import "ios/chrome/grit/ios_strings.h"
 #import "ui/base/device_form_factor.h"
 #import "ui/base/l10n/l10n_util.h"
-
-#if !defined(__has_feature) || !__has_feature(objc_arc)
-#error "This file requires ARC support."
-#endif
 
 namespace {
 // Height of the space used by header/footer when none is set. Default is
@@ -191,11 +188,28 @@ const CGFloat kActivityIndicatorDimensionIPhone = 56;
   // can leave the new top view controller with a toolbar when it doesn't
   // require one. Disabling editing mode to avoid this. See crbug.com/1404111 as
   // an example.
-  if (parent == nullptr && self.isEditing) {
-    [self setEditing:NO animated:NO];
+  if (!parent) {
+    if (!base::FeatureList::IsEnabled(
+            kSettingsWillBeDismissedBugFixKillSwitch) &&
+        [self respondsToSelector:@selector(settingsWillBeDismissed)]) {
+      [self performSelector:@selector(settingsWillBeDismissed)];
+    }
+
+    if (self.isEditing) {
+      [self setEditing:NO animated:NO];
+    }
   }
 
   [self.navigationController setToolbarHidden:YES animated:YES];
+}
+
+- (void)didMoveToParentViewController:(UIViewController*)parent {
+  [super didMoveToParentViewController:parent];
+  if (!parent &&
+      base::FeatureList::IsEnabled(kSettingsWillBeDismissedBugFixKillSwitch) &&
+      [self respondsToSelector:@selector(settingsWillBeDismissed)]) {
+    [self performSelector:@selector(settingsWillBeDismissed)];
+  }
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {

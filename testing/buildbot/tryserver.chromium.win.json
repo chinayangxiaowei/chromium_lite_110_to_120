@@ -13,7 +13,6 @@
         },
         "name": "gles2_conform_d3d9_test 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -36,7 +35,6 @@
         },
         "name": "gles2_conform_d3d9_test 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -61,7 +59,6 @@
         },
         "name": "gles2_conform_gl_test 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -85,7 +82,6 @@
         },
         "name": "gles2_conform_gl_test 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -108,7 +104,6 @@
         },
         "name": "gles2_conform_test 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -130,7 +125,6 @@
         },
         "name": "gles2_conform_test 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -150,7 +144,6 @@
         },
         "name": "gpu_unittests 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -169,7 +162,6 @@
         },
         "name": "gpu_unittests 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -193,7 +185,6 @@
         },
         "name": "media_foundation_browser_tests 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -217,7 +208,6 @@
         },
         "name": "services_webnn_unittests 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -240,7 +230,6 @@
         },
         "name": "services_webnn_unittests 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -263,7 +252,6 @@
         },
         "name": "xr_browser_tests 10de:2184",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -285,7 +273,6 @@
         },
         "name": "xr_browser_tests 8086:9bc5",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -326,7 +313,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -364,7 +350,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -399,7 +384,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -433,7 +417,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -465,7 +448,6 @@
         "name": "passthrough_command_buffer_perftests 10de:2184",
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -499,7 +481,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -534,7 +515,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -569,7 +549,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -603,7 +582,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -641,7 +619,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -679,7 +656,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -717,7 +693,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -754,7 +729,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -792,7 +766,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -829,7 +802,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",
@@ -866,7 +838,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "display_attached": "1",
             "gpu": "10de:2184-27.21.14.5638",
@@ -902,7 +873,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "containment_type": "AUTO",
           "dimensions": {
             "display_attached": "1",

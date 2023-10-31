@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "ash/accessibility/accessibility_controller_impl.h"
+#include "ash/constants/ash_features.h"
 #include "ash/resources/vector_icons/vector_icons.h"
 #include "ash/session/session_controller_impl.h"
 #include "ash/shell.h"
@@ -48,7 +49,9 @@ bool AudioEffectsController::IsEffectSupported(VcEffectId effect_id) {
     case VcEffectId::kNoiseCancellation:
       return IsNoiseCancellationSupported();
     case VcEffectId::kLiveCaption:
-      return captions::IsLiveCaptionFeatureSupported();
+      return base::FeatureList::IsEnabled(
+                 features::kShowLiveCaptionInVideoConferenceTray) &&
+             captions::IsLiveCaptionFeatureSupported();
     case VcEffectId::kBackgroundBlur:
     case VcEffectId::kPortraitRelighting:
     case VcEffectId::kCameraFraming:
@@ -119,23 +122,32 @@ void AudioEffectsController::OnActiveUserPrefServiceChanged(
 
   noise_cancellation_supported_ =
       IsEffectSupported(VcEffectId::kNoiseCancellation);
-  const bool live_caption_supported =
-      IsEffectSupported(VcEffectId::kLiveCaption);
-
   if (noise_cancellation_supported_) {
     AddNoiseCancellationEffect();
   }
 
-  if (live_caption_supported) {
+  if (IsEffectSupported(VcEffectId::kLiveCaption)) {
     AddLiveCaptionEffect();
-  }
-
-  if (noise_cancellation_supported_ || live_caption_supported) {
-    effects_manager.RegisterDelegate(this);
   }
 }
 
 void AudioEffectsController::OnActiveInputNodeChanged() {
+  RefreshNoiseCancellationSupported();
+}
+
+void AudioEffectsController::OnAudioNodesChanged() {
+  RefreshNoiseCancellationSupported();
+}
+
+void AudioEffectsController::OnActiveOutputNodeChanged() {
+  RefreshNoiseCancellationSupported();
+}
+
+void AudioEffectsController::OnNoiseCancellationStateChanged() {
+  RefreshNoiseCancellationSupported();
+}
+
+void AudioEffectsController::RefreshNoiseCancellationSupported() {
   const bool noise_cancellation_supported = IsNoiseCancellationSupported();
 
   if (noise_cancellation_supported_ == noise_cancellation_supported) {
@@ -184,6 +196,15 @@ void AudioEffectsController::AddNoiseCancellationEffect() {
 
   effect->set_dependency_flags(VcHostedEffect::ResourceDependency::kMicrophone);
   AddEffect(std::move(effect));
+
+  // Register this delegate if needed so that the effect is added to the UI.
+  // Note that other functions might register this delegate already and we need
+  // to avoid registering twice.
+  VideoConferenceTrayEffectsManager& effects_manager =
+      VideoConferenceTrayController::Get()->effects_manager();
+  if (!effects_manager.IsDelegateRegistered(this)) {
+    effects_manager.RegisterDelegate(this);
+  }
 }
 
 void AudioEffectsController::AddLiveCaptionEffect() {
@@ -209,6 +230,15 @@ void AudioEffectsController::AddLiveCaptionEffect() {
 
   effect->AddState(std::move(effect_state));
   AddEffect(std::move(effect));
+
+  // Register this delegate if needed so that the effect is added to the UI.
+  // Note that other functions might register this delegate already and we need
+  // to avoid registering twice.
+  VideoConferenceTrayEffectsManager& effects_manager =
+      VideoConferenceTrayController::Get()->effects_manager();
+  if (!effects_manager.IsDelegateRegistered(this)) {
+    effects_manager.RegisterDelegate(this);
+  }
 }
 
 }  // namespace ash

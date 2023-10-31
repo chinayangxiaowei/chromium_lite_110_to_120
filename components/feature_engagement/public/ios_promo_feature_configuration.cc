@@ -70,6 +70,9 @@ absl::optional<FeatureConfig> GetClientSideiOSPromoFeatureConfig(
     config->event_configs.insert(
         EventConfig("post_restore_default_browser_promo_trigger",
                     Comparator(EQUAL, 0), 7, 365));
+    // The promo should only show once per month.
+    config->event_configs.insert(EventConfig("default_browser_promo_trigger",
+                                             Comparator(EQUAL, 0), 30, 365));
     return config;
   }
 
@@ -80,9 +83,6 @@ absl::optional<FeatureConfig> GetClientSideiOSPromoFeatureConfig(
     config->valid = true;
     config->availability = Comparator(ANY, 0);
     config->session_rate = Comparator(ANY, 0);
-    if (base::FeatureList::IsEnabled(kIPHGroups)) {
-      config->groups.push_back(kiOSFullscreenPromosGroup.name);
-    }
     config->used =
         EventConfig("post_restore_promo_used", Comparator(EQUAL, 0), 365, 365);
     // Post Restore promo should always show when requested.
@@ -155,9 +155,6 @@ absl::optional<FeatureConfig> GetClientSideiOSPromoFeatureConfig(
     config->valid = true;
     config->availability = Comparator(ANY, 0);
     config->session_rate = Comparator(ANY, 0);
-    if (base::FeatureList::IsEnabled(kIPHGroups)) {
-      config->groups.push_back(kiOSFullscreenPromosGroup.name);
-    }
     config->used = EventConfig("post_restore_default_browser_promo_used",
                                Comparator(EQUAL, 0), 365, 365);
     // Post Restore Default Browser promo should always show when requested.

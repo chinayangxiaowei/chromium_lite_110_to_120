@@ -27,7 +27,7 @@ def ios_builder(*, name, **kwargs):
     kwargs.setdefault("builderless", False)
     kwargs.setdefault("os", os.MAC_DEFAULT)
     kwargs.setdefault("ssd", None)
-    kwargs.setdefault("xcode", xcode.x14main)
+    kwargs.setdefault("xcode", xcode.x15main)
     return try_.builder(name = name, **kwargs)
 
 consoles.list_view(
@@ -64,7 +64,7 @@ try_.builder(
     name = "mac-inverse-fieldtrials-fyi-rel",
     mirrors = [
         "ci/Mac Builder",
-        "ci/Mac12 Tests",
+        "ci/Mac13 Tests",
         "ci/GPU Mac Builder",
         "ci/Mac Release (Intel)",
         "ci/Mac Retina Release (AMD)",
@@ -115,12 +115,15 @@ try_.orchestrator_builder(
     branch_selector = branches.selector.MAC_BRANCHES,
     mirrors = [
         "ci/Mac Builder",
-        "ci/Mac12 Tests",
+        "ci/Mac13 Tests",
         "ci/GPU Mac Builder",
         "ci/Mac Release (Intel)",
         "ci/Mac Retina Release (AMD)",
     ],
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     compilator = "mac-rel-compilator",
     coverage_test_types = ["overall", "unit"],
     experiments = {
@@ -139,6 +142,8 @@ try_.compilator_builder(
     name = "mac-rel-compilator",
     branch_selector = branches.selector.MAC_BRANCHES,
     os = os.MAC_DEFAULT,
+    # Allow both x64 and arm64 bots.
+    cpu = None,
     check_for_flakiness = True,
     main_list_view = "try",
 )
@@ -157,7 +162,10 @@ try_.builder(
         "ci/mac11-arm64-rel-tests",
     ],
     builderless = True,
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
 )
 
 try_.builder(
@@ -174,7 +182,10 @@ try_.builder(
         "ci/mac12-arm64-rel-tests",
     ],
     builderless = True,
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     main_list_view = "try",
 )
 
@@ -184,7 +195,10 @@ try_.orchestrator_builder(
         "ci/mac-arm64-rel",
         "ci/mac13-arm64-rel-tests",
     ],
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     compilator = "mac13-arm64-rel-compilator",
     main_list_view = "try",
     tryjob = try_.job(
@@ -195,7 +209,10 @@ try_.orchestrator_builder(
 try_.compilator_builder(
     name = "mac13-arm64-rel-compilator",
     os = os.MAC_DEFAULT,
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     # TODO (crbug.com/1245171): Revert when root issue is fixed
     grace_period = 4 * time.minute,
     main_list_view = "try",
@@ -232,24 +249,6 @@ try_.builder(
 # NOTE: the following trybots aren't sensitive to Mac version on which
 # they are built, hence no additional dimension is specified.
 # The 10.xx version translates to which bots will run isolated tests.
-try_.builder(
-    name = "mac_chromium_10.13_rel_ng",
-    mirrors = [
-        "ci/Mac Builder",
-        "ci/Mac10.13 Tests",
-    ],
-    reclient_jobs = reclient.jobs.LOW_JOBS_FOR_CQ,
-)
-
-try_.builder(
-    name = "mac_chromium_10.14_rel_ng",
-    mirrors = [
-        "ci/Mac Builder",
-        "ci/Mac10.14 Tests",
-    ],
-    reclient_jobs = reclient.jobs.LOW_JOBS_FOR_CQ,
-)
-
 try_.builder(
     name = "mac_chromium_10.15_rel_ng",
     mirrors = [
@@ -394,6 +393,10 @@ ios_builder(
         "ci/ios-catalyst",
     ],
     reclient_jobs = reclient.jobs.LOW_JOBS_FOR_CQ,
+
+    # TODO(crbug/1466746): Xcode 15 is broken due a bug in the SDK.
+    # Remove below once the issue is fixed.
+    xcode = xcode.x14main,
 )
 
 ios_builder(
@@ -436,7 +439,10 @@ try_.orchestrator_builder(
     # use_orchestrator_pool = True,
     cores = 2,
     os = os.LINUX_DEFAULT,
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     compilator = "ios-simulator-compilator",
     coverage_exclude_sources = "ios_test_files_and_test_utils",
     coverage_test_types = ["overall", "unit"],
@@ -456,9 +462,12 @@ try_.compilator_builder(
     builderless = False,
     os = os.MAC_DEFAULT,
     ssd = None,
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     main_list_view = "try",
-    xcode = xcode.x14main,
+    xcode = xcode.x15main,
 )
 
 ios_builder(
@@ -467,7 +476,10 @@ ios_builder(
     mirrors = [
         "ci/ios-simulator-cronet",
     ],
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     main_list_view = "try",
     reclient_jobs = reclient.jobs.HIGH_JOBS_FOR_CQ,
     tryjob = try_.job(
@@ -486,7 +498,10 @@ ios_builder(
     mirrors = [
         "ci/ios-simulator-full-configs",
     ],
-    check_for_flakiness = True,
+    # TODO(crbug.com/1456545) - _with_resultdb should be deprecated in favor for
+    # the original property once all builders have migrated.
+    # check_for_flakiness = True,
+    check_for_flakiness_with_resultdb = True,
     coverage_exclude_sources = "ios_test_files_and_test_utils",
     coverage_test_types = ["overall", "unit"],
     main_list_view = "try",
@@ -514,6 +529,7 @@ ios_builder(
     mirrors = [
         "ci/ios-simulator-noncq",
     ],
+    cpu = cpu.ARM64,
     reclient_jobs = reclient.jobs.LOW_JOBS_FOR_CQ,
     tryjob = try_.job(
         location_filters = [
@@ -545,7 +561,7 @@ ios_builder(
     ],
     os = os.MAC_13,
     cpu = cpu.ARM64,
-    xcode = xcode.x14betabots,
+    xcode = xcode.x15betabots,
 )
 
 ios_builder(
@@ -565,6 +581,7 @@ ios_builder(
 ios_builder(
     name = "ios-simulator-code-coverage",
     mirrors = ["ci/ios-simulator-code-coverage"],
+    builderless = True,
     execution_timeout = 20 * time.hour,
 )
 

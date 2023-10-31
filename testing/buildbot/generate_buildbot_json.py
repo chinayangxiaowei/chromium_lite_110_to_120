@@ -656,6 +656,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
     if 'hard_timeout' in swarming_dict:
       if swarming_dict['hard_timeout'] == 0: # pragma: no cover
         del swarming_dict['hard_timeout'] # pragma: no cover
+    del swarming_dict['can_use_on_swarming_builders']
 
   def update_and_cleanup_test(self, test, test_name, tester_name, tester_config,
                               waterfall):
@@ -668,7 +669,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
     if modifications:
       test = self.dictionary_merge(test, modifications)
     if (swarming_dict := test.get('swarming')) is not None:
-      if swarming_dict.get('can_use_on_swarming_builders', False):
+      if swarming_dict.get('can_use_on_swarming_builders'):
         self.clean_swarming_dictionary(swarming_dict)
       else:
         del test['swarming']
@@ -680,6 +681,8 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
           and not dimensions.get('device_os_type')):
         dimensions['device_os_type'] = 'userdebug'
     self.replace_test_args(test, test_name, tester_name)
+    if 'args' in test and not test['args']:
+      test.pop('args')
 
     return test
 
@@ -781,8 +784,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
     self.add_common_test_properties(result, tester_config)
     self.substitute_magic_args(result, tester_name, tester_config)
 
-    if (result.get('swarming', {}).get('can_use_on_swarming_builders')
-        and not result.get('merge')):
+    if 'swarming' in result and not result.get('merge'):
       if test_config.get('use_isolated_scripts_api', False):
         merge_script = 'standard_isolated_script_merge'
       else:
@@ -814,8 +816,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
     self.add_common_test_properties(result, tester_config)
     self.substitute_magic_args(result, tester_name, tester_config)
 
-    if (result.get('swarming', {}).get('can_use_on_swarming_builders')
-        and not result.get('merge')):
+    if 'swarming' in result and not result.get('merge'):
       # TODO(https://crbug.com/958376): Consider adding the ability to not have
       # this default.
       result['merge'] = {
@@ -1435,37 +1436,6 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
         raise BBGenErr(f'"{a}" must be a list')
       new_test.setdefault(a, []).extend(value)
 
-    # TODO(gbeaty) Remove this once all mixins have removed '$mixin_append'
-    if '$mixin_append' in mixin:
-      # Values specified under $mixin_append should be appended to existing
-      # lists, rather than replacing them.
-      mixin_append = mixin['$mixin_append']
-      del mixin['$mixin_append']
-
-      # Append swarming named cache and delete swarming key, since it's under
-      # another layer of dict.
-      if 'named_caches' in mixin_append.get('swarming', {}):
-        new_test['swarming'].setdefault('named_caches', [])
-        new_test['swarming']['named_caches'].extend(
-            mixin_append['swarming']['named_caches'])
-        if len(mixin_append['swarming']) > 1:
-          raise BBGenErr('Only named_caches is supported under swarming key in '
-                         '$mixin_append, but there are: %s' %
-                         sorted(mixin_append['swarming'].keys()))
-        del mixin_append['swarming']
-      for key in mixin_append:
-        new_test.setdefault(key, [])
-        if not isinstance(mixin_append[key], list):
-          raise BBGenErr(
-              'Key "' + key + '" in $mixin_append must be a list.')
-        if not isinstance(new_test[key], list):
-          raise BBGenErr(
-              'Cannot apply $mixin_append to non-list "' + key + '".')
-        new_test[key].extend(mixin_append[key])
-
-      if 'args' in mixin_append:
-        args_need_fixup[0] = True
-
     args = new_test.get('args', [])
 
     def add_conditional_args(key, fn):
@@ -1732,6 +1702,12 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
     if missing_bots:
       raise BBGenErr('The following nonexistent machines were referenced in '
                      'the test suite exceptions: ' + str(missing_bots))
+
+    for name, mixin in self.mixins.items():
+      if '$mixin_append' in mixin:
+        raise BBGenErr(
+            f'$mixin_append is no longer supported (set in mixin "{name}"),'
+            ' args and named caches specified as normal will be appended')
 
     # All mixins must be referenced
     seen_mixins = set()
@@ -2066,7 +2042,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
   def _check_swarming_config(self, filename, builder, step_name, step_data):
     # TODO(crbug.com/1203436): Ensure all swarming tests specify cpu, not
     # just mac tests.
-    if step_data.get('swarming', {}).get('can_use_on_swarming_builders'):
+    if 'swarming' in step_data:
       dimensions = step_data['swarming'].get('dimensions')
       if not dimensions:
         raise BBGenErr('%s: %s / %s : os must be specified for all '

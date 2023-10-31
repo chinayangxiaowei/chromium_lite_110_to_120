@@ -18,11 +18,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -46,11 +46,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -113,7 +113,6 @@
         },
         "name": "absl_hardening_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -130,7 +129,6 @@
         },
         "name": "accessibility_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -147,7 +145,6 @@
         },
         "name": "angle_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -165,7 +162,6 @@
         },
         "name": "app_shell_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -182,7 +178,6 @@
         },
         "name": "aura_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -199,7 +194,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -216,7 +210,6 @@
         },
         "name": "blink_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -233,7 +226,6 @@
         },
         "name": "blink_fuzzer_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -250,7 +242,6 @@
         },
         "name": "blink_heap_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -267,7 +258,6 @@
         },
         "name": "blink_platform_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -284,7 +274,6 @@
         },
         "name": "boringssl_crypto_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -301,7 +290,6 @@
         },
         "name": "boringssl_ssl_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -321,7 +309,6 @@
         },
         "name": "browser_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -343,7 +330,6 @@
         },
         "name": "browser_tests_no_field_trial",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -364,7 +350,6 @@
         },
         "name": "capture_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -381,7 +366,6 @@
         },
         "name": "cast_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -398,7 +382,6 @@
         },
         "name": "cc_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -415,7 +398,6 @@
         },
         "name": "chrome_app_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -432,7 +414,6 @@
         },
         "name": "chrome_elf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -449,7 +430,6 @@
         },
         "name": "chromedriver_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -466,7 +446,6 @@
         },
         "name": "color_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -483,7 +462,6 @@
         },
         "name": "components_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -504,7 +482,6 @@
         },
         "name": "components_browsertests_no_field_trial",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -521,7 +498,6 @@
         },
         "name": "components_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -538,7 +514,6 @@
         },
         "name": "compositor_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -558,7 +533,6 @@
         },
         "name": "content_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -576,7 +550,6 @@
         },
         "name": "content_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -593,7 +566,6 @@
         },
         "name": "courgette_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -605,39 +577,103 @@
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_browser_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_browser_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
           },
-          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 20
         },
         "test": "browser_tests",
         "test_id_prefix": "ninja://chrome/test:browser_tests/"
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_interactive_ui_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-10-19045"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 10
+        },
+        "test": "interactive_ui_tests",
+        "test_id_prefix": "ninja://chrome/test:interactive_ui_tests/"
+      },
+      {
+        "args": [
+          "--browser-ui-tests-verify-pixels",
+          "--enable-pixel-output-in-tests",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/pixel_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter",
+          "--test-launcher-jobs=1",
+          "--git-revision=${got_revision}",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "cr23_pixel_browser_tests",
+        "precommit_args": [
+          "--gerrit-issue=${patch_issue}",
+          "--gerrit-patchset=${patch_set}",
+          "--buildbucket-id=${buildbucket_build_id}"
+        ],
+        "swarming": {
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-10-19045"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 3
+        },
+        "test": "browser_tests",
+        "test_id_prefix": "ninja://chrome/test:browser_tests/"
+      },
+      {
+        "args": [
+          "--browser-ui-tests-verify-pixels",
+          "--enable-pixel-output-in-tests",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/pixel_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter",
+          "--git-revision=${got_revision}",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "cr23_pixel_interactive_ui_tests",
+        "precommit_args": [
+          "--gerrit-issue=${patch_issue}",
+          "--gerrit-patchset=${patch_set}",
+          "--buildbucket-id=${buildbucket_build_id}"
+        ],
+        "swarming": {
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -649,17 +685,17 @@
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -676,7 +712,6 @@
         },
         "name": "crashpad_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -693,7 +728,6 @@
         },
         "name": "cronet_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -710,7 +744,6 @@
         },
         "name": "cronet_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -727,7 +760,6 @@
         },
         "name": "crypto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -744,7 +776,6 @@
         },
         "name": "delayloads_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -761,7 +792,6 @@
         },
         "name": "device_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -778,7 +808,6 @@
         },
         "name": "display_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -795,7 +824,6 @@
         },
         "name": "elevation_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -813,7 +841,6 @@
         },
         "name": "env_chromium_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -830,7 +857,6 @@
         },
         "name": "events_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -847,7 +873,6 @@
         },
         "name": "extensions_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -864,7 +889,6 @@
         },
         "name": "extensions_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -881,7 +905,6 @@
         },
         "name": "filesystem_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -898,7 +921,6 @@
         },
         "name": "gcm_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -915,7 +937,6 @@
         },
         "name": "gcp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -932,7 +953,6 @@
         },
         "name": "gfx_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -949,7 +969,6 @@
         },
         "name": "gin_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -966,7 +985,6 @@
         },
         "name": "google_apis_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -983,7 +1001,6 @@
         },
         "name": "gpu_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1000,7 +1017,6 @@
         },
         "name": "gwp_asan_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1017,7 +1033,6 @@
         },
         "name": "headless_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1034,7 +1049,6 @@
         },
         "name": "headless_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1051,7 +1065,6 @@
         },
         "name": "install_static_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1068,7 +1081,6 @@
         },
         "name": "installer_util_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1086,7 +1098,6 @@
         },
         "name": "interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1108,7 +1119,6 @@
         },
         "name": "interactive_ui_tests_no_field_trial",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1125,7 +1135,6 @@
         },
         "name": "ipc_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1142,7 +1151,6 @@
         },
         "name": "latency_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1160,7 +1168,6 @@
         },
         "name": "leveldb_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1177,7 +1184,6 @@
         },
         "name": "libjingle_xmpp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1194,7 +1200,6 @@
         },
         "name": "liburlpattern_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1211,7 +1216,6 @@
         },
         "name": "media_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1228,7 +1232,6 @@
         },
         "name": "message_center_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1245,7 +1248,6 @@
         },
         "name": "midi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1262,7 +1264,6 @@
         },
         "name": "mojo_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1279,7 +1280,6 @@
         },
         "name": "nacl_loader_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1296,7 +1296,6 @@
         },
         "name": "native_theme_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1313,7 +1312,6 @@
         },
         "name": "net_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1330,7 +1328,6 @@
         },
         "name": "notification_helper_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1347,7 +1344,6 @@
         },
         "name": "pdf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1364,7 +1360,6 @@
         },
         "name": "perfetto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1393,7 +1388,6 @@
           "--buildbucket-id=${buildbucket_build_id}"
         ],
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1422,7 +1416,6 @@
           "--buildbucket-id=${buildbucket_build_id}"
         ],
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1439,7 +1432,6 @@
         },
         "name": "ppapi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1456,7 +1448,6 @@
         },
         "name": "printing_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1467,13 +1458,29 @@
         "test_id_prefix": "ninja://printing:printing_unittests/"
       },
       {
+        "ci_only": true,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "pthreadpool_unittests",
+        "swarming": {
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-10-19045"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+        },
+        "test": "pthreadpool_unittests",
+        "test_id_prefix": "ninja://third_party/pthreadpool:pthreadpool_unittests/"
+      },
+      {
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "remoting_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1490,7 +1497,6 @@
         },
         "name": "sbox_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1508,7 +1514,6 @@
         },
         "name": "sbox_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1525,7 +1530,6 @@
         },
         "name": "sbox_validation_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1542,7 +1546,6 @@
         },
         "name": "service_manager_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1559,7 +1562,6 @@
         },
         "name": "services_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1576,7 +1578,6 @@
         },
         "name": "setup_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1594,7 +1595,6 @@
         },
         "name": "shell_dialogs_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1611,7 +1611,6 @@
         },
         "name": "skia_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1628,7 +1627,6 @@
         },
         "name": "snapshot_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1645,7 +1643,6 @@
         },
         "name": "sql_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1662,7 +1659,6 @@
         },
         "name": "storage_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1679,7 +1675,6 @@
         },
         "name": "sync_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1701,7 +1696,6 @@
         },
         "name": "sync_integration_tests_no_field_trial",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1718,7 +1712,6 @@
         },
         "name": "ui_base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1735,7 +1728,6 @@
         },
         "name": "ui_touch_selection_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1752,7 +1744,6 @@
         },
         "name": "unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1769,7 +1760,6 @@
         },
         "name": "updater_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1786,7 +1776,6 @@
         },
         "name": "updater_tests_system",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1803,7 +1792,6 @@
         },
         "name": "url_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1828,7 +1816,6 @@
           "--buildbucket-id=${buildbucket_build_id}"
         ],
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1845,7 +1832,6 @@
         },
         "name": "views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1862,7 +1848,6 @@
         },
         "name": "viz_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1879,7 +1864,6 @@
         },
         "name": "vr_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1896,7 +1880,6 @@
         },
         "name": "webkit_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1913,7 +1896,6 @@
         },
         "name": "wm_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1930,7 +1912,6 @@
         },
         "name": "wtf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1947,7 +1928,6 @@
         },
         "name": "zlib_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1964,7 +1944,6 @@
         },
         "name": "zucchini_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1987,7 +1966,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2014,13 +1992,13 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
-            "cpu": "x86-64",
+            "cpu": "x86-64-Broadwell_GCE",
             "os": "Windows-10-19045"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
@@ -2046,11 +2024,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2075,7 +2053,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2092,7 +2069,6 @@
         },
         "name": "chromedriver_replay_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2115,7 +2091,6 @@
         },
         "name": "components_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2136,7 +2111,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2157,7 +2131,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2177,7 +2150,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2194,7 +2166,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -2215,7 +2186,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2233,7 +2203,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2260,7 +2229,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2280,7 +2248,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2301,7 +2268,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2324,7 +2290,6 @@
         },
         "name": "views_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2344,7 +2309,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2363,7 +2327,6 @@
         },
         "name": "absl_hardening_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2379,7 +2342,6 @@
         },
         "name": "accessibility_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2395,7 +2357,6 @@
         },
         "name": "angle_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2412,7 +2373,6 @@
         },
         "name": "app_shell_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2428,7 +2388,6 @@
         },
         "name": "aura_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2444,7 +2403,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2460,7 +2418,6 @@
         },
         "name": "blink_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2476,7 +2433,6 @@
         },
         "name": "blink_fuzzer_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2492,7 +2448,6 @@
         },
         "name": "blink_heap_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2508,7 +2463,6 @@
         },
         "name": "blink_platform_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2524,7 +2478,6 @@
         },
         "name": "boringssl_crypto_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2540,7 +2493,6 @@
         },
         "name": "boringssl_ssl_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2559,7 +2511,6 @@
         },
         "name": "capture_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2575,7 +2526,6 @@
         },
         "name": "cast_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2591,7 +2541,6 @@
         },
         "name": "cc_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2607,7 +2556,6 @@
         },
         "name": "chrome_app_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2623,7 +2571,6 @@
         },
         "name": "chrome_elf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2639,7 +2586,6 @@
         },
         "name": "chromedriver_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2655,7 +2601,6 @@
         },
         "name": "color_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2671,7 +2616,6 @@
         },
         "name": "components_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2687,7 +2631,6 @@
         },
         "name": "components_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2703,7 +2646,6 @@
         },
         "name": "compositor_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2723,7 +2665,6 @@
         },
         "name": "content_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2740,7 +2681,6 @@
         },
         "name": "content_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2756,7 +2696,6 @@
         },
         "name": "courgette_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2768,58 +2707,60 @@
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_browser_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_browser_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
           },
-          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 20
         },
         "test": "browser_tests",
         "test_id_prefix": "ninja://chrome/test:browser_tests/"
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_interactive_ui_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
           },
-          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 10
         },
         "test": "interactive_ui_tests",
         "test_id_prefix": "ninja://chrome/test:interactive_ui_tests/"
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2835,7 +2776,6 @@
         },
         "name": "crashpad_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2851,7 +2791,6 @@
         },
         "name": "cronet_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2867,7 +2806,6 @@
         },
         "name": "cronet_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2883,7 +2821,6 @@
         },
         "name": "crypto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2899,7 +2836,6 @@
         },
         "name": "delayloads_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2915,7 +2851,6 @@
         },
         "name": "device_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2931,7 +2866,6 @@
         },
         "name": "display_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2947,7 +2881,6 @@
         },
         "name": "elevation_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2964,7 +2897,6 @@
         },
         "name": "env_chromium_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2980,7 +2912,6 @@
         },
         "name": "events_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -2997,7 +2928,6 @@
         },
         "name": "extensions_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3013,7 +2943,6 @@
         },
         "name": "extensions_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3029,7 +2958,6 @@
         },
         "name": "filesystem_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3045,7 +2973,6 @@
         },
         "name": "gcm_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3061,7 +2988,6 @@
         },
         "name": "gcp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3077,7 +3003,6 @@
         },
         "name": "gfx_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3093,7 +3018,6 @@
         },
         "name": "gin_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3109,7 +3033,6 @@
         },
         "name": "google_apis_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3125,7 +3048,6 @@
         },
         "name": "gpu_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3141,7 +3063,6 @@
         },
         "name": "gwp_asan_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3157,7 +3078,6 @@
         },
         "name": "headless_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3173,7 +3093,6 @@
         },
         "name": "headless_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3189,7 +3108,6 @@
         },
         "name": "install_static_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3205,7 +3123,6 @@
         },
         "name": "installer_util_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -3223,7 +3140,6 @@
         },
         "name": "interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3240,7 +3156,6 @@
         },
         "name": "ipc_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3256,7 +3171,6 @@
         },
         "name": "latency_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3273,7 +3187,6 @@
         },
         "name": "leveldb_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3289,7 +3202,6 @@
         },
         "name": "libjingle_xmpp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3305,7 +3217,6 @@
         },
         "name": "liburlpattern_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3321,7 +3232,6 @@
         },
         "name": "media_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3337,7 +3247,6 @@
         },
         "name": "message_center_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3353,7 +3262,6 @@
         },
         "name": "midi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3369,7 +3277,6 @@
         },
         "name": "mojo_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3385,7 +3292,6 @@
         },
         "name": "nacl_loader_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3401,7 +3307,6 @@
         },
         "name": "native_theme_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3417,7 +3322,6 @@
         },
         "name": "net_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3433,7 +3337,6 @@
         },
         "name": "notification_helper_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3449,7 +3352,6 @@
         },
         "name": "pdf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3465,7 +3367,6 @@
         },
         "name": "perfetto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3481,7 +3382,6 @@
         },
         "name": "ppapi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3497,7 +3397,6 @@
         },
         "name": "printing_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3508,12 +3407,27 @@
         "test_id_prefix": "ninja://printing:printing_unittests/"
       },
       {
+        "ci_only": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "pthreadpool_unittests",
+        "swarming": {
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-10-19045"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+        },
+        "test": "pthreadpool_unittests",
+        "test_id_prefix": "ninja://third_party/pthreadpool:pthreadpool_unittests/"
+      },
+      {
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "remoting_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3529,7 +3443,6 @@
         },
         "name": "sbox_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -3546,7 +3459,6 @@
         },
         "name": "sbox_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3562,7 +3474,6 @@
         },
         "name": "sbox_validation_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3578,7 +3489,6 @@
         },
         "name": "service_manager_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3594,7 +3504,6 @@
         },
         "name": "services_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3610,7 +3519,6 @@
         },
         "name": "setup_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -3627,7 +3535,6 @@
         },
         "name": "shell_dialogs_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3643,7 +3550,6 @@
         },
         "name": "skia_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3659,7 +3565,6 @@
         },
         "name": "snapshot_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3675,7 +3580,6 @@
         },
         "name": "sql_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3691,7 +3595,6 @@
         },
         "name": "storage_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3708,7 +3611,6 @@
         },
         "name": "sync_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3725,7 +3627,6 @@
         },
         "name": "ui_base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3741,7 +3642,6 @@
         },
         "name": "ui_touch_selection_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3757,7 +3657,6 @@
         },
         "name": "unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3773,7 +3672,6 @@
         },
         "name": "updater_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3789,7 +3687,6 @@
         },
         "name": "updater_tests_system",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3805,7 +3702,6 @@
         },
         "name": "url_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3821,7 +3717,6 @@
         },
         "name": "views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3837,7 +3732,6 @@
         },
         "name": "viz_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3853,7 +3747,6 @@
         },
         "name": "vr_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3869,7 +3762,6 @@
         },
         "name": "webkit_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3885,7 +3777,6 @@
         },
         "name": "wm_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3901,7 +3792,6 @@
         },
         "name": "wtf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3917,7 +3807,6 @@
         },
         "name": "zlib_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3933,7 +3822,6 @@
         },
         "name": "zucchini_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3955,7 +3843,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3971,7 +3858,6 @@
         },
         "name": "chromedriver_replay_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -3993,7 +3879,6 @@
         },
         "name": "components_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4014,7 +3899,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4034,7 +3918,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4053,7 +3936,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4081,7 +3963,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4102,7 +3983,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4127,7 +4007,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4151,7 +4030,6 @@
         },
         "name": "views_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -4171,7 +4049,6 @@
         },
         "name": "absl_hardening_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4188,7 +4065,6 @@
         },
         "name": "accessibility_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4205,7 +4081,6 @@
         },
         "name": "angle_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4223,7 +4098,6 @@
         },
         "name": "app_shell_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4240,7 +4114,6 @@
         },
         "name": "aura_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4257,7 +4130,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4274,7 +4146,6 @@
         },
         "name": "blink_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4291,7 +4162,6 @@
         },
         "name": "blink_fuzzer_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4308,7 +4178,6 @@
         },
         "name": "blink_heap_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4325,7 +4194,6 @@
         },
         "name": "blink_platform_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4342,7 +4210,6 @@
         },
         "name": "boringssl_crypto_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4359,7 +4226,6 @@
         },
         "name": "boringssl_ssl_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4379,7 +4245,6 @@
         },
         "name": "browser_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4400,7 +4265,6 @@
         },
         "name": "capture_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4417,7 +4281,6 @@
         },
         "name": "cast_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4434,7 +4297,6 @@
         },
         "name": "cc_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4451,7 +4313,6 @@
         },
         "name": "chrome_app_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4468,7 +4329,6 @@
         },
         "name": "chrome_elf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4485,7 +4345,6 @@
         },
         "name": "chromedriver_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4502,7 +4361,6 @@
         },
         "name": "color_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4519,7 +4377,6 @@
         },
         "name": "components_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4536,7 +4393,6 @@
         },
         "name": "components_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4553,7 +4409,6 @@
         },
         "name": "compositor_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4573,7 +4428,6 @@
         },
         "name": "content_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4591,7 +4445,6 @@
         },
         "name": "content_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4608,7 +4461,6 @@
         },
         "name": "courgette_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4620,39 +4472,103 @@
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_browser_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_browser_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
           },
-          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 20
         },
         "test": "browser_tests",
         "test_id_prefix": "ninja://chrome/test:browser_tests/"
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.tests.cr23_interactive_ui_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-11-22000"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 10
+        },
+        "test": "interactive_ui_tests",
+        "test_id_prefix": "ninja://chrome/test:interactive_ui_tests/"
+      },
+      {
+        "args": [
+          "--browser-ui-tests-verify-pixels",
+          "--enable-pixel-output-in-tests",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/pixel_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_browser_tests.filter",
+          "--test-launcher-jobs=1",
+          "--git-revision=${got_revision}",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "cr23_pixel_browser_tests",
+        "precommit_args": [
+          "--gerrit-issue=${patch_issue}",
+          "--gerrit-patchset=${patch_set}",
+          "--buildbucket-id=${buildbucket_build_id}"
+        ],
+        "swarming": {
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-11-22000"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com",
+          "shards": 3
+        },
+        "test": "browser_tests",
+        "test_id_prefix": "ninja://chrome/test:browser_tests/"
+      },
+      {
+        "args": [
+          "--browser-ui-tests-verify-pixels",
+          "--enable-pixel-output-in-tests",
+          "--test-launcher-filter-file=../../testing/buildbot/filters/pixel_tests.filter;../../testing/buildbot/filters/cr23.win.cr23_interactive_ui_tests.filter",
+          "--git-revision=${got_revision}",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
+        ],
+        "ci_only": true,
+        "experiment_percentage": 100,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "cr23_pixel_interactive_ui_tests",
+        "precommit_args": [
+          "--gerrit-issue=${patch_issue}",
+          "--gerrit-patchset=${patch_set}",
+          "--buildbucket-id=${buildbucket_build_id}"
+        ],
+        "swarming": {
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4664,17 +4580,17 @@
       },
       {
         "args": [
-          "--enable-features=ChromeRefresh2023",
-          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter"
+          "--test-launcher-filter-file=../../testing/buildbot/filters/cr23.win.cr23_views_unittests.filter",
+          "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape"
         ],
-        "experiment_percentage": 1,
+        "ci_only": true,
+        "experiment_percentage": 10,
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "cr23_views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4691,7 +4607,6 @@
         },
         "name": "crashpad_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4708,7 +4623,6 @@
         },
         "name": "cronet_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4725,7 +4639,6 @@
         },
         "name": "cronet_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4742,7 +4655,6 @@
         },
         "name": "crypto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4759,7 +4671,6 @@
         },
         "name": "delayloads_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4776,7 +4687,6 @@
         },
         "name": "device_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4793,7 +4703,6 @@
         },
         "name": "display_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4810,7 +4719,6 @@
         },
         "name": "elevation_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4828,7 +4736,6 @@
         },
         "name": "env_chromium_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4845,7 +4752,6 @@
         },
         "name": "events_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4862,7 +4768,6 @@
         },
         "name": "extensions_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4879,7 +4784,6 @@
         },
         "name": "extensions_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4896,7 +4800,6 @@
         },
         "name": "filesystem_service_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4913,7 +4816,6 @@
         },
         "name": "gcm_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4930,7 +4832,6 @@
         },
         "name": "gcp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4947,7 +4848,6 @@
         },
         "name": "gfx_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4964,7 +4864,6 @@
         },
         "name": "gin_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4981,7 +4880,6 @@
         },
         "name": "google_apis_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -4998,7 +4896,6 @@
         },
         "name": "gpu_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5015,7 +4912,6 @@
         },
         "name": "gwp_asan_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5032,7 +4928,6 @@
         },
         "name": "headless_browsertests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5049,7 +4944,6 @@
         },
         "name": "headless_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5066,7 +4960,6 @@
         },
         "name": "install_static_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5083,7 +4976,6 @@
         },
         "name": "installer_util_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -5101,7 +4993,6 @@
         },
         "name": "interactive_ui_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5119,7 +5010,6 @@
         },
         "name": "ipc_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5136,7 +5026,6 @@
         },
         "name": "latency_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5154,7 +5043,6 @@
         },
         "name": "leveldb_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5171,7 +5059,6 @@
         },
         "name": "libjingle_xmpp_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5188,7 +5075,6 @@
         },
         "name": "liburlpattern_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5205,7 +5091,6 @@
         },
         "name": "media_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5222,7 +5107,6 @@
         },
         "name": "message_center_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5239,7 +5123,6 @@
         },
         "name": "midi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5256,7 +5139,6 @@
         },
         "name": "mojo_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5273,7 +5155,6 @@
         },
         "name": "nacl_loader_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5290,7 +5171,6 @@
         },
         "name": "native_theme_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5307,7 +5187,6 @@
         },
         "name": "net_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5324,7 +5203,6 @@
         },
         "name": "notification_helper_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5341,7 +5219,6 @@
         },
         "name": "pdf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5358,7 +5235,6 @@
         },
         "name": "perfetto_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5386,7 +5262,6 @@
           "--buildbucket-id=${buildbucket_build_id}"
         ],
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5403,7 +5278,6 @@
         },
         "name": "ppapi_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5420,7 +5294,6 @@
         },
         "name": "printing_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5431,13 +5304,29 @@
         "test_id_prefix": "ninja://printing:printing_unittests/"
       },
       {
+        "ci_only": true,
+        "isolate_profile_data": true,
+        "merge": {
+          "script": "//testing/merge_scripts/standard_gtest_merge.py"
+        },
+        "name": "pthreadpool_unittests",
+        "swarming": {
+          "dimensions": {
+            "cpu": "x86-64",
+            "os": "Windows-11-22000"
+          },
+          "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
+        },
+        "test": "pthreadpool_unittests",
+        "test_id_prefix": "ninja://third_party/pthreadpool:pthreadpool_unittests/"
+      },
+      {
         "isolate_profile_data": true,
         "merge": {
           "script": "//testing/merge_scripts/standard_gtest_merge.py"
         },
         "name": "remoting_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5454,7 +5343,6 @@
         },
         "name": "sbox_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -5472,7 +5360,6 @@
         },
         "name": "sbox_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5489,7 +5376,6 @@
         },
         "name": "sbox_validation_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5506,7 +5392,6 @@
         },
         "name": "service_manager_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5523,7 +5408,6 @@
         },
         "name": "services_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5540,7 +5424,6 @@
         },
         "name": "setup_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -5558,7 +5441,6 @@
         },
         "name": "shell_dialogs_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5575,7 +5457,6 @@
         },
         "name": "skia_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5592,7 +5473,6 @@
         },
         "name": "snapshot_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5609,7 +5489,6 @@
         },
         "name": "sql_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5626,7 +5505,6 @@
         },
         "name": "storage_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5643,7 +5521,6 @@
         },
         "name": "sync_integration_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5661,7 +5538,6 @@
         },
         "name": "ui_base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5678,7 +5554,6 @@
         },
         "name": "ui_touch_selection_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5695,7 +5570,6 @@
         },
         "name": "unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5712,7 +5586,6 @@
         },
         "name": "updater_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5729,7 +5602,6 @@
         },
         "name": "updater_tests_system",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5746,7 +5618,6 @@
         },
         "name": "url_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5771,7 +5642,6 @@
           "--buildbucket-id=${buildbucket_build_id}"
         ],
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5788,7 +5658,6 @@
         },
         "name": "views_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5805,7 +5674,6 @@
         },
         "name": "viz_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5822,7 +5690,6 @@
         },
         "name": "vr_common_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5839,7 +5706,6 @@
         },
         "name": "webkit_unit_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5856,7 +5722,6 @@
         },
         "name": "wm_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5873,7 +5738,6 @@
         },
         "name": "wtf_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5890,7 +5754,6 @@
         },
         "name": "zlib_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5907,7 +5770,6 @@
         },
         "name": "zucchini_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5930,7 +5792,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5957,11 +5818,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -5989,11 +5850,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6018,7 +5879,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6035,7 +5895,6 @@
         },
         "name": "chromedriver_replay_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6058,7 +5917,6 @@
         },
         "name": "components_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6079,7 +5937,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6100,7 +5957,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6120,7 +5976,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6137,7 +5992,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -6158,7 +6012,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6176,7 +6029,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6203,7 +6055,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6223,7 +6074,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"
@@ -6247,7 +6097,6 @@
         },
         "name": "views_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-11-22000"

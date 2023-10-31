@@ -22,11 +22,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-16.04"
           },
@@ -51,11 +51,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-16.04"
           },
@@ -77,7 +77,6 @@
         },
         "name": "gles2_conform_test GTX 1660",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -98,7 +97,6 @@
         },
         "name": "gles2_conform_test UHD 630",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -137,7 +135,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -174,7 +171,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -207,7 +203,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -240,7 +235,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -274,7 +268,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -308,7 +301,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -341,7 +333,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -374,7 +365,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -410,7 +400,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -447,7 +436,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",
@@ -483,7 +471,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "10de:2184-440.100",
             "os": "Ubuntu-18.04.5|Ubuntu-18.04.6",
@@ -519,7 +506,6 @@
         },
         "should_retry_with_patch": false,
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "gpu": "8086:9bc5-20.0.8",
             "os": "Ubuntu-18.04.6",

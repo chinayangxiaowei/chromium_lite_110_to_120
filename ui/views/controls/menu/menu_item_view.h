@@ -20,8 +20,10 @@
 #include "ui/base/themed_vector_icon.h"
 #include "ui/base/ui_base_features.h"
 #include "ui/gfx/geometry/insets.h"
+#include "ui/gfx/geometry/size.h"
 #include "ui/gfx/image/image_skia.h"
 #include "ui/strings/grit/ui_strings.h"
+#include "ui/views/controls/menu/menu_config.h"
 #include "ui/views/controls/menu/menu_controller.h"
 #include "ui/views/controls/menu/menu_types.h"
 #include "ui/views/view.h"
@@ -116,18 +118,9 @@ class VIEWS_EXPORT MenuItemView : public View {
 
   // The data structure which is used to paint a background on the menu item.
   struct MenuItemBackground {
-    MenuItemBackground(int vertical_margin,
-                       int horizontal_margin,
-                       ui::ColorId background_color_id,
-                       int corner_radius)
-        : vertical_margin(vertical_margin),
-          horizontal_margin(horizontal_margin),
-          background_color_id(background_color_id),
+    MenuItemBackground(ui::ColorId background_color_id, int corner_radius)
+        : background_color_id(background_color_id),
           corner_radius(corner_radius) {}
-    // Vertical margin between background and edge of MenuItemView.
-    int vertical_margin = 0;
-    // Horizontal margin between background and edge of MenuItemView.
-    int horizontal_margin = 0;
     ui::ColorId background_color_id;
     int corner_radius = 0;
   };
@@ -303,8 +296,8 @@ class VIEWS_EXPORT MenuItemView : public View {
   // SetIcon(). MenuItemView takes ownership of |icon_view|.
   void SetIconView(std::unique_ptr<ImageView> icon_view);
 
-  // Returns the preferred width of the icon view if any, or 0 if none.
-  int GetIconPreferredWidth() const;
+  // Returns the preferred size of the icon view if any, or gfx::Size() if none.
+  gfx::Size GetIconPreferredSize() const;
 
   // Sets the command id of this menu item.
   void SetCommand(int command) { command_ = command; }
@@ -367,11 +360,6 @@ class VIEWS_EXPORT MenuItemView : public View {
   // doesn't have a mnemonic.
   char16_t GetMnemonic();
 
-  // Do we have icons? This only has effect on the top menu. Turning this on
-  // makes the menus slightly wider and taller.
-  void set_has_icons(bool has_icons) { has_icons_ = has_icons; }
-  bool has_icons() const { return has_icons_; }
-
   // Returns the descendant with the specified command.
   MenuItemView* GetMenuItemByID(int id);
 
@@ -386,9 +374,10 @@ class VIEWS_EXPORT MenuItemView : public View {
   // item.
   bool has_mnemonics() const { return has_mnemonics_; }
 
-  // Set top and bottom margins in pixels.  If no margin is set or a
-  // negative margin is specified then MenuConfig values are used.
-  void SetMargins(int top_margin, int bottom_margin);
+  void set_vertical_margin(int vertical_margin) {
+    vertical_margin_ = vertical_margin;
+    invalidate_dimensions();
+  }
 
   void set_children_use_full_width(bool children_use_full_width) {
     children_use_full_width_ = children_use_full_width;
@@ -416,6 +405,9 @@ class VIEWS_EXPORT MenuItemView : public View {
   // Returns whether keyboard navigation through the menu should stop on this
   // item.
   bool IsTraversableByKeyboard() const;
+
+  // Returns the corresponding border padding from the `MenuConfig`.
+  int GetItemHorizontalBorder() const;
 
   bool last_paint_as_selected_for_testing() const {
     return last_paint_as_selected_;
@@ -464,12 +456,16 @@ class VIEWS_EXPORT MenuItemView : public View {
                Type type,
                MenuDelegate* delegate);
 
+  const SubmenuView* GetContainingSubmenu() const {
+    return parent_menu_item_->GetSubmenu();
+  }
+
   // The RunXXX methods call into this to set up the necessary state before
   // running.
   void PrepareForRun(bool has_mnemonics, bool show_mnemonics);
 
   // Returns the flags passed to DrawStringRect.
-  int GetDrawStringFlags();
+  int GetDrawStringFlags() const;
 
   // Returns the font list and font color to use for menu text.
   const gfx::FontList GetFontList() const;
@@ -530,6 +526,10 @@ class VIEWS_EXPORT MenuItemView : public View {
   //    ApplyMinimumDimensions(x).height >= x.height
   void ApplyMinimumDimensions(MenuItemDimensions* dims) const;
 
+  // Given a proposed `height` for this item, returns the height after ensuring
+  // it reserves sufficient icon height.
+  int ApplyMinIconHeight(int height) const;
+
   // Get the horizontal position at which to draw the menu item's label.
   int GetLabelStartForThisItem() const;
 
@@ -575,6 +575,10 @@ class VIEWS_EXPORT MenuItemView : public View {
   void SetForegroundColorId(absl::optional<ui::ColorId> foreground_color_id) {
     foreground_color_id_ = foreground_color_id;
   }
+
+  // Returns the corresponding margin from the `MenuConfig` if
+  // `vertical_margin_` is not set.
+  int GetVerticalMargin() const;
 
   // The delegate. This is only valid for the root menu item. You shouldn't
   // use this directly, instead use GetDelegate() which walks the tree as
@@ -627,9 +631,6 @@ class VIEWS_EXPORT MenuItemView : public View {
   // MenuConfig says mnemonics should be shown. Only used on the root menu item.
   bool show_mnemonics_ = false;
 
-  // Set if menu has icons or icon_views (applies to root menu item only).
-  bool has_icons_ = false;
-
   // Pointer to a view with a menu icon.
   raw_ptr<ImageView, DanglingUntriaged> icon_view_ = nullptr;
 
@@ -643,9 +644,7 @@ class VIEWS_EXPORT MenuItemView : public View {
   // Removed items to be deleted in ChildrenChanged().
   std::vector<View*> removed_items_;
 
-  // Margins in pixels.
-  int top_margin_ = -1;
-  int bottom_margin_ = -1;
+  absl::optional<int> vertical_margin_;
 
   // Corner radius in pixels, for HIGHLIGHTED items placed at the end of a menu.
   int corner_radius_ = 0;

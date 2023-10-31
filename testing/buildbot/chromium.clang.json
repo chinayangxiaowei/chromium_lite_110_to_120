@@ -14,7 +14,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -36,7 +35,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -59,7 +57,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -97,7 +94,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "device_os": "PQ3A.190801.002",
             "device_os_flavor": "google",
@@ -156,10 +152,9 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
-            "os": "Ubuntu-18.04"
+            "os": "Ubuntu-22.04"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
@@ -192,7 +187,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "device_os": "MMB29Q",
             "device_os_type": "userdebug",
@@ -240,10 +234,9 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
-            "os": "Ubuntu-18.04"
+            "os": "Ubuntu-22.04"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
@@ -272,7 +265,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "kvm": "1",
             "os": "Ubuntu-22.04"
@@ -295,7 +287,6 @@
         },
         "name": "angle_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "kvm": "1",
             "os": "Ubuntu-22.04"
@@ -320,11 +311,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "kvm": "1",
             "os": "Ubuntu-22.04"
@@ -349,11 +340,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "kvm": "1",
             "os": "Ubuntu-22.04"
@@ -372,11 +363,10 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "arm64",
             "inside_docker": "1",
-            "os": "Ubuntu-20.04"
+            "os": "Ubuntu-22.04|Ubuntu-20.04"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
@@ -396,11 +386,10 @@
         },
         "name": "angle_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "arm64",
             "inside_docker": "1",
-            "os": "Ubuntu-20.04"
+            "os": "Ubuntu-22.04|Ubuntu-20.04"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
@@ -417,11 +406,10 @@
         },
         "name": "fuchsia_sizes",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "arm64",
             "inside_docker": "1",
-            "os": "Ubuntu-20.04"
+            "os": "Ubuntu-22.04|Ubuntu-20.04"
           },
           "service_account": "chromium-tester@chops-service-accounts.iam.gserviceaccount.com"
         },
@@ -440,7 +428,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -462,7 +449,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -488,7 +474,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -512,7 +497,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -539,7 +523,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -560,7 +543,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-20.04"
           },
@@ -582,7 +564,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-20.04"
           },
@@ -603,9 +584,8 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
-            "os": "Ubuntu-18.04",
+            "os": "Ubuntu-22.04",
             "pool": "chrome.tests"
           },
           "service_account": "chrome-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -626,9 +606,8 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
-            "os": "Ubuntu-18.04",
+            "os": "Ubuntu-22.04",
             "pool": "chrome.tests"
           },
           "service_account": "chrome-tester@chops-service-accounts.iam.gserviceaccount.com"
@@ -648,7 +627,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -670,7 +648,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -692,7 +669,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -713,7 +689,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -735,7 +710,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Ubuntu-22.04"
           },
@@ -756,7 +730,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -778,7 +751,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -802,11 +774,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -831,11 +803,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -856,7 +828,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -879,7 +850,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -895,7 +865,6 @@
         },
         "name": "chromedriver_replay_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -917,7 +886,6 @@
         },
         "name": "components_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -937,7 +905,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -957,7 +924,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -976,7 +942,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -992,7 +957,6 @@
         },
         "name": "mac_signing_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1011,7 +975,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1030,7 +993,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1053,7 +1015,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1078,7 +1039,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1102,7 +1062,6 @@
         },
         "name": "views_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1132,7 +1091,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12"
@@ -1155,7 +1113,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1178,7 +1135,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1203,11 +1159,11 @@
         },
         "name": "blink_web_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1233,11 +1189,11 @@
         },
         "name": "blink_wpt_tests",
         "resultdb": {
-          "enable": true
+          "enable": true,
+          "has_native_resultdb_integration": true
         },
         "results_handler": "layout tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1259,7 +1215,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1283,7 +1238,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1300,7 +1254,6 @@
         },
         "name": "chromedriver_replay_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1323,7 +1276,6 @@
         },
         "name": "components_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1344,7 +1296,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1365,7 +1316,6 @@
           "result_format": "single"
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1385,7 +1335,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1402,7 +1351,6 @@
         },
         "name": "mac_signing_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1422,7 +1370,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1442,7 +1389,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1466,7 +1412,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1492,7 +1437,6 @@
           "enable": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1517,7 +1461,6 @@
         },
         "name": "views_perftests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Mac-12",
@@ -1540,7 +1483,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1562,7 +1504,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1577,7 +1518,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "integrity": "high",
             "os": "Windows-10-19045"
@@ -1594,7 +1534,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1615,7 +1554,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1637,7 +1575,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1658,7 +1595,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1680,7 +1616,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1695,7 +1630,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "integrity": "high",
             "os": "Windows-10-19045"
@@ -1712,7 +1646,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
@@ -1733,7 +1666,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1756,7 +1688,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1772,7 +1703,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1790,7 +1720,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1812,7 +1741,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1835,7 +1763,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1851,7 +1778,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1869,7 +1795,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1891,7 +1816,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1914,7 +1838,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1930,7 +1853,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "integrity": "high",
@@ -1948,7 +1870,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1970,7 +1891,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "cpu": "x86-64",
             "os": "Windows-10-19045"
@@ -1987,6 +1907,11 @@
       "all"
     ]
   },
+  "ToTWinArm64PGO": {
+    "additional_compile_targets": [
+      "all"
+    ]
+  },
   "ToTWinOfficial": {
     "additional_compile_targets": [
       "chrome_official_builder"
@@ -1998,7 +1923,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2021,7 +1945,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2037,7 +1960,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "integrity": "high",
             "os": "Windows-10",
@@ -2055,7 +1977,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2077,7 +1998,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2100,7 +2020,6 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2116,7 +2035,6 @@
         },
         "name": "mini_installer_tests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "integrity": "high",
             "os": "Windows-10",
@@ -2134,7 +2052,6 @@
         },
         "name": "polymer_tools_python_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10",
             "pool": "chrome.tests"
@@ -2159,7 +2076,7 @@
           "--out-dir",
           "${ISOLATED_OUTDIR}",
           "--xcode-build-version",
-          "14c18",
+          "15a5209g",
           "--xctest"
         ],
         "isolate_name": "base_unittests",
@@ -2172,12 +2089,11 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "cipd_packages": [
             {
               "cipd_package": "infra/tools/mac_toolchain/${platform}",
               "location": ".",
-              "revision": "git_revision:0ecab437ae2532a879b1203efc48f54bc6cadb77"
+              "revision": "git_revision:59ddedfe3849abf560cbe0b41bb8e431041cd2bb"
             }
           ],
           "dimensions": {
@@ -2186,7 +2102,7 @@
           },
           "named_caches": [
             {
-              "name": "xcode_ios_14c18",
+              "name": "xcode_ios_15a5209g",
               "path": "Xcode.app"
             },
             {
@@ -2228,7 +2144,7 @@
           "--out-dir",
           "${ISOLATED_OUTDIR}",
           "--xcode-build-version",
-          "14c18",
+          "15a5209g",
           "--xctest"
         ],
         "isolate_name": "base_unittests",
@@ -2241,12 +2157,11 @@
           "has_native_resultdb_integration": true
         },
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "cipd_packages": [
             {
               "cipd_package": "infra/tools/mac_toolchain/${platform}",
               "location": ".",
-              "revision": "git_revision:0ecab437ae2532a879b1203efc48f54bc6cadb77"
+              "revision": "git_revision:59ddedfe3849abf560cbe0b41bb8e431041cd2bb"
             }
           ],
           "dimensions": {
@@ -2257,7 +2172,7 @@
           "expiration": 21600,
           "named_caches": [
             {
-              "name": "xcode_ios_14c18",
+              "name": "xcode_ios_15a5209g",
               "path": "Xcode.app"
             }
           ],
@@ -2279,7 +2194,6 @@
         },
         "name": "base_unittests",
         "swarming": {
-          "can_use_on_swarming_builders": true,
           "dimensions": {
             "os": "Windows-10-19045"
           },
