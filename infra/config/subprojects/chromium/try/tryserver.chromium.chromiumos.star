@@ -279,8 +279,10 @@ try_.orchestrator_builder(
     ],
     check_for_flakiness = True,
     compilator = "linux-lacros-rel-compilator",
+    coverage_test_types = ["unit", "overall"],
     main_list_view = "try",
     tryjob = try_.job(),
+    use_clang_coverage = True,
     # TODO(crbug.com/1372179): Use orchestrator pool once overloaded test pools
     # are addressed
     # use_orchestrator_pool = True,
@@ -327,43 +329,4 @@ try_.builder(
             "chrome/test/data/webui/chromeos/chromebox_for_meetings/.+",
         ],
     ),
-)
-
-try_.builder(
-    name = "chromeos-amd64-generic-rel-rts",
-    mirrors = builder_config.copy_from("try/chromeos-amd64-generic-rel"),
-    try_settings = builder_config.try_settings(
-        rts_config = builder_config.rts_config(
-            condition = builder_config.rts_condition.QUICK_RUN_ONLY,
-        ),
-    ),
-    experiments = {
-        "chromium_rts.inverted_rts": 100,
-    },
-)
-
-try_.builder(
-    name = "linux-chromeos-rel-rts",
-    mirrors = builder_config.copy_from("try/linux-chromeos-rel"),
-    try_settings = builder_config.try_settings(
-        rts_config = builder_config.rts_config(
-            condition = builder_config.rts_condition.QUICK_RUN_ONLY,
-        ),
-    ),
-    experiments = {
-        "chromium_rts.inverted_rts": 100,
-    },
-)
-
-try_.builder(
-    name = "linux-lacros-rel-rts",
-    mirrors = builder_config.copy_from("try/linux-lacros-rel"),
-    try_settings = builder_config.try_settings(
-        rts_config = builder_config.rts_config(
-            condition = builder_config.rts_condition.QUICK_RUN_ONLY,
-        ),
-    ),
-    experiments = {
-        "chromium_rts.inverted_rts": 100,
-    },
 )

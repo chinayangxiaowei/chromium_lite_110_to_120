@@ -28,6 +28,8 @@ const CGFloat kMagicStackWideWidth = 430;
 
 const CGFloat kMostVisitedBottomMargin = 13;
 
+const CGFloat kMagicStackFaviconWidth = 28;
+
 const int kTileAblationImpressionThresholdMinutes = 5;
 const int kTileAblationMinimumUseThresholdInDays = 7;
 const int kTileAblationMaximumUseThresholdInDays = 14;
@@ -49,6 +51,8 @@ ContentSuggestionsModuleType SetUpListModuleTypeForSetUpListType(
       return ContentSuggestionsModuleType::kSetUpListDefaultBrowser;
     case SetUpListItemType::kAutofill:
       return ContentSuggestionsModuleType::kSetUpListAutofill;
+    case SetUpListItemType::kAllSet:
+      return ContentSuggestionsModuleType::kSetUpListAllSet;
     default:
       NOTREACHED_NORETURN();
   }

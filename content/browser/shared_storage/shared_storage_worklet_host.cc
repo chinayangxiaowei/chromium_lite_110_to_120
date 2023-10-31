@@ -85,8 +85,7 @@ SharedStorageURNMappingResult CreateSharedStorageURNMappingResult(
   if (!urls_with_metadata[index]->reporting_metadata.empty()) {
     fenced_frame_reporter = FencedFrameReporter::CreateForSharedStorage(
         storage_partition->GetURLLoaderFactoryForBrowserProcess(),
-        AttributionManager::FromBrowserContext(browser_context),
-        urls_with_metadata[index]->reporting_metadata);
+        browser_context, urls_with_metadata[index]->reporting_metadata);
   }
   return SharedStorageURNMappingResult(
       mapped_url,
@@ -247,6 +246,16 @@ void SharedStorageWorkletHost::RunURLSelectionOperationOnWorklet(
         "sharedStorage.worklet.addModule() has to be called before "
         "sharedStorage.selectURL().",
         /*result_config=*/absl::nullopt);
+    return;
+  }
+
+  // TODO(https://crbug.com/1473742): `page_` can somehow be null.
+  if (!page_) {
+    std::move(callback).Run(
+        /*success=*/false, /*error_message=*/
+        "Internal error: page does not exist.",
+        /*result_config=*/absl::nullopt);
+    base::debug::DumpWithoutCrashing();
     return;
   }
 

@@ -23,6 +23,8 @@ bool IsCompanionFeatureEnabled() {
   return base::FeatureList::IsEnabled(
              features::internal::kSidePanelCompanion) ||
          base::FeatureList::IsEnabled(
+             features::internal::kSidePanelCompanion2) ||
+         base::FeatureList::IsEnabled(
              features::internal::kCompanionEnabledByObservingExpsNavigations);
 }
 
@@ -67,10 +69,11 @@ bool IsSearchInCompanionSidePanelSupportedForProfile(Profile* profile) {
     return false;
   }
 
-  // If `kSidePanelCompanion` is disabled, then
+  // If `kSidePanelCompanion` and `kSidePanelCompanion2` are disabled, then
   // `kCompanionEnabledByObservingExpsNavigations` must be enabled and pref must
   // be set to true.
-  if (!base::FeatureList::IsEnabled(features::internal::kSidePanelCompanion)) {
+  if (!base::FeatureList::IsEnabled(features::internal::kSidePanelCompanion) &&
+      !base::FeatureList::IsEnabled(features::internal::kSidePanelCompanion2)) {
     CHECK(base::FeatureList::IsEnabled(
         features::internal::kCompanionEnabledByObservingExpsNavigations));
     base::UmaHistogramBoolean(

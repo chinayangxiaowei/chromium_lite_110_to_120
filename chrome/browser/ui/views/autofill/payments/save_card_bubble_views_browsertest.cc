@@ -692,8 +692,8 @@ class SaveCardBubbleViewsFullFormBrowserTest
   void ClickOnCloseButton() {
     SaveCardBubbleViews* save_card_bubble_views = GetSaveCardBubbleViews();
     CHECK(save_card_bubble_views);
-    ClickOnDialogViewAndWait(save_card_bubble_views->GetBubbleFrameView()
-                                 ->GetCloseButtonForTesting());
+    ClickOnDialogViewAndWait(
+        save_card_bubble_views->GetBubbleFrameView()->close_button());
     CHECK(!GetSaveCardBubbleViews());
   }
 
@@ -1555,9 +1555,10 @@ IN_PROC_BROWSER_TEST_P(
 // Tests the upload save logic. Ensures that Chrome lets Payments decide whether
 // upload save should be offered, even if multiple conflicting names are
 // detected.
+// TODO(crbug.com/1425364): Fix flakiness.
 IN_PROC_BROWSER_TEST_P(
     SaveCardBubbleViewsFullFormBrowserTestWithAutofillUpstream,
-    Logic_ShouldAttemptToOfferToSaveIfNamesConflict) {
+    DISABLED_Logic_ShouldAttemptToOfferToSaveIfNamesConflict) {
   // Start sync.
   ASSERT_TRUE(SetupSync());
 

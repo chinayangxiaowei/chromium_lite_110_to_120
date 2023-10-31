@@ -15,7 +15,7 @@ import collections
 import errno
 import json
 import os
-import pipes
+import shlex
 import platform
 import re
 import shutil
@@ -92,8 +92,6 @@ class MetaBuildWrapper:
     self.isolate_exe = 'isolate.exe' if self.platform.startswith(
         'win') else 'isolate'
     self.use_luci_auth = False
-    self.rts_out_dir = self.PathJoin('gen', 'rts')
-    self.banned_from_rts = set()
 
   def PostArgsInit(self):
     self.use_luci_auth = getattr(self.args, 'luci_auth', False)
@@ -104,16 +102,6 @@ class MetaBuildWrapper:
     if 'expectations_dir' in self.args and self.args.expectations_dir is None:
       self.args.expectations_dir = os.path.join(
           os.path.dirname(self.args.config_file), 'mb_config_expectations')
-
-    banned_from_rts_map = json.loads(
-        self.ReadFile(
-            self.PathJoin(self.chromium_src_dir, 'tools', 'mb',
-                          'rts_banned_suites.json')))
-    self.banned_from_rts.update(banned_from_rts_map.get('*', set()))
-
-    if getattr(self.args, 'builder', None):
-      self.banned_from_rts.update(
-          banned_from_rts_map.get(self.args.builder, set()))
 
   def Main(self, args):
     self.ParseArgs(args)
@@ -175,15 +163,6 @@ class MetaBuildWrapper:
                         help='Sets GN arg android_default_version_code')
       subp.add_argument('--android-version-name',
                         help='Sets GN arg android_default_version_name')
-      subp.add_argument('--rts',
-                        default=None,
-                        help='which regression test selection model to use'
-                        ' For more info about RTS, please see'
-                        ' //docs/testing/regression-test-selection.md')
-      subp.add_argument('--use-rts',
-                        action='store_true',
-                        default=False,
-                        help='Deprecated argument for enabling RTS')
 
       # TODO(crbug.com/1060857): Remove this once swarming task templates
       # support command prefixes.
@@ -282,10 +261,6 @@ class MetaBuildWrapper:
                            'newline.')
     subp.add_argument('--json-output',
                       help='Write errors to json.output')
-    subp.add_argument('--rts-target-change-recall',
-                      type=float,
-                      help='how much safety is needed when selecting tests. '
-                      '0.0 is the lowest and 1.0 is the highest')
     subp.add_argument('path',
                       help='path to generate build into')
     subp.set_defaults(func=self.CmdGen)
@@ -478,41 +453,7 @@ class MetaBuildWrapper:
       self.WriteFile(expectation_file, json_s)
     return 0
 
-  def RtsSelect(self):
-    if self.args.rts == 'rts-ml-chromium':
-      model_dir = self.PathJoin(self.chromium_src_dir, 'testing', 'rts',
-                                self.args.rts, self._CipdPlatform())
-      exe = self.PathJoin(model_dir, self.args.rts)
-    else:
-      model_dir = self.PathJoin(self.chromium_src_dir, 'testing', 'rts',
-                                self._CipdPlatform())
-      exe = self.PathJoin(model_dir, self.args.rts)
-
-    if self.platform == 'win32':
-      exe += '.exe'
-
-    args = [
-        exe,
-        'select',
-        '-gen-inverse',
-        '-model-dir', model_dir, \
-        '-out', self.PathJoin(self.ToAbsPath(self.args.path), self.rts_out_dir),
-        '-checkout', self.chromium_src_dir,
-    ]
-    if self.args.rts_target_change_recall:
-      if (self.args.rts_target_change_recall < 0
-          or self.args.rts_target_change_recall > 1):
-        self.WriteFailureAndRaise(
-            'rts-target-change-recall must be between (0 and 1]', None)
-      args += ['-target-change-recall', str(self.args.rts_target_change_recall)]
-
-    ret, _, err = self.Run(args, force_verbose=True)
-    if ret != 0:
-      self.WriteFailureAndRaise(err, None)
-
   def CmdGen(self):
-    if self.args.rts:
-      self.RtsSelect()
     vals = self.Lookup()
     return self.RunGNGen(vals)
 
@@ -1295,7 +1236,6 @@ class MetaBuildWrapper:
     file_ignore_list = [
         re.compile(r'.*build/chromeos.*'),
         re.compile(r'.*build/cros_cache.*'),
-        re.compile(r'.*third_party/chromite.*'),
         # No test target should rely on files in [output_dir]/gen.
         re.compile(r'^gen/.*'),
     ]
@@ -1370,20 +1310,6 @@ class MetaBuildWrapper:
       if ret != 0:
         return ret
     return 0
-
-  def AddFilterFileArg(self, target, build_dir, command, inverted=False):
-    filter_file = ('%s_inverted' % target if inverted else target) + '.filter'
-    filter_file_path = self.PathJoin(self.rts_out_dir, filter_file)
-    abs_filter_file_path = self.ToAbsPath(build_dir, filter_file_path)
-
-    filter_exists = self.Exists(abs_filter_file_path)
-    if filter_exists:
-      filtered_command = command.copy()
-      filtered_command.append('--test-launcher-filter-file=%s' %
-                              filter_file_path)
-      self.Print('added RTS filter file to command: %s' % filter_file)
-      return filtered_command
-    return None
 
   def PossibleRuntimeDepsPaths(self, vals, ninja_targets, isolate_map):
     """Returns a map of targets to possible .runtime_deps paths.
@@ -1589,25 +1515,6 @@ class MetaBuildWrapper:
             'files': files,
         }
     }
-    # For more info about RTS, please see
-    # //docs/testing/regression-test-selection.md
-    if self.args.rts:
-      if target in self.banned_from_rts:
-        self.Print('%s is banned for RTS on this builder' % target)
-      else:
-        rts_command = self.AddFilterFileArg(target,
-                                            build_dir,
-                                            command,
-                                            inverted=False)
-        if rts_command:
-          isolate['variables']['rts_command'] = rts_command
-
-        inverted_command = self.AddFilterFileArg(target,
-                                                 build_dir,
-                                                 command,
-                                                 inverted=True)
-        if inverted_command:
-          isolate['variables']['inverted_command'] = inverted_command
 
     self.WriteFile(isolate_path, json.dumps(isolate, sort_keys=True) + '\n')
 
@@ -1682,9 +1589,6 @@ class MetaBuildWrapper:
     if android_version_name:
       gn_args += ' android_default_version_name="%s"' % android_version_name
 
-    if self.args.rts:
-      gn_args += ' use_rts=true'
-
     args_gn_lines = []
     parsed_gn_args = {}
 
@@ -1733,6 +1637,8 @@ class MetaBuildWrapper:
     msan = 'is_msan=true' in vals['gn_args']
     tsan = 'is_tsan=true' in vals['gn_args']
     cfi_diag = 'use_cfi_diag=true' in vals['gn_args']
+    # Treat sanitizer warnings as test case failures (crbug/1442587).
+    fail_on_san_warnings = 'fail_on_san_warnings=true' in vals['gn_args']
     clang_coverage = 'use_clang_coverage=true' in vals['gn_args']
     java_coverage = 'use_jacoco_coverage=true' in vals['gn_args']
     javascript_coverage = 'use_javascript_coverage=true' in vals['gn_args']
@@ -1821,6 +1727,9 @@ class MetaBuildWrapper:
           '--cfi-diag=%d' % cfi_diag,
       ]
 
+      if fail_on_san_warnings:
+        cmdline += ['--fail-san=1']
+
       if javascript_coverage:
         cmdline += ['--devtools-code-coverage=${ISOLATED_OUTDIR}']
     elif test_type in ('windowed_test_launcher', 'console_test_launcher'):
@@ -1841,6 +1750,9 @@ class MetaBuildWrapper:
           '--tsan=%d' % tsan,
           '--cfi-diag=%d' % cfi_diag,
       ]
+
+      if fail_on_san_warnings:
+        cmdline += ['--fail-san=1']
     elif test_type == 'script':
       # If we're testing a CrOS simplechrome build, assume we need to prepare a
       # DUT for testing. So prepend the command to run with the test wrapper.
@@ -2064,7 +1976,7 @@ class MetaBuildWrapper:
     if self.platform == 'win32':
       shell_quoter = QuoteForCmd
     else:
-      shell_quoter = pipes.quote
+      shell_quoter = shlex.quote
 
     if cmd[0] == self.executable:
       cmd = ['python'] + cmd[1:]

@@ -65,14 +65,6 @@ targets.variant(
 )
 
 targets.variant(
-    name = "MAC_RETINA_NVIDIA_GPU_STABLE",
-    identifier = "10de:0fe9",
-    mixins = [
-        "mac_retina_nvidia_gpu_stable",
-    ],
-)
-
-targets.variant(
     name = "SIM_IPAD_AIR_2_15_5",
     identifier = "iPad Air 2 15.5",
     args = [
@@ -111,6 +103,34 @@ targets.variant(
     ],
     mixins = [
         "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
+    name = "SIM_IPAD_AIR_5TH_GEN_16_4",
+    identifier = "iPad Air (5th generation) 16.4",
+    args = [
+        "--platform",
+        "iPad Air (5th generation)",
+        "--version",
+        "16.4",
+    ],
+    mixins = [
+        "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
+    name = "SIM_IPAD_AIR_5TH_GEN_17_0",
+    identifier = "iPad Air (5th generation) 17.0",
+    args = [
+        "--platform",
+        "iPad Air (5th generation)",
+        "--version",
+        "17.0",
+    ],
+    mixins = [
+        "ios_runtime_cache_17_0",
     ],
 )
 
@@ -180,6 +200,20 @@ targets.variant(
 )
 
 targets.variant(
+    name = "SIM_IPAD_PRO_6TH_GEN_16_4",
+    identifier = "iPad Pro (12.9-inch) (6th generation) 16.4",
+    args = [
+        "--platform",
+        "iPad Pro (12.9-inch) (6th generation)",
+        "--version",
+        "16.4",
+    ],
+    mixins = [
+        "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
     name = "SIM_IPAD_6_GEN_16_2",
     identifier = "iPad (6th generation) 16.2",
     args = [
@@ -194,11 +228,11 @@ targets.variant(
 )
 
 targets.variant(
-    name = "SIM_IPAD_6_GEN_16_4",
-    identifier = "iPad (6th generation) 16.4",
+    name = "SIM_IPAD_10TH_GEN_16_4",
+    identifier = "iPad (10th generation) 16.4",
     args = [
         "--platform",
-        "iPad (6th generation)",
+        "iPad (10th generation)",
         "--version",
         "16.4",
     ],
@@ -278,6 +312,48 @@ targets.variant(
 )
 
 targets.variant(
+    name = "SIM_IPHONE_14_16_4",
+    identifier = "iPhone 14 16.4",
+    args = [
+        "--platform",
+        "iPhone 14",
+        "--version",
+        "16.4",
+    ],
+    mixins = [
+        "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
+    name = "SIM_IPHONE_14_17_0",
+    identifier = "iPhone 14 17.0",
+    args = [
+        "--platform",
+        "iPhone 14",
+        "--version",
+        "17.0",
+    ],
+    mixins = [
+        "ios_runtime_cache_17_0",
+    ],
+)
+
+targets.variant(
+    name = "SIM_IPHONE_14_PRO_MAX_16_4",
+    identifier = "iPhone 14 Pro Max 16.4",
+    args = [
+        "--platform",
+        "iPhone 14 Pro Max",
+        "--version",
+        "16.4",
+    ],
+    mixins = [
+        "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
     name = "SIM_IPHONE_SE_1ST_GEN_15_5",
     identifier = "iPhone SE (1st generation) 15.5",
     args = [
@@ -316,6 +392,20 @@ targets.variant(
     ],
     mixins = [
         "ios_runtime_cache_16_4",
+    ],
+)
+
+targets.variant(
+    name = "SIM_IPHONE_SE_3RD_GEN_17_0",
+    identifier = "iPhone SE (3rd generation) 17.0",
+    args = [
+        "--platform",
+        "iPhone SE (3rd generation)",
+        "--version",
+        "17.0",
+    ],
+    mixins = [
+        "ios_runtime_cache_17_0",
     ],
 )
 
@@ -431,23 +521,6 @@ targets.variant(
             "os": "ChromeOS",
             "device_type": "eve",
         },
-    ),
-)
-
-targets.variant(
-    name = "LACROS_JACUZZI",
-    identifier = "jacuzzi",
-    args = [
-        "--board=jacuzzi",
-        "--flash",
-    ],
-    swarming = targets.swarming(
-        dimension_sets = [
-            {
-                "os": "ChromeOS",
-                "device_type": "jacuzzi",
-            },
-        ],
     ),
 )
 

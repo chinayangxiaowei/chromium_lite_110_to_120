@@ -84,6 +84,7 @@
 #include "chrome/common/pref_names.h"
 #include "chrome/grit/generated_resources.h"
 #include "chrome/installer/util/google_update_settings.h"
+#include "chromeos/ash/components/login/auth/auth_events_recorder.h"
 #include "chromeos/ash/components/login/auth/challenge_response/cert_utils.h"
 #include "chromeos/ash/components/login/auth/public/cryptohome_key_constants.h"
 #include "chromeos/ash/components/login/auth/public/saml_password_attributes.h"
@@ -851,6 +852,8 @@ void GaiaScreenHandler::HandleCompleteAuthentication(
   online_login_helper_->SetUserContext(std::move(user_context));
   online_login_helper_->RequestCookiesAndCompleteAuthentication();
 
+  populated_account_id_.clear();
+
   if (test_expects_complete_login_) {
     VLOG(2) << "Complete test login for " << sanitized_email
             << ", requested=" << test_user_;
@@ -1140,6 +1143,7 @@ void GaiaScreenHandler::SetSAMLPrincipalsAPIUsed(bool is_third_party_idp,
 }
 
 void GaiaScreenHandler::Show() {
+  AuthEventsRecorder::Get()->OnGaiaScreen();
   histogram_helper_->OnScreenShow();
 
   network_state_informer_->AddObserver(this);
@@ -1380,7 +1384,6 @@ void GaiaScreenHandler::LoadAuthExtension(bool force) {
         AccountId::FromUserEmail(gaia::CanonicalizeEmail(context.email)));
   }
 
-  populated_account_id_.clear();
   LoadGaia(context);
 }
 

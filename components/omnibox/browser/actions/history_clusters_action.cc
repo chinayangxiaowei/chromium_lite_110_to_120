@@ -91,8 +91,8 @@ bool IsNavigationIntent(int top_search_relevance,
 }
 
 GURL GetFullJourneysUrlForQuery(const std::string& query) {
-  return net::AppendOrReplaceQueryParameter(GURL(kChromeUIHistoryClustersURL),
-                                            "q", query);
+  return net::AppendOrReplaceQueryParameter(
+      GURL(GetChromeUIHistoryClustersURL()), "q", query);
 }
 
 HistoryClustersAction::HistoryClustersAction(
@@ -175,8 +175,9 @@ const gfx::VectorIcon& HistoryClustersAction::GetVectorIcon() const {
 base::android::ScopedJavaLocalRef<jobject>
 HistoryClustersAction::GetOrCreateJavaObject(JNIEnv* env) const {
   if (!j_omnibox_action_) {
-    j_omnibox_action_.Reset(
-        BuildHistoryClustersAction(env, strings_.hint, query_));
+    j_omnibox_action_.Reset(BuildHistoryClustersAction(
+        env, reinterpret_cast<intptr_t>(this), strings_.hint,
+        strings_.accessibility_hint, query_));
   }
   return base::android::ScopedJavaLocalRef<jobject>(j_omnibox_action_);
 }

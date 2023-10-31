@@ -8,6 +8,7 @@ GEN_INCLUDE(['//chrome/test/data/webui/polymer_browser_test_base.js']);
 
 GEN('#include "build/build_config.h"');
 GEN('#include "build/chromeos_buildflags.h"');
+GEN('#include "components/history_clusters/core/features.h"');
 GEN('#include "components/search/ntp_features.h"');
 GEN('#include "content/public/test/browser_test.h"');
 
@@ -55,6 +56,10 @@ TEST_F('NewTabPageAppTest', 'Clicks', function() {
 
 TEST_F('NewTabPageAppTest', 'Modules', function() {
   runMochaSuite('NewTabPageAppTest modules');
+});
+
+TEST_F('NewTabPageAppTest', 'V2Modules', function() {
+  runMochaSuite('NewTabPageAppTest v2 modules');
 });
 
 TEST_F('NewTabPageAppTest', 'CounterfactualModules', function() {
@@ -300,7 +305,7 @@ GEN('#if !defined(OFFICIAL_BUILD)');
 var NewTabPageModulesDummyModuleTest = class extends NewTabPageBrowserTest {
   /** @override */
   get browsePreload() {
-    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/dummy_v2/module_test.js';
+    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/v2/dummy/module_test.js';
   }
 };
 
@@ -335,7 +340,7 @@ TEST_F('NewTabPageModulesDriveModuleTest', 'All', function() {
 var NewTabPageModulesDriveV2ModuleTest = class extends NewTabPageBrowserTest {
   /** @override */
   get browsePreload() {
-    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/drive_v2/module_test.js';
+    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/v2/drive/module_test.js';
   }
 };
 
@@ -389,6 +394,9 @@ var NewTabPageModulesHistoryClustersModuleTest =
     return {
       enabled: [
         'ntp_features::kNtpHistoryClustersModule',
+      ],
+      disabled: [
+        'history_clusters::kRenameJourneys',
       ],
     };
   }
@@ -482,7 +490,7 @@ var NewTabPageModulesHistoryClustersV2ModuleTest =
     class extends NewTabPageBrowserTest {
   /** @override */
   get browsePreload() {
-    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/history_clusters_v2/module_test.js';
+    return 'chrome://new-tab-page/test_loader.html?module=new_tab_page/modules/v2/history_clusters/module_test.js';
   }
 
   /** @override */

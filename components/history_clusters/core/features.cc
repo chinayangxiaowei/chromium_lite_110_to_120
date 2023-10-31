@@ -35,7 +35,7 @@ BASE_FEATURE(kJourneysLabels,
 
 BASE_FEATURE(kJourneysImages,
              "JourneysImages",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 const base::FeatureParam<bool> kJourneysImagesCover{
     &kJourneysImages, "JourneysImagesCover", true};
@@ -92,12 +92,6 @@ BASE_FEATURE(kHistoryClustersNavigationContextClustering,
              "HistoryClustersNavigationContextClustering",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// TODO(manukh): Launched with chromium roll out in m114 3/29/23. Clean feature
-//   code when m114 reaches stable 5/30.
-BASE_FEATURE(kHideVisits,
-             "HistoryClustersHideVisits",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Killswitch only.
 BASE_FEATURE(kJourneysNamedNewTabGroups,
              "JourneysNamedNewTabGroups",
@@ -120,5 +114,9 @@ BASE_FEATURE(kSidePanelJourneys,
 // entrypoints open Journeys in Side Panel rather than the History WebUI.
 const base::FeatureParam<bool> kSidePanelJourneysOpensFromOmnibox{
     &kSidePanelJourneys, "SidePanelJourneysOpensFromOmnibox", true};
+
+BASE_FEATURE(kRenameJourneys,
+             "RenameJourneys",
+             enabled_by_default_desktop_only);
 
 }  // namespace history_clusters

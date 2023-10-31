@@ -13,6 +13,7 @@
 #include "ash/ambient/ambient_ui_settings.h"
 #include "ash/ambient/managed/screensaver_images_policy_handler.h"
 #include "ash/ambient/metrics/ambient_metrics.h"
+#include "ash/ambient/metrics/managed_screensaver_metrics.h"
 #include "ash/ambient/test/ambient_ash_test_base.h"
 #include "ash/ambient/test/test_ambient_client.h"
 #include "ash/ambient/ui/ambient_container_view.h"
@@ -358,6 +359,26 @@ TEST_F(AmbientControllerTest,
   EXPECT_FALSE(ambient_controller()->ShouldShowAmbientUi());
   // The view should be destroyed along the widget.
   EXPECT_TRUE(GetContainerViews().empty());
+}
+
+TEST_F(AmbientControllerTest, ConsumerShouldNotRecordManagedMetrics) {
+  base::HistogramTester histogram_tester;
+  SetAmbientModeEnabled(true);
+
+  SetAmbientModeEnabled(false);
+
+  {
+    base::test::ScopedFeatureList scoped_feature_list(
+        ash::features::kAmbientModeManagedScreensaver);
+
+    SetAmbientModeEnabled(true);
+
+    SetAmbientModeEnabled(false);
+  }
+
+  histogram_tester.ExpectTotalCount(
+      GetManagedScreensaverHistogram(kManagedScreensaverEnabledUMA),
+      /*expected_count=*/0);
 }
 
 TEST_F(AmbientControllerTest, NotShowAmbientWhenLockSecondaryUser) {
@@ -1623,6 +1644,7 @@ class AmbientControllerForManagedScreensaverTest : public AmbientAshTestBase {
   void SimulateScreensaverStart() {
     LockScreen();
     FastForwardByLockScreenInactivityTimeout();
+    EXPECT_EQ(absl::nullopt, GetRemainingLockScreenTimeoutFraction());
     EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   }
 
@@ -1633,6 +1655,20 @@ class AmbientControllerForManagedScreensaverTest : public AmbientAshTestBase {
   std::unique_ptr<base::ScopedPathOverride>
       device_policy_screensaver_folder_override_;
 };
+
+TEST_F(AmbientControllerForManagedScreensaverTest,
+       VerifyEnabledPolicyHistogram) {
+  base::HistogramTester histogram_tester;
+  SetAmbientModeManagedScreensaverEnabled(true);
+
+  SetAmbientModeManagedScreensaverEnabled(false);
+
+  SetAmbientModeManagedScreensaverEnabled(true);
+
+  EXPECT_THAT(histogram_tester.GetAllSamples(GetManagedScreensaverHistogram(
+                  kManagedScreensaverEnabledUMA)),
+              BucketsAre(base::Bucket(false, 1), base::Bucket(true, 2)));
+}
 
 TEST_F(AmbientControllerForManagedScreensaverTest,
        ScreensaverIsShownWithEnoughImages) {
@@ -1799,7 +1835,7 @@ class AmbientControllerForManagedScreensaverLoginScreenTest
     managed_policy_handler()->SetImagesForTesting(image_file_paths_);
   }
 
-  void TriggerLoginScreen() {
+  void TriggerScreensaverOnLoginScreen() {
     GetSessionControllerClient()->RequestSignOut();
     // The login screen can't be shown without a wallpaper.
     Shell::Get()->wallpaper_controller()->ShowDefaultWallpaperForTesting();
@@ -1810,8 +1846,52 @@ class AmbientControllerForManagedScreensaverLoginScreenTest
 };
 
 TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
+       UMAEngagementTime) {
+  base::HistogramTester histogram_tester;
+
+  constexpr base::TimeDelta kExpectedTimeBucket1 = base::Seconds(5);
+  constexpr base::TimeDelta kExpectedTimeBucket2 = base::Seconds(10);
+
+  TriggerScreensaverOnLoginScreen();
+  ASSERT_TRUE(GetContainerView());
+  task_environment()->FastForwardBy(kExpectedTimeBucket1);
+  // Dismiss Screensaver
+  GetEventGenerator()->ClickLeftButton();
+  ASSERT_FALSE(GetContainerView());
+  FastForwardByLockScreenInactivityTimeout();
+  ASSERT_TRUE(GetContainerView());
+  task_environment()->FastForwardBy(kExpectedTimeBucket2);
+  // Dismiss Screensaver
+  GetEventGenerator()->ClickLeftButton();
+  auto histogram_name = GetManagedScreensaverHistogram(
+      kManagedScreensaverEngagementTimeSlideshowUMA);
+  histogram_tester.ExpectTimeBucketCount(histogram_name, kExpectedTimeBucket1,
+                                         1);
+  histogram_tester.ExpectTimeBucketCount(histogram_name, kExpectedTimeBucket2,
+                                         1);
+}
+
+TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest, UMAStartupTime) {
+  base::HistogramTester histogram_tester;
+
+  constexpr base::TimeDelta kExpectedTimeBucket1 = base::Seconds(0);
+
+  TriggerScreensaverOnLoginScreen();
+  ASSERT_TRUE(GetContainerView());
+  GetEventGenerator()->ClickLeftButton();
+  ASSERT_FALSE(GetContainerView());
+  FastForwardByLockScreenInactivityTimeout();
+  ASSERT_TRUE(GetContainerView());
+
+  auto histogram_name = GetManagedScreensaverHistogram(
+      kManagedScreensaverStartupTimeSlideshowUMA);
+  histogram_tester.ExpectTimeBucketCount(histogram_name, kExpectedTimeBucket1,
+                                         2);
+}
+
+TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
        ShownOnLoginScreen) {
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
 
   EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   ASSERT_TRUE(GetContainerView());
@@ -1828,7 +1908,7 @@ TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
   SetAmbientModeManagedScreensaverEnabled(/*enabled=*/false);
   EXPECT_FALSE(ambient_controller()->ShouldShowAmbientUi());
   // Login screen is shown when the managed mode is disabled
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
   SetAmbientModeManagedScreensaverEnabled(/*enabled=*/true);
   managed_policy_handler()->SetImagesForTesting(image_file_paths_);
   FastForwardByLockScreenInactivityTimeout();
@@ -1845,7 +1925,7 @@ TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
 
 TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
        UserLogsInAmbientModeDisabledAndManagedAmbientModeEnabled) {
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
   EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   ASSERT_TRUE(GetContainerView());
 
@@ -1871,7 +1951,7 @@ TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
 
 TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
        UserLogsInAmbientModeEnabled) {
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
   EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   ASSERT_TRUE(GetContainerView());
 
@@ -1890,7 +1970,7 @@ TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
 
 TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
        ManagedScreensaverClosedWhenImagesCleared) {
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
   EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   ASSERT_TRUE(GetContainerView());
   // Clear images
@@ -1919,7 +1999,7 @@ TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
 
 TEST_F(AmbientControllerForManagedScreensaverLoginScreenTest,
        ManagedScreensaverClosedWhenImageLoadingFails) {
-  TriggerLoginScreen();
+  TriggerScreensaverOnLoginScreen();
   EXPECT_TRUE(ambient_controller()->ShouldShowAmbientUi());
   ASSERT_TRUE(GetContainerView());
   // Set invalid images ( i.e. either the paths are invalid or images themselves
@@ -1953,6 +2033,48 @@ TEST_F(AmbientControllerForManagedScreensaverTest,
   SetScreenIdleStateAndWait(/*is_screen_dimmed=*/true, /*is_off=*/false);
   EXPECT_FALSE(IsLocked());
   EXPECT_FALSE(ambient_controller()->ShouldShowAmbientUi());
+}
+
+TEST_F(AmbientControllerForManagedScreensaverTest,
+       ManagedScreensaverAlwaysShowsFullImages) {
+  const gfx::Rect screen_bounds_landscape(/*width=*/320, /*height=*/180);
+  UpdateDisplay("320x180");
+  SetAmbientModeManagedScreensaverEnabled(/*enabled=*/true);
+
+  const base::FilePath image_large_1 =
+      temp_dir_.GetPath().Append(FILE_PATH_LITERAL("IMAGE_L.jpg"));
+  CreateTestImageJpegFile(image_large_1, 400, 180, SK_ColorRED);
+  const base::FilePath image_large_2 =
+      temp_dir_.GetPath().Append(FILE_PATH_LITERAL("IMAGE_L_2.jpg"));
+
+  CreateTestImageJpegFile(image_large_2, 400, 180, SK_ColorGREEN);
+
+  const std::vector<base::FilePath> images{image_large_1, image_large_2};
+  managed_policy_handler()->SetImagesForTesting(images);
+  SimulateScreensaverStart();
+  ASSERT_TRUE(GetContainerView());
+
+  const gfx::Rect image_bounds_landscape =
+      GetAmbientBackgroundImageView()->GetImageBoundsInScreenForTesting();
+  EXPECT_TRUE(screen_bounds_landscape.Contains(image_bounds_landscape));
+
+  // Top and bottom black bars of 18 pixels due to height scaling.
+  EXPECT_EQ(image_bounds_landscape,
+            gfx::Rect(/*x=*/0, /*y=*/18, /*width=*/320, /*height=*/144));
+
+  // Rotate screen
+  const gfx::Rect screen_bounds_portrait(/*width=*/180, /*height=*/320);
+  UpdateDisplay("180x320");
+  FastForwardByLockScreenInactivityTimeout();
+  ASSERT_TRUE(GetContainerView());
+
+  const gfx::Rect image_bounds_portrait =
+      GetAmbientBackgroundImageView()->GetImageBoundsInScreenForTesting();
+  EXPECT_TRUE(screen_bounds_portrait.Contains(image_bounds_portrait));
+
+  // Top and bottom black bars of 119 pixels due to height scaling.
+  EXPECT_EQ(image_bounds_portrait,
+            gfx::Rect(/*x=*/0, /*y=*/119, /*width=*/180, /*height=*/81));
 }
 
 TEST_F(AmbientControllerTest, RendersCorrectViewForVideo) {

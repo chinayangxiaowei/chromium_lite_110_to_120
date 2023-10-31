@@ -9,6 +9,7 @@
 #include <string>
 
 #include "ash/ash_export.h"
+#include "base/memory/raw_ptr.h"
 #include "base/time/clock.h"
 #include "base/time/time.h"
 
@@ -72,7 +73,8 @@ class ASH_EXPORT TimeOfDay {
 
   // May be null, in which case `GetLocalTimeConverter()` returns the default
   // implementation.
-  const LocalTimeConverter* local_time_converter_ = nullptr;
+  base::raw_ptr<const LocalTimeConverter, ExperimentalAsh>
+      local_time_converter_ = nullptr;
 };
 
 ASH_EXPORT std::ostream& operator<<(std::ostream& os,
