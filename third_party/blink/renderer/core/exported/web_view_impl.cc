@@ -1287,7 +1287,7 @@ void WebViewImpl::ResizeViewWhileAnchored(
     gfx::Size old_size = frame_view->Size();
     UpdateICBAndResizeViewport(visible_viewport_size);
     gfx::Size new_size = frame_view->Size();
-    frame_view->MarkFixedPositionObjectsForLayout(
+    frame_view->InvalidateLayoutForViewportConstrainedObjects(
         old_size.width() != new_size.width(),
         old_size.height() != new_size.height());
   }
@@ -2439,11 +2439,7 @@ void WebViewImpl::SetPageLifecycleStateInternal(
     // we're navigating away from a page, if the page is already hidden.
     DispatchPagehide(new_state->pagehide_dispatch);
   }
-  // Both `kHidden` and `kHiddenButPainting` count as `hiding_page`, but we also
-  // want to dispatch events if we switch between the two.  Otherwise, things
-  // that might want to start painting (e.g., video), won't find out about it.
-  if (hiding_page ||
-      (!showing_page && old_state->visibility != new_state->visibility)) {
+  if (hiding_page) {
     SetVisibilityState(new_state->visibility, /*is_initial_state=*/false);
   }
   if (storing_in_bfcache) {
@@ -2541,6 +2537,14 @@ void WebViewImpl::SetPageLifecycleStateInternal(
 
   UpdateViewTransitionState(restoring_from_bfcache, storing_in_bfcache,
                             page_restore_params);
+
+  if (RuntimeEnabledFeatures::PageRevealEventEnabled()) {
+    if (restoring_from_bfcache) {
+      if (auto* main_frame = DynamicTo<LocalFrame>(GetPage()->MainFrame())) {
+        main_frame->GetDocument()->EnqueuePageRevealEvent();
+      }
+    }
+  }
 }
 
 void WebViewImpl::UpdateViewTransitionState(
@@ -3880,11 +3884,8 @@ void WebViewImpl::SetVisibilityState(
     bool is_initial_state) {
   DCHECK(GetPage());
   GetPage()->SetVisibilityState(visibility_state, is_initial_state);
-  // Do not throttle if the page should be painting.
   GetPage()->GetPageScheduler()->SetPageVisible(
-      visibility_state == mojom::blink::PageVisibilityState::kVisible ||
-      visibility_state ==
-          mojom::blink::PageVisibilityState::kHiddenButPainting);
+      visibility_state == mojom::blink::PageVisibilityState::kVisible);
   // Notify observers of the change.
   if (!is_initial_state) {
     for (auto& observer : observers_)

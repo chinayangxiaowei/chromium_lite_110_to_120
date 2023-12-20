@@ -28,6 +28,7 @@
 #include "chrome/common/chrome_features.h"
 #include "chrome/common/chrome_paths.h"
 #include "chromeos/ash/components/standalone_browser/lacros_availability.h"
+#include "chromeos/ash/components/standalone_browser/migrator_util.h"
 #include "chromeos/crosapi/cpp/crosapi_constants.h"
 #include "chromeos/crosapi/mojom/crosapi.mojom.h"
 #include "components/component_updater/component_updater_service.h"
@@ -53,6 +54,7 @@ namespace crosapi::browser_util {
 namespace {
 
 bool g_profile_migration_completed_for_test = false;
+absl::optional<bool> g_cpu_override_for_test = absl::nullopt;
 
 // At session start the value for LacrosAvailability logic is applied and the
 // result is stored in this variable which is used after that as a cache.
@@ -189,7 +191,7 @@ bool IsLacrosDisallowedByCommand() {
 // with given LacrosAvailability policy.
 bool IsLacrosAllowedInternal(const User* user,
                              LacrosAvailability lacros_availability) {
-  if (IsLacrosDisallowedByCommand()) {
+  if (IsLacrosDisallowedByCommand() || !IsCPUSupportedByLacros()) {
     // This happens when Ash is restarted in multi-user session, meaning there
     // are more than two users logged in to the device. This will not cause an
     // accidental removal of Lacros data because for the primary user, the fact
@@ -866,6 +868,12 @@ MigrationStatus GetMigrationStatus(PrefService* local_state,
       GetCompletedMigrationMode(local_state, user->username_hash());
 
   if (!mode.has_value()) {
+    if (ash::standalone_browser::migrator_util::
+            IsMigrationAttemptLimitReachedForUser(local_state,
+                                                  user->username_hash())) {
+      return MigrationStatus::kMaxAttemptReached;
+    }
+
     return MigrationStatus::kUncompleted;
   }
 
@@ -1083,6 +1091,26 @@ bool ShouldEnforceAshExtensionKeepList() {
 bool IsAshDevToolEnabled() {
   return IsAshWebBrowserEnabled() ||
          base::FeatureList::IsEnabled(ash::features::kAllowDevtoolsInSystemUI);
+}
+
+// Return true if the CPU of this system is capable to run Lacros.
+bool IsCPUSupportedByLacros() {
+  if (g_cpu_override_for_test.has_value()) {
+    return g_cpu_override_for_test.value();
+  }
+#ifdef ARCH_CPU_X86_64
+  // Some very old Flex devices are not capable to support the -v2 instruction
+  // set. Those CPU's should not use Lacros as Lacros has only one binary
+  // for all intel platforms. As 'x86-64-v2' does not work on the build server,
+  // we check against SSE4.2 here which should be as as good.
+  return __builtin_cpu_supports("sse4.2");
+#else
+  return true;
+#endif
+}
+
+void SetCpuAvailabilityForTesting(absl::optional<bool> value) {
+  g_cpu_override_for_test = value;
 }
 
 }  // namespace crosapi::browser_util

@@ -381,7 +381,8 @@ public class AwMetricsIntegrationTest {
             AwBrowserProcess.setWebViewPackageName(appPackageName);
             AndroidMetricsServiceClient.setInstallerPackageTypeForTesting(
                     InstallerPackageType.GOOGLE_PLAY_STORE);
-            // A valid version string and non expired date means the app package name should be
+            // A valid version string and non expired date means the app package name should
+            // be
             // recorded.
             AwMetricsServiceClient.setAppPackageNameLoggingRuleForTesting(
                     /* allowlistComponentVersion= */ "123.456.78.9",
@@ -441,10 +442,11 @@ public class AwMetricsIntegrationTest {
         // A fake expiry date, the allowlist component info should be recorded regardless of the
         // expiry date.
         final long allowlistExpiryDateMs = 1234567891011L;
-        TestThreadUtils.runOnUiThreadBlocking(() -> {
-            AwMetricsServiceClient.setAppPackageNameLoggingRuleForTesting(
-                    allowlistComponentVersion, allowlistExpiryDateMs);
-        });
+        TestThreadUtils.runOnUiThreadBlocking(
+                () -> {
+                    AwMetricsServiceClient.setAppPackageNameLoggingRuleForTesting(
+                            allowlistComponentVersion, allowlistExpiryDateMs);
+                });
 
         // Ignore the first log because it will likely be recorded before setting the allowlist
         // version above.
@@ -464,7 +466,8 @@ public class AwMetricsIntegrationTest {
                                 SystemProfileProto.ComponentId.WEBVIEW_APPS_PACKAGE_NAMES_ALLOWLIST)
                         .setVersion(allowlistComponentVersion)
                         .build();
-        assertThat(systemProfile.getChromeComponentList(),
+        assertThat(
+                systemProfile.getChromeComponentList(),
                 contains(matchesChromeComponent(expectedAllowlistComponent)));
     }
 
@@ -579,15 +582,15 @@ public class AwMetricsIntegrationTest {
     @Test
     @MediumTest
     @Feature({"AndroidWebView"})
-    @CommandLineFlags.
-    Add("disable-features=" + AwFeatures.WEBVIEW_APPS_PACKAGE_NAMES_SERVER_SIDE_ALLOWLIST)
+    @CommandLineFlags.Add(
+            "disable-features=" + AwFeatures.WEBVIEW_APPS_PACKAGE_NAMES_SERVER_SIDE_ALLOWLIST)
     public void testServerSideAllowlistFilteringNotRequiredDueToClientSideFiltering()
             throws Throwable {
         ChromeUserMetricsExtension log = mPlatformServiceBridge.waitForNextMetricsLog();
         SystemProfileProto.AppPackageNameAllowlistFilter filter =
                 log.getSystemProfile().getAppPackageNameAllowlistFilter();
-        assertEquals(filter,
-                SystemProfileProto.AppPackageNameAllowlistFilter
-                        .NO_SERVER_SIDE_FILTER_REQUIRED_DUE_TO_CLIENT_FILTERING);
+        assertEquals(
+                filter,
+                SystemProfileProto.AppPackageNameAllowlistFilter.SERVER_SIDE_FILTER_UNSPECIFIED);
     }
 }

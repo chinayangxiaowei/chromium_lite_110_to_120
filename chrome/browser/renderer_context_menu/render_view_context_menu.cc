@@ -26,6 +26,7 @@
 #include "base/strings/escape.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/system/sys_info.h"
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
@@ -59,8 +60,8 @@
 #include "chrome/browser/platform_util.h"
 #include "chrome/browser/predictors/loading_predictor.h"
 #include "chrome/browser/predictors/loading_predictor_factory.h"
-#include "chrome/browser/prefetch/prefetch_prefs.h"
 #include "chrome/browser/prefs/incognito_mode_prefs.h"
+#include "chrome/browser/preloading/preloading_prefs.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/profiles/profile_attributes_entry.h"
 #include "chrome/browser/profiles/profile_attributes_storage.h"
@@ -122,7 +123,7 @@
 #include "chrome/common/pref_names.h"
 #include "chrome/common/url_constants.h"
 #include "chrome/common/webui_url_constants.h"
-#include "chrome/grit/chromium_strings.h"
+#include "chrome/grit/branded_strings.h"
 #include "chrome/grit/generated_resources.h"
 #include "components/autofill/content/browser/content_autofill_client.h"
 #include "components/autofill/core/browser/ui/popup_item_ids.h"
@@ -338,11 +339,6 @@ namespace {
 constexpr char kOpenLinkAsProfileHistogram[] =
     "RenderViewContextMenu.OpenLinkAsProfile";
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-// TODO(b/289859230): Replace with finalized display string and translate.
-constexpr char16_t kContentContextOrca[] = u"Orca";
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-
 base::OnceCallback<void(RenderViewContextMenu*)>* GetMenuShownCallback() {
   static base::NoDestructor<base::OnceCallback<void(RenderViewContextMenu*)>>
       callback;
@@ -492,8 +488,8 @@ const std::map<int, int>& GetIdcToUmaMap(UmaEnumIdLookupType type) {
        {IDC_CONTENT_CONTEXT_ADD_A_NOTE, 124},
        {IDC_LIVE_CAPTION, 125},
        {IDC_CONTENT_CONTEXT_PDF_OCR, 126},
-       {IDC_CONTENT_CONTEXT_PDF_OCR_ALWAYS, 127},
-       {IDC_CONTENT_CONTEXT_PDF_OCR_ONCE, 128},
+       // Removed: {IDC_CONTENT_CONTEXT_PDF_OCR_ALWAYS, 127},
+       // Removed: {IDC_CONTENT_CONTEXT_PDF_OCR_ONCE, 128},
        {IDC_CONTENT_CONTEXT_AUTOFILL_FEEDBACK, 129},
        {IDC_CONTENT_CONTEXT_TRANSLATEIMAGEWITHWEB, 130},
        {IDC_CONTENT_CONTEXT_TRANSLATEIMAGEWITHLENS, 131},
@@ -501,7 +497,7 @@ const std::map<int, int>& GetIdcToUmaMap(UmaEnumIdLookupType type) {
        {IDC_CONTENT_CONTEXT_SAVEPLUGINAS, 133},
        {IDC_CONTENT_CONTEXT_AUTOFILL_FALLBACK_AUTOCOMPLETE_UNRECOGNIZED, 134},
        {IDC_CONTENT_CONTEXT_SEARCHWEBFORNEWTAB, 135},
-       {IDC_CONTENT_CONTEXT_ORCA, 136},
+       // Removed: {IDC_CONTENT_CONTEXT_ORCA, 136},
        {IDC_CONTENT_CONTEXT_RUN_LAYOUT_EXTRACTION, 137},
        {IDC_CONTENT_PASTE_FROM_CLIPBOARD, 138},
        // To add new items:
@@ -708,7 +704,7 @@ bool DoesInputFieldTypeSupportEmoji(
 // Otherwise nullopt.
 absl::optional<ash::SystemWebAppType> GetLinkSystemAppType(Profile* profile,
                                                            const GURL& url) {
-  absl::optional<web_app::AppId> link_app_id =
+  absl::optional<webapps::AppId> link_app_id =
       web_app::FindInstalledAppWithUrlInScope(profile, url);
 
   if (!link_app_id)
@@ -803,8 +799,7 @@ RenderViewContextMenu::RenderViewContextMenu(
           autofill::PersonalDataManagerFactory::GetForProfile(GetProfile()),
           this,
           &menu_model_,
-          GetBrowser(),
-          std::make_unique<ScopedNewBadgeTracker>(GetProfile())) {
+          GetBrowser()) {
   if (!g_custom_id_ranges_initialized) {
     g_custom_id_ranges_initialized = true;
     SetContentCustomCommandIdRange(IDC_CONTENT_CONTEXT_CUSTOM_FIRST,
@@ -1798,7 +1793,7 @@ void RenderViewContextMenu::AppendOpenInWebAppLinkItems() {
   if (!provider)
     return;
 
-  absl::optional<web_app::AppId> link_app_id =
+  absl::optional<webapps::AppId> link_app_id =
       web_app::FindInstalledAppWithUrlInScope(profile, params_.link_url);
   if (!link_app_id)
     return;
@@ -1907,17 +1902,7 @@ void RenderViewContextMenu::AppendSearchWebForImageItems() {
     menu_model_.SetIsNewFeatureAt(menu_model_.GetItemCount() - 1, true);
   }
 
-  if (search::DefaultSearchProviderIsGoogle(GetProfile())) {
-    if (companion::IsSearchImageInCompanionSidePanelSupported(GetBrowser()) &&
-        companion::GetShouldIssuePreconnectForCompanion()) {
-      IssuePreconnectionToUrl(companion::GetPreconnectKeyForCompanion(),
-                              companion::GetImageUploadURLForCompanion());
-    } else if (base::FeatureList::IsEnabled(lens::features::kLensStandalone) &&
-               lens::features::GetShouldIssuePreconnectForLens()) {
-      IssuePreconnectionToUrl(lens::features::GetPreconnectKeyForLens(),
-                              lens::features::GetHomepageURLForLens());
-    }
-  }
+  MaybePrepareForLensQuery();
 
   if (base::FeatureList::IsEnabled(lens::features::kLensStandalone) &&
       base::FeatureList::IsEnabled(lens::features::kEnableImageTranslate) &&
@@ -2259,13 +2244,6 @@ void RenderViewContextMenu::AppendSpellingAndSearchSuggestionItems() {
                                       IDS_CONTENT_CONTEXT_EMOJI);
     }
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    if (chromeos::features::IsOrcaEnabled()) {
-      render_separator = true;
-      menu_model_.AddItem(IDC_CONTENT_CONTEXT_ORCA, kContentContextOrca);
-    }
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-
     if (render_separator) {
       menu_model_.AddSeparator(ui::NORMAL_SEPARATOR);
     }
@@ -2516,18 +2494,7 @@ void RenderViewContextMenu::AppendRegionSearchItem() {
       menu_model_.SetIsNewFeatureAt(menu_model_.GetItemCount() - 1, true);
     }
 
-    if (search::DefaultSearchProviderIsGoogle(GetProfile())) {
-      if (companion::IsSearchImageInCompanionSidePanelSupported(GetBrowser()) &&
-          companion::GetShouldIssuePreconnectForCompanion()) {
-        IssuePreconnectionToUrl(companion::GetPreconnectKeyForCompanion(),
-                                companion::GetImageUploadURLForCompanion());
-      } else if (base::FeatureList::IsEnabled(
-                     lens::features::kLensStandalone) &&
-                 lens::features::GetShouldIssuePreconnectForLens()) {
-        IssuePreconnectionToUrl(lens::features::GetPreconnectKeyForLens(),
-                                lens::features::GetHomepageURLForLens());
-      }
-    }
+    MaybePrepareForLensQuery();
   }
 }
 
@@ -2825,11 +2792,6 @@ bool RenderViewContextMenu::IsCommandIdEnabled(int id) const {
 #else
       NOTREACHED() << "Unhandled id: " << id;
       return false;
-#endif
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    case IDC_CONTENT_CONTEXT_ORCA:
-      return chromeos::features::IsOrcaEnabled() && params_.is_editable;
 #endif
 
     case IDC_FOLLOW:
@@ -3293,14 +3255,6 @@ void RenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
       break;
     }
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    case IDC_CONTENT_CONTEXT_ORCA: {
-      CHECK(chromeos::features::IsOrcaEnabled());
-      ash::input_method::EditorMediator::Get()->HandleTrigger();
-      break;
-    }
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-
     case IDC_FOLLOW:
       feed::FollowSite(source_web_contents_);
       break;
@@ -3340,30 +3294,13 @@ void RenderViewContextMenu::AddAccessibilityLabelsServiceItem(bool is_checked) {
   }
 }
 
-void RenderViewContextMenu::AddPdfOcrMenuItem(bool is_always_active) {
+void RenderViewContextMenu::AddPdfOcrMenuItem() {
 #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-  if (is_always_active) {
-    // Only a checked item needs to be added to the context menu when the user
-    // selects "Always" or toggles on PDF OCR to make it always active.
-    menu_model_.AddCheckItem(
-        IDC_CONTENT_CONTEXT_PDF_OCR,
-        l10n_util::GetStringUTF16(IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION));
-  } else {
-    // Add the submenu when the user doesn't select "Always" nor toggle on the
-    // the PDF OCR.
-    pdf_ocr_submenu_model_->AddItem(
-        IDC_CONTENT_CONTEXT_PDF_OCR_ALWAYS,
-        l10n_util::GetStringUTF16(
-            IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION_ALWAYS));
-    pdf_ocr_submenu_model_->AddItem(
-        IDC_CONTENT_CONTEXT_PDF_OCR_ONCE,
-        l10n_util::GetStringUTF16(
-            IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION_ONCE));
-    menu_model_.AddSubMenu(
-        IDC_CONTENT_CONTEXT_PDF_OCR,
-        l10n_util::GetStringUTF16(IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION),
-        pdf_ocr_submenu_model_.get());
-  }
+  // Add an item to the context menu. Its check state will be determined by
+  // whether PDF OCR is on. If on, it will be checked; otherwise, unchecked.
+  menu_model_.AddCheckItem(
+      IDC_CONTENT_CONTEXT_PDF_OCR,
+      l10n_util::GetStringUTF16(IDS_CONTENT_CONTEXT_PDF_OCR_MENU_OPTION));
 #endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
 }
 
@@ -3803,7 +3740,7 @@ bool RenderViewContextMenu::IsOpenLinkOTREnabled() const {
 }
 
 void RenderViewContextMenu::ExecOpenWebApp() {
-  absl::optional<web_app::AppId> app_id =
+  absl::optional<webapps::AppId> app_id =
       web_app::FindInstalledAppWithUrlInScope(
           Profile::FromBrowserContext(browser_context_), params_.link_url);
   // |app_id| could be nullopt if it has been uninstalled since the user
@@ -4342,6 +4279,40 @@ bool RenderViewContextMenu::CanTranslate(bool menu_logging) {
   return chrome_translate_client &&
          chrome_translate_client->GetTranslateManager()->CanManuallyTranslate(
              menu_logging);
+}
+
+void RenderViewContextMenu::MaybePrepareForLensQuery() {
+  if (!search::DefaultSearchProviderIsGoogle(GetProfile())) {
+    return;
+  }
+
+  // Chrome Search Companion preparation
+  if (companion::IsSearchImageInCompanionSidePanelSupported(GetBrowser())) {
+    if (companion::GetShouldIssuePreconnectForCompanion()) {
+      IssuePreconnectionToUrl(companion::GetPreconnectKeyForCompanion(),
+                              companion::GetImageUploadURLForCompanion());
+    }
+    if (companion::GetShouldIssueProcessPrewarmingForCompanion() &&
+        !base::SysInfo::IsLowEndDevice()) {
+      content::RenderProcessHost::WarmupSpareRenderProcessHost(
+          browser_context_);
+    }
+    return;
+  }
+
+  // Lens Side Panel preparation
+  if (lens::features::IsLensSidePanelEnabled()) {
+    if (lens::features::GetShouldIssuePreconnectForLens()) {
+      IssuePreconnectionToUrl(lens::features::GetPreconnectKeyForLens(),
+                              lens::features::GetHomepageURLForLens());
+    }
+    if (lens::features::GetShouldIssueProcessPrewarmingForLens() &&
+        !base::SysInfo::IsLowEndDevice()) {
+      content::RenderProcessHost::WarmupSpareRenderProcessHost(
+          browser_context_);
+    }
+    return;
+  }
 }
 
 #if BUILDFLAG(IS_CHROMEOS)

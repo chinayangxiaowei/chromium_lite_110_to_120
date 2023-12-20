@@ -310,7 +310,7 @@ void AppendStyleInfo(Element* element,
     if (value->IsColorValue()) {
       Color color = static_cast<const cssvalue::CSSColor*>(value)->Value();
       computed_style->setArray(name + "-unclamped-rgba", ToRGBAList(color));
-      if (!color.IsLegacyColor()) {
+      if (!Color::IsLegacyColorSpace(color.GetColorSpace())) {
         computed_style->setString(name + "-css-text", value->CssText());
       }
       computed_style->setString(name, ToHEXA(color));
@@ -391,8 +391,10 @@ std::unique_ptr<protocol::DictionaryValue> BuildElementInfo(Element* element) {
 
   element_info->setBoolean("isKeyboardFocusable",
                            element->IsKeyboardFocusable());
-  element_info->setString("accessibleName", element->computedName());
-  element_info->setString("accessibleRole", element->computedRole());
+  element_info->setString("accessibleName",
+                          element->ComputedNameNoLifecycleUpdate());
+  element_info->setString("accessibleRole",
+                          element->ComputedRoleNoLifecycleUpdate());
 
   element_info->setString("layoutObjectName", layout_object->GetName());
 
@@ -1021,8 +1023,7 @@ Vector<String> GetAuthoredGridTrackSizes(const CSSValue* value,
     return result;
 
   for (auto list_value : *value_list) {
-    if (auto* grid_auto_repeat_value =
-            DynamicTo<cssvalue::CSSGridAutoRepeatValue>(list_value.Get())) {
+    if (IsA<cssvalue::CSSGridAutoRepeatValue>(list_value.Get())) {
       Vector<String> repeated_track_sizes;
       for (auto auto_repeat_value : To<CSSValueList>(*list_value)) {
         if (!auto_repeat_value->IsGridLineNamesValue())

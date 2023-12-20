@@ -902,17 +902,12 @@ void FrameSelection::FocusedOrActiveStateChanged() {
     element->FocusStateChanged();
   }
 
-  if (!GetDocument().HaveRenderBlockingStylesheetsLoaded()) {
-    return;
+  // Selection style may depend on the active state of the document, so style
+  // and paint must be invalidated when active status changes.
+  if (GetDocument().GetLayoutView()) {
+    layout_selection_->InvalidateStyleAndPaintForSelection();
   }
   GetDocument().UpdateStyleAndLayoutTree();
-
-  // Because LayoutObject::selectionBackgroundColor() and
-  // LayoutObject::selectionForegroundColor() check if the frame is active,
-  // we have to update places those colors were painted.
-  if (LayoutView* view = GetDocument().GetLayoutView()) {
-    layout_selection_->InvalidatePaintForSelection();
-  }
 
   // Caret appears in the active frame.
   if (active_and_focused) {
@@ -976,8 +971,7 @@ static bool IsFrameElement(const Node* n) {
 
 void FrameSelection::SetFocusedNodeIfNeeded() {
   if (ComputeVisibleSelectionInDOMTreeDeprecated().IsNone() ||
-      !FrameIsFocused() ||
-      !GetDocument().HaveRenderBlockingStylesheetsLoaded()) {
+      !FrameIsFocused()) {
     return;
   }
 

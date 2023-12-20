@@ -64,6 +64,16 @@ ReadAnythingUntrustedPageHandler::ReadAnythingUntrustedPageHandler(
 
   if (features::IsReadAnythingWebUIToolbarEnabled()) {
     PrefService* prefs = browser_->profile()->GetPrefs();
+    double speechRate =
+        features::IsReadAnythingReadAloudEnabled()
+            ? prefs->GetDouble(prefs::kAccessibilityReadAnythingSpeechRate)
+            : kReadAnythingDefaultSpeechRate;
+    read_anything::mojom::HighlightGranularity highlightGranularity =
+        features::IsReadAnythingReadAloudEnabled()
+            ? static_cast<read_anything::mojom::HighlightGranularity>(
+                  prefs->GetDouble(
+                      prefs::kAccessibilityReadAnythingHighlightGranularity))
+            : read_anything::mojom::HighlightGranularity::kDefaultValue;
     page_->OnSettingsRestoredFromPrefs(
         static_cast<read_anything::mojom::LineSpacing>(
             prefs->GetInteger(prefs::kAccessibilityReadAnythingLineSpacing)),
@@ -72,7 +82,8 @@ ReadAnythingUntrustedPageHandler::ReadAnythingUntrustedPageHandler(
         prefs->GetString(prefs::kAccessibilityReadAnythingFontName),
         prefs->GetDouble(prefs::kAccessibilityReadAnythingFontScale),
         static_cast<read_anything::mojom::Colors>(
-            prefs->GetInteger(prefs::kAccessibilityReadAnythingColorInfo)));
+            prefs->GetInteger(prefs::kAccessibilityReadAnythingColorInfo)),
+        speechRate, highlightGranularity);
   }
 
 #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
@@ -160,6 +171,20 @@ void ReadAnythingUntrustedPageHandler::OnColorChange(
         prefs::kAccessibilityReadAnythingColorInfo, static_cast<size_t>(color));
   }
 }
+void ReadAnythingUntrustedPageHandler::OnSpeechRateChange(double rate) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetDouble(
+        prefs::kAccessibilityReadAnythingSpeechRate, rate);
+  }
+}
+void ReadAnythingUntrustedPageHandler::OnHighlightGranularityChanged(
+    read_anything::mojom::HighlightGranularity granularity) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetInteger(
+        prefs::kAccessibilityReadAnythingHighlightGranularity,
+        static_cast<size_t>(granularity));
+  }
+}
 
 void ReadAnythingUntrustedPageHandler::OnLinkClicked(
     const ui::AXTreeID& target_tree_id,
@@ -230,6 +255,11 @@ void ReadAnythingUntrustedPageHandler::OnReadAnythingThemeChanged(
   page_->OnThemeChanged(
       ReadAnythingTheme::New(font_name, font_scale, foreground_skcolor,
                              background_skcolor, line_spacing, letter_spacing));
+}
+
+void ReadAnythingUntrustedPageHandler::SetDefaultLanguageCode(
+    const std::string& code) {
+  page_->SetDefaultLanguageCode(code);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

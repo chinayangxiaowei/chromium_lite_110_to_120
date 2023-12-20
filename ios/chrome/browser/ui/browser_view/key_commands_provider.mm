@@ -37,7 +37,7 @@
 #import "ios/chrome/browser/ui/keyboard/UIKeyCommand+Chrome.h"
 #import "ios/chrome/browser/url_loading/url_loading_util.h"
 #import "ios/chrome/browser/web/web_navigation_browser_agent.h"
-#import "ios/chrome/browser/window_activities/window_activity_helpers.h"
+#import "ios/chrome/browser/window_activities/model/window_activity_helpers.h"
 #import "ios/chrome/grit/ios_strings.h"
 #import "ios/public/provider/chrome/browser/user_feedback/user_feedback_api.h"
 #import "ios/public/provider/chrome/browser/user_feedback/user_feedback_sender.h"
@@ -162,11 +162,13 @@ using base::UserMetricsAction;
     }
     return canPerformForward;
   }
+  if (sel_isEqual(action, @selector(keyCommand_showHistory))) {
+    return !_browser->GetBrowserState()->IsOffTheRecord() && self.tabsCount > 0;
+  }
   if (sel_isEqual(action, @selector(keyCommand_openLocation)) ||
       sel_isEqual(action, @selector(keyCommand_closeTab)) ||
       sel_isEqual(action, @selector(keyCommand_showBookmarks)) ||
       sel_isEqual(action, @selector(keyCommand_reload)) ||
-      sel_isEqual(action, @selector(keyCommand_showHistory)) ||
       sel_isEqual(action, @selector(keyCommand_voiceSearch)) ||
       sel_isEqual(action, @selector(keyCommand_stop)) ||
       sel_isEqual(action, @selector(keyCommand_showHelp)) ||

@@ -89,8 +89,11 @@ class CONTENT_EXPORT RenderWidgetHostViewAndroid
   static RenderWidgetHostViewAndroid* FromRenderWidgetHostView(
       RenderWidgetHostView* view);
 
+  // Note: The tree of `gfx::NativeView` might not match the tree of
+  // `cc::slim::Layer`.
   RenderWidgetHostViewAndroid(RenderWidgetHostImpl* widget,
-                              gfx::NativeView parent_native_view);
+                              gfx::NativeView parent_native_view,
+                              cc::slim::Layer* parent_layer);
 
   RenderWidgetHostViewAndroid(const RenderWidgetHostViewAndroid&) = delete;
   RenderWidgetHostViewAndroid& operator=(const RenderWidgetHostViewAndroid&) =
@@ -274,7 +277,8 @@ class CONTENT_EXPORT RenderWidgetHostViewAndroid
   void ShowTouchSelectionContextMenu(const gfx::Point& location) override;
 
   // Non-virtual methods
-  void UpdateNativeViewTree(gfx::NativeView parent_native_view);
+  void UpdateNativeViewTree(gfx::NativeView parent_native_view,
+                            cc::slim::Layer* parent_layer);
 
   // Returns the temporary background color of the underlaying document, for
   // example, returns black during screen rotation.

@@ -22,7 +22,7 @@ BASE_FEATURE(kWebViewAppsPackageNamesServerSideAllowlist,
 // Enable brotli compression support in WebView.
 BASE_FEATURE(kWebViewBrotliSupport,
              "WebViewBrotliSupport",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Check layer_tree_frame_sink_id when return resources to compositor.
 BASE_FEATURE(kWebViewCheckReturnResources,
@@ -115,23 +115,11 @@ BASE_FEATURE(kWebViewRecordAppDataDirectorySize,
              "WebViewRecordAppDataDirectorySize",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Whether to report frame metrics to the Android.Jank.FrameDuration and
-// Android.Jank.FrameJankStatus histograms.
-BASE_FEATURE(kWebViewReportFrameMetrics,
-             "WebViewReportFrameMetrics",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 // Flag to restrict main frame Web Content to verified web content. Verification
 // happens via Digital Asset Links.
 BASE_FEATURE(kWebViewRestrictSensitiveContent,
              "WebViewRestrictSensitiveContent",
              base::FEATURE_DISABLED_BY_DEFAULT);
-
-// Enable doing a JNI call to check safe browsing safe mode status before doing
-// a safe browsing check.
-BASE_FEATURE(kWebViewSafeBrowsingSafeMode,
-             "WebViewSafeBrowsingSafeMode",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enable detection of loading mature sites (according to Google SafeSearch)
 // on WebViews running on supervised user accounts.
@@ -166,6 +154,12 @@ BASE_FEATURE(kWebViewUseMetricsUploadService,
 BASE_FEATURE(kWebViewPropagateNetworkSignals,
              "webViewPropagateNetworkSignals",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Provide the unreduced product version from the AwContentBrowserClient API,
+// regardless of the user agent reduction policy.
+BASE_FEATURE(kWebViewUnreducedProductVersion,
+             "WebViewUnreducedPrductVersion",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enable raster in wide color gamut for apps that use webview in a wide color
 // gamut activity.

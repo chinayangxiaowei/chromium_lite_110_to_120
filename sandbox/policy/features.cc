@@ -102,6 +102,12 @@ BASE_FEATURE(kWinSboxForceRendererCodeIntegrity,
 BASE_FEATURE(kWinSboxZeroAppShim,
              "WinSboxZeroAppShim",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+// If enabled, applies the FSCTL syscall lockdown mitigation to all sandboxed
+// processes, if supported by the OS.
+BASE_FEATURE(kWinSboxFsctlLockdown,
+             "WinSboxFsctlLockdown",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -119,6 +125,20 @@ BASE_FEATURE(kForceSpectreVariant2Mitigation,
              "ForceSpectreVariant2Mitigation",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+// Enabling the kNetworkServiceSandbox feature automatically enables Spectre
+// variant 2 mitigations in the network service. This can lead to performance
+// regressions, so enabling this feature will turn off the Spectre Variant 2
+// mitigations.
+//
+// On ChromeOS Ash, this overrides the system-wide kSpectreVariant2Mitigation
+// feature above, but not the user-controlled kForceSpectreVariant2Mitigation
+// feature.
+BASE_FEATURE(kForceDisableSpectreVariant2MitigationInNetworkService,
+             "kForceDisableSpectreVariant2MitigationInNetworkService",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 
 #if BUILDFLAG(IS_MAC)
 // Enables caching compiled sandbox profiles. Only some profiles support this,

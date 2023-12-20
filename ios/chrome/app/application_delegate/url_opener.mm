@@ -73,7 +73,10 @@ const char* const kUMAShowDefaultPromoFromAppsHistogram =
       // As applicationDidBecomeActive: will not be called again,
       // _startupParameters will not include the command from openURL.
       // Pass the startup parameters from here.
-      DCHECK(!connectionInformation.startupParameters);
+
+      // TODO(crbug.com/1496951): Investigate why
+      // connectionInformation.startupParamters can be not nil and what to do in
+      // that case.
       [connectionInformation setStartupParameters:params];
       ProceduralBlock tabOpenedCompletion = ^{
         [connectionInformation setStartupParameters:nil];

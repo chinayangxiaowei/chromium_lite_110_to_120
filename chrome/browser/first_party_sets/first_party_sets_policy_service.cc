@@ -11,11 +11,13 @@
 #include "base/types/optional_util.h"
 #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "chrome/browser/first_party_sets/first_party_sets_pref_names.h"
+#include "chrome/browser/privacy_sandbox/tracking_protection_settings_factory.h"
 #include "chrome/browser/profiles/profile.h"
 #include "components/content_settings/core/browser/host_content_settings_map.h"
 #include "components/content_settings/core/common/content_settings_constraints.h"
 #include "components/prefs/pref_service.h"
 #include "components/privacy_sandbox/privacy_sandbox_prefs.h"
+#include "components/privacy_sandbox/tracking_protection_settings.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/first_party_sets_handler.h"
 #include "content/public/common/content_features.h"
@@ -45,13 +47,23 @@ const base::Value::Dict* GetOverridesPolicyForProfile(
                : nullptr;
 }
 
-bool GetEnabledStateForProfile(const PrefService* prefs) {
+bool GetEnabledStateForProfile(Profile* profile) {
+  if (profile->IsOffTheRecord()) {
+    return false;
+  }
   if (base::FeatureList::IsEnabled(
           net::features::kForceThirdPartyCookieBlocking)) {
     return true;
   }
-  return prefs &&
-         prefs->GetBoolean(prefs::kPrivacySandboxFirstPartySetsEnabled);
+  auto* tracking_protection_settings =
+      TrackingProtectionSettingsFactory::GetForProfile(profile);
+  if (tracking_protection_settings &&
+      tracking_protection_settings->IsTrackingProtection3pcdEnabled()) {
+    return !tracking_protection_settings->AreAllThirdPartyCookiesBlocked();
+  }
+  return profile->GetPrefs() &&
+         profile->GetPrefs()->GetBoolean(
+             prefs::kPrivacySandboxRelatedWebsiteSetsEnabled);
 }
 
 }  // namespace
@@ -88,11 +100,10 @@ void FirstPartySetsPolicyService::Init() {
   CHECK(profile);
 
   PrefService* prefs = profile->GetPrefs();
-  pref_enabled_ = GetEnabledStateForProfile(prefs);
+  pref_enabled_ = GetEnabledStateForProfile(profile);
 
-  // If `profile` is a system profile or a guest profile, use an empty config
-  // and cache filter.
-  if (profile->IsSystemProfile() || profile->IsGuestSession()) {
+  if (profile->IsSystemProfile() || profile->IsGuestSession() ||
+      profile->IsOffTheRecord()) {
     OnReadyToNotifyDelegates(net::FirstPartySetsContextConfig(),
                              net::FirstPartySetsCacheFilter());
     return;
@@ -168,6 +179,11 @@ void FirstPartySetsPolicyService::AddRemoteAccessDelegate(
 
 void FirstPartySetsPolicyService::OnFirstPartySetsEnabledChanged(bool enabled) {
   DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  Profile* profile = Profile::FromBrowserContext(browser_context_);
+  if (profile && profile->IsOffTheRecord()) {
+    CHECK(!pref_enabled_);
+    return;
+  }
   if (base::FeatureList::IsEnabled(
           net::features::kForceThirdPartyCookieBlocking)) {
     CHECK(pref_enabled_);
@@ -182,7 +198,6 @@ void FirstPartySetsPolicyService::OnFirstPartySetsEnabledChanged(bool enabled) {
 
   // Clear all the existing permission decisions that were made by FPS, since
   // the enabled/disabled state of FPS has now changed.
-  Profile* profile = Profile::FromBrowserContext(browser_context_);
   ClearContentSettings(profile);
   for (Profile* otr_profile : profile->GetAllOffTheRecordProfiles()) {
     ClearContentSettings(otr_profile);

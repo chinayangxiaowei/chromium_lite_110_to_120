@@ -44,8 +44,8 @@ public class AwMetricsServiceClient {
 
     public static void setAppPackageNameLoggingRuleForTesting(String version, long expiryDateMs) {
         ThreadUtils.assertOnUiThread();
-        AwMetricsServiceClientJni.get().setAppPackageNameLoggingRuleForTesting(
-                version, expiryDateMs);
+        AwMetricsServiceClientJni.get()
+                .setAppPackageNameLoggingRuleForTesting(version, expiryDateMs);
     }
 
     @NativeMethods
@@ -54,6 +54,7 @@ public class AwMetricsServiceClient {
         void setFastStartupForTesting(boolean fastStartupForTesting);
         void setUploadIntervalForTesting(long uploadIntervalMs);
         void setOnFinalMetricsCollectedListenerForTesting(Runnable listener);
+
         void setAppPackageNameLoggingRuleForTesting(String version, long expiryDateMs);
     }
 }

@@ -67,6 +67,7 @@ import org.chromium.chrome.browser.flags.ChromeFeatureList;
 import org.chromium.chrome.browser.flags.MutableFlagWithSafeDefault;
 import org.chromium.chrome.browser.init.ChromeBrowserInitializer;
 import org.chromium.chrome.browser.metrics.UmaSessionStats;
+import org.chromium.chrome.browser.page_insights.proto.Config.PageInsightsConfig;
 import org.chromium.chrome.browser.page_load_metrics.PageLoadMetrics;
 import org.chromium.chrome.browser.prefetch.settings.PreloadPagesSettingsBridge;
 import org.chromium.chrome.browser.prefetch.settings.PreloadPagesState;
@@ -81,6 +82,7 @@ import org.chromium.components.user_prefs.UserPrefs;
 import org.chromium.components.variations.SyntheticTrialAnnotationMode;
 import org.chromium.content_public.browser.BrowserStartupController;
 import org.chromium.content_public.browser.ChildProcessLauncherHelper;
+import org.chromium.content_public.browser.NavigationHandle;
 import org.chromium.content_public.browser.WebContents;
 import org.chromium.content_public.common.Referrer;
 import org.chromium.network.mojom.ReferrerPolicy;
@@ -735,16 +737,25 @@ public class CustomTabsConnection {
                     () -> handler.updateRemoteViews(remoteViews, clickableIDs, pendingIntent));
         }
 
-        if (ChromeFeatureList.sCctBottomBarSwipeUpGesture.isEnabled()
-                && bundle.containsKey(
-                        CustomTabIntentDataProvider.EXTRA_SECONDARY_TOOLBAR_SWIPE_UP_ACTION)) {
-            PendingIntent pendingIntent = IntentUtils.safeGetParcelable(
-                    bundle, CustomTabIntentDataProvider.EXTRA_SECONDARY_TOOLBAR_SWIPE_UP_ACTION);
-            result &= PostTask.runSynchronously(TaskTraits.UI_DEFAULT,
-                    () -> handler.updateSecondaryToolbarSwipeUpPendingIntent(pendingIntent));
+        if (ChromeFeatureList.sCctBottomBarSwipeUpGesture.isEnabled()) {
+            PendingIntent pendingIntent = getSecondarySwipeToolbarSwipeUpGesture(bundle);
+            if (pendingIntent != null) {
+                result &= PostTask.runSynchronously(TaskTraits.UI_DEFAULT,
+                        () -> handler.updateSecondaryToolbarSwipeUpPendingIntent(pendingIntent));
+            }
         }
         logCall("updateVisuals()", result);
         return result;
+    }
+
+    private static PendingIntent getSecondarySwipeToolbarSwipeUpGesture(Bundle bundle) {
+        PendingIntent pendingIntent = IntentUtils.safeGetParcelable(
+                bundle, CustomTabsIntent.EXTRA_SECONDARY_TOOLBAR_SWIPE_UP_GESTURE);
+        if (pendingIntent == null) {
+            pendingIntent = IntentUtils.safeGetParcelable(
+                    bundle, CustomTabIntentDataProvider.EXTRA_SECONDARY_TOOLBAR_SWIPE_UP_ACTION);
+        }
+        return pendingIntent;
     }
 
     public boolean requestPostMessageChannel(CustomTabsSessionToken session,
@@ -1800,11 +1811,33 @@ public class CustomTabsConnection {
     }
 
     /**
+     * Returns how the Page Insights feature should be configured for the given params. Only applies
+     * if {@link #shouldEnablePageInsightsForIntent(BrowserServicesIntentDataProvider)} returns
+     * true.
+     *
+     * @param intentData {@link BrowserServicesIntentDataProvider} built from the Intent that
+     *     launched this CCT.
+     * @param navigationHandle the {@link NavigationHandle} for the current page.
+     * @param profileSupplier supplier of the current {@link Profile}.
+     */
+    public PageInsightsConfig getPageInsightsConfig(
+            BrowserServicesIntentDataProvider intentData,
+            @Nullable NavigationHandle navigationHandle,
+            Supplier<Profile> profileSupplier) {
+        return PageInsightsConfig.newBuilder()
+                .setShouldAutoTrigger(false)
+                .setShouldXsurfaceLog(false)
+                .setShouldAttachGaiaToRequest(false)
+                .build();
+    }
+
+    /**
      * Called when text fragment lookups on the current page has completed.
+     *
      * @param session session object.
      * @param stateKey unique key for the embedder to keep track of the request.
      * @param foundTextFragments text fragments from the initial request that were found on the
-     *         page.
+     *     page.
      */
     @CalledByNative
     private static void notifyClientOfTextFragmentLookupCompletion(

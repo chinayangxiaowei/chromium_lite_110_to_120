@@ -71,7 +71,6 @@
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/render_widget_host_iterator.h"
 #include "content/public/common/content_client.h"
-#include "content/public/common/content_features.h"
 #include "content/public/common/content_switches.h"
 #include "third_party/blink/public/mojom/input/input_handler.mojom-blink.h"
 #include "third_party/skia/include/core/SkBitmap.h"
@@ -592,7 +591,8 @@ void RenderWidgetHostViewAndroid::ScreenStateChangeHandler::Unthrottle() {
 
 RenderWidgetHostViewAndroid::RenderWidgetHostViewAndroid(
     RenderWidgetHostImpl* widget_host,
-    gfx::NativeView parent_native_view)
+    gfx::NativeView parent_native_view,
+    cc::slim::Layer* parent_layer)
     : RenderWidgetHostViewBase(widget_host),
       is_showing_(!widget_host->is_hidden()),
       is_window_visible_(true),
@@ -654,16 +654,20 @@ RenderWidgetHostViewAndroid::RenderWidgetHostViewAndroid(
 
   host()->SetView(this);
   touch_selection_controller_client_manager_ =
-      std::make_unique<TouchSelectionControllerClientManagerAndroid>(
-          this, GetHostFrameSinkManager());
+      std::make_unique<TouchSelectionControllerClientManagerAndroid>(this);
 
-  UpdateNativeViewTree(parent_native_view);
+  // `parent_native_view` and `parent_layer` must be null or non-null at the
+  // same time.
+  CHECK(!(!!parent_native_view ^ !!parent_layer));
+
+  UpdateNativeViewTree(parent_native_view, parent_layer);
   // This RWHVA may have been created speculatively. We should give any
   // existing RWHVAs priority for receiving input events, otherwise a
   // speculative RWHVA could be sent input events intended for the currently
   // showing RWHVA.
-  if (parent_native_view)
+  if (parent_native_view) {
     parent_native_view->MoveToBack(&view_);
+  }
 
   CreateOverscrollControllerIfPossible();
 
@@ -674,7 +678,8 @@ RenderWidgetHostViewAndroid::RenderWidgetHostViewAndroid(
 }
 
 RenderWidgetHostViewAndroid::~RenderWidgetHostViewAndroid() {
-  UpdateNativeViewTree(nullptr);
+  UpdateNativeViewTree(/*parent_native_view=*/nullptr,
+                       /*parent_layer=*/nullptr);
   view_.set_event_handler(nullptr);
   DCHECK(!ime_adapter_android_);
   DCHECK(!delegated_frame_host_);
@@ -1561,7 +1566,8 @@ void RenderWidgetHostViewAndroid::RenderProcessGone() {
 void RenderWidgetHostViewAndroid::Destroy() {
   host()->render_frame_metadata_provider()->RemoveObserver(this);
   host()->ViewDestroyed();
-  UpdateNativeViewTree(nullptr);
+  UpdateNativeViewTree(/*parent_native_view=*/nullptr,
+                       /*parent_layer=*/nullptr);
   delegated_frame_host_.reset();
 
   if (GetTextInputManager() && GetTextInputManager()->HasObserver(this))
@@ -1824,7 +1830,8 @@ RenderWidgetHostViewAndroid::CreateDrawable() {
   }
   if (!selection_popup_controller_)
     return nullptr;
-  return selection_popup_controller_->CreateTouchHandleDrawable();
+  return selection_popup_controller_->CreateTouchHandleDrawable(
+      view_.parent(), view_.GetLayer()->parent());
 }
 
 void RenderWidgetHostViewAndroid::DidScroll() {}
@@ -2112,7 +2119,7 @@ bool RenderWidgetHostViewAndroid::Animate(base::TimeTicks frame_time) {
   bool needs_animate = false;
   if (overscroll_controller_) {
     needs_animate |=
-        overscroll_controller_->Animate(frame_time, view_.parent()->GetLayer());
+        overscroll_controller_->Animate(frame_time, view_.GetLayer()->parent());
   }
   // TODO(wjmaclean): Investigate how animation here does or doesn't affect
   // an OOPIF client.
@@ -2366,6 +2373,13 @@ void RenderWidgetHostViewAndroid::SendGestureEvent(
             event.TimeStamp(), event.PositionInWidget());
         break;
 
+      case blink::WebInputEvent::Type::kGestureTapDown:
+        if (event.data.tap_down.tap_down_count == 2) {
+          touch_selection_controller_->HandleDoublePressEvent(
+              event.TimeStamp(), event.PositionInWidget());
+        }
+        break;
+
       case blink::WebInputEvent::Type::kGestureTap:
         touch_selection_controller_->HandleTapEvent(event.PositionInWidget(),
                                                     event.data.tap.tap_count);
@@ -2476,7 +2490,12 @@ const viz::FrameSinkId& RenderWidgetHostViewAndroid::GetFrameSinkId() const {
 }
 
 void RenderWidgetHostViewAndroid::UpdateNativeViewTree(
-    gfx::NativeView parent_native_view) {
+    gfx::NativeView parent_native_view,
+    cc::slim::Layer* parent_layer) {
+  // `parent_native_view` and `parent_layer` must be null or non-null at the
+  // same time.
+  CHECK(!(!!parent_native_view ^ !!parent_layer));
+
   bool will_build_tree = parent_native_view != nullptr;
   bool has_view_tree = view_.parent() != nullptr;
 
@@ -2497,7 +2516,7 @@ void RenderWidgetHostViewAndroid::UpdateNativeViewTree(
     if (will_build_tree) {
       view_.AddObserver(this);
       parent_native_view->AddChild(&view_);
-      parent_native_view->GetLayer()->AddChild(view_.GetLayer());
+      parent_layer->AddChild(view_.GetLayer());
     }
 
     // TODO(yusufo) : Get rid of the below conditions and have a better handling

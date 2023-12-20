@@ -54,6 +54,7 @@ BASE_DECLARE_FEATURE(kOptimizationGuidePersonalizedFetching);
 BASE_DECLARE_FEATURE(kOptimizationGuideHintsURLKeyedCacheDropFragments);
 BASE_DECLARE_FEATURE(kQueryInMemoryTextEmbeddings);
 BASE_DECLARE_FEATURE(kOptimizationGuidePredictionModelKillswitch);
+BASE_DECLARE_FEATURE(kOptimizationGuideModelExecution);
 
 // Enables use of task runner with trait CONTINUE_ON_SHUTDOWN for page content
 // annotations on-device models.
@@ -212,9 +213,6 @@ bool ShouldOverrideOptimizationTargetDecisionForMetricsPurposes(
 // |request_context|.
 bool ShouldEnablePersonalizedMetadata(proto::RequestContext request_context);
 
-// Returns the OAuth scopes to use for personalized metadata.
-std::set<std::string> GetOAuthScopesForPersonalizedMetadata();
-
 // Returns the minimum number of seconds to randomly delay before starting to
 // fetch for prediction models and host model features.
 int PredictionModelFetchRandomMinDelaySecs();
@@ -286,7 +284,8 @@ bool ShouldExecuteTextEmbeddingModelOnPageContent(const std::string& locale);
 
 // Returns whether page metadata should be retrieved from the remote
 // Optimization Guide service.
-bool RemotePageMetadataEnabled();
+bool RemotePageMetadataEnabled(const std::string& locale,
+                               const std::string& country_code);
 
 // Returns the minimum score associated with a category for it to be persisted.
 // Will be a value from 0 to 100, inclusive.
@@ -349,7 +348,8 @@ bool ShouldCheckFailedComponentVersionPref();
 bool IsInstallWideModelStoreEnabled();
 
 // Whether to persist salient image metadata for each visit.
-bool ShouldPersistSalientImageMetadata();
+bool ShouldPersistSalientImageMetadata(const std::string& locale,
+                                       const std::string& country_code);
 
 // Whether to drop fragments for the URL-keyed hint cache key.
 bool ShouldDropFragmentsForURLKeyedHintCacheKey();
@@ -361,6 +361,9 @@ bool ShouldQueryEmbeddings();
 // killswitch, and this model should be stopped serving immediately.
 std::map<proto::OptimizationTarget, std::set<int64_t>>
 GetPredictionModelVersionsInKillSwitch();
+
+// Returns the OAuth scopes to use for model execution.
+std::set<std::string> GetOAuthScopesForModelExecution();
 
 }  // namespace features
 }  // namespace optimization_guide

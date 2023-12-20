@@ -1899,11 +1899,15 @@ bool ExtensionWebRequestEventRouter::HasAnyExtraHeadersListener(
 
   content::BrowserContext* cross_browser_context =
       GetCrossBrowserContext(browser_context);
-  if (cross_browser_context) {
-    return HasAnyExtraHeadersListenerImpl(cross_browser_context);
+  if (cross_browser_context &&
+      HasAnyExtraHeadersListenerImpl(cross_browser_context)) {
+    return true;
   }
 
-  return false;
+  // The RulesMonitorService instance is shared between the regular and
+  // the OTR BrowserContext, so it doesn't matter which one we use.
+  return declarative_net_request::RulesMonitorService::Get(browser_context)
+      ->HasAnyExtraHeadersMatcher();
 }
 
 void ExtensionWebRequestEventRouter::IncrementExtraHeadersListenerCount(
@@ -2464,6 +2468,15 @@ void ExtensionWebRequestEventRouter::OnRulesRegistryReady(
     const std::string& event_name,
     uint64_t request_id,
     RequestStage request_stage) {
+  // TODO(crbug.com/1433136): We should be able to remove this once we roll
+  // out the per-BrowserContext event router, since the WeakPtr that was bound
+  // to the callback will be invalidated when the BrowserContext shuts down.
+  // Some additional special handling will be needed since this might be a
+  // pointer to an off-the-record instance.
+  if (!ExtensionsBrowserClient::Get()->IsValidContext(browser_context)) {
+    return;
+  }
+
   // It's possible that this request was deleted, or cancelled by a previous
   // event handler. If so, ignore this response.
   BlockedRequest* blocked_request =

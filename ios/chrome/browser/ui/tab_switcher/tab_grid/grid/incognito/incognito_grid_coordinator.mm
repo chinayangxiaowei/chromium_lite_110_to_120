@@ -76,6 +76,7 @@
   _mediator.toolbarsMutator = _toolbarsMutator;
   _mediator.actionWrangler = self.incognitoViewController;
   _mediator.incognitoDelegate = self;
+  _mediator.reauthSceneAgent = reauthAgent;
 
   _incognitoAuthMediator =
       [[IncognitoReauthMediator alloc] initWithReauthAgent:reauthAgent];
@@ -86,10 +87,10 @@
 - (void)stop {
   [_mediator disconnect];
   _mediator = nil;
-  _incognitoAuthMediator = nil;
 
   [_dispatcher stopDispatchingForProtocol:@protocol(IncognitoReauthCommands)];
   _dispatcher = nil;
+  _incognitoAuthMediator = nil;
 }
 
 #pragma mark - IncognitoGridMediatorDelegate

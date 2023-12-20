@@ -15,9 +15,9 @@
 #import "base/functional/bind.h"
 #import "build/blink_buildflags.h"
 #import "ios/chrome/browser/shared/ui/util/uikit_ui_util.h"
-#import "ios/chrome/browser/snapshots/snapshot_cache.h"
 #import "ios/chrome/browser/snapshots/snapshot_generator_delegate.h"
 #import "ios/chrome/browser/snapshots/snapshot_id.h"
+#import "ios/chrome/browser/snapshots/snapshot_storage.h"
 #import "ios/web/public/thread/web_task_traits.h"
 #import "ios/web/public/thread/web_thread.h"
 #import "ios/web/public/web_client.h"
@@ -95,8 +95,8 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
 
 - (void)retrieveSnapshot:(void (^)(UIImage*))callback {
   DCHECK(callback);
-  if (_snapshotCache) {
-    [_snapshotCache retrieveImageForSnapshotID:_snapshotID callback:callback];
+  if (_snapshotStorage) {
+    [_snapshotStorage retrieveImageForSnapshotID:_snapshotID callback:callback];
   } else {
     callback(nil);
   }
@@ -115,10 +115,10 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
     callback(image);
   };
 
-  SnapshotCache* snapshotCache = _snapshotCache;
-  if (snapshotCache) {
-    [snapshotCache retrieveGreyImageForSnapshotID:_snapshotID
-                                         callback:wrappedCallback];
+  SnapshotStorage* snapshotStorage = _snapshotStorage;
+  if (snapshotStorage) {
+    [snapshotStorage retrieveGreyImageForSnapshotID:_snapshotID
+                                           callback:wrappedCallback];
   } else {
     wrappedCallback(nil);
   }
@@ -126,7 +126,7 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
 
 - (UIImage*)updateSnapshot {
   UIImage* snapshot = [self generateSnapshotWithOverlays:YES];
-  [self updateSnapshotCacheWithImage:snapshot];
+  [self updateSnapshotStorageWithImage:snapshot];
   return snapshot;
 }
 
@@ -158,7 +158,7 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
                          baseImage:image.ToUIImage()
                      frameInWindow:snapshotInfo.snapshotFrameInWindow];
         }
-        [weakSelf updateSnapshotCacheWithImage:snapshot];
+        [weakSelf updateSnapshotStorageWithImage:snapshot];
         if (completion)
           completion(snapshot);
       }));
@@ -179,15 +179,15 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
 }
 
 - (void)willBeSavedGreyWhenBackgrounding {
-  [_snapshotCache willBeSavedGreyWhenBackgrounding:_snapshotID];
+  [_snapshotStorage willBeSavedGreyWhenBackgrounding:_snapshotID];
 }
 
 - (void)saveGreyInBackground {
-  [_snapshotCache saveGreyInBackgroundForSnapshotID:_snapshotID];
+  [_snapshotStorage saveGreyInBackgroundForSnapshotID:_snapshotID];
 }
 
 - (void)removeSnapshot {
-  [_snapshotCache removeImageWithSnapshotID:_snapshotID];
+  [_snapshotStorage removeImageWithSnapshotID:_snapshotID];
 }
 
 #pragma mark - Private methods
@@ -214,6 +214,19 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
              frameInBaseView:(CGRect)frameInBaseView {
   DCHECK(baseView);
   DCHECK(!CGRectIsEmpty(frameInBaseView));
+  // Ideally, generate an UIImage by one step with `UIGraphicsImageRenderer`,
+  // however, it generates a black image when the size of `baseView` is larger
+  // than `frameInBaseView`. So this is a workaround to generate an UIImage by
+  // dividing the step into 2 steps; 1) convert an UIView to an UIImage 2) crop
+  // an UIImage with `frameInBaseView`.
+  UIImage* baseImage = [self convertFromBaseView:baseView];
+  return [self cropImage:baseImage frameInBaseView:frameInBaseView];
+}
+
+// Converts an UIView to an UIImage. The size of generated UIImage is the same
+// as `baseView`.
+- (UIImage*)convertFromBaseView:(UIView*)baseView {
+  DCHECK(baseView);
 
   // Disable the automatic view dimming UIKit performs if a view is presented
   // modally over `baseView`.
@@ -222,25 +235,19 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
   // Note: When not using device scale, the output image size may slightly
   // differ from the input size due to rounding.
   const CGFloat kScale =
-      std::max<CGFloat>(1.0, [_snapshotCache snapshotScaleForDevice]);
+      std::max<CGFloat>(1.0, [_snapshotStorage snapshotScaleForDevice]);
   UIGraphicsImageRendererFormat* format =
       [UIGraphicsImageRendererFormat preferredFormat];
   format.scale = kScale;
   format.opaque = YES;
 
   UIGraphicsImageRenderer* renderer =
-      [[UIGraphicsImageRenderer alloc] initWithSize:frameInBaseView.size
-                                             format:format];
+      [[UIGraphicsImageRenderer alloc] initWithBounds:baseView.bounds
+                                               format:format];
 
   __block BOOL snapshotSuccess = YES;
   UIImage* image =
       [renderer imageWithActions:^(UIGraphicsImageRendererContext* UIContext) {
-        CGContextRef context = UIContext.CGContext;
-        // This shifts the origin of the context to be the origin of the
-        // snapshot frame.
-        CGContextTranslateCTM(context, -frameInBaseView.origin.x,
-                              -frameInBaseView.origin.y);
-
         if (baseView.window && ViewHierarchyContainsWebView(baseView)) {
           // `-renderInContext:` is the preferred way to render a snapshot, but
           // it's buggy for WKWebView, which is used for some WebUI pages such
@@ -268,7 +275,7 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
           if (isnan(pos.x) || isnan(pos.y)) {
             snapshotSuccess = NO;
           } else {
-            [layer renderInContext:context];
+            [layer renderInContext:UIContext.CGContext];
           }
         }
       }];
@@ -277,11 +284,38 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
     image = nil;
   }
 
-  // Defaults to UIViewTintAdjustmentModeAutomatic if there is no delegate.
-  baseView.tintAdjustmentMode =
-      _delegate ? [_delegate snapshotGenerator:self
-                      defaultTintAdjustmentModeForWebState:_webState]
-                : UIViewTintAdjustmentModeAutomatic;
+  // Set the mode to UIViewTintAdjustmentModeAutomatic.
+  baseView.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
+
+  return image;
+}
+
+// Crops an UIImage to `frameInBaseView`.
+- (UIImage*)cropImage:(UIImage*)baseImage
+      frameInBaseView:(CGRect)frameInBaseView {
+  if (!baseImage) {
+    return nil;
+  }
+  DCHECK(!CGRectIsEmpty(frameInBaseView));
+
+  // Scale `frameInBaseView` to handle an image with 2x scale.
+  CGFloat scale = baseImage.scale;
+  frameInBaseView.origin.x *= scale;
+  frameInBaseView.origin.y *= scale;
+  frameInBaseView.size.width *= scale;
+  frameInBaseView.size.height *= scale;
+
+  // Perform cropping.
+  CGImageRef imageRef =
+      CGImageCreateWithImageInRect(baseImage.CGImage, frameInBaseView);
+
+  // Convert back to an UIImage.
+  UIImage* image = [UIImage imageWithCGImage:imageRef
+                                       scale:scale
+                                 orientation:baseImage.imageOrientation];
+
+  // Clean up a reference pointer.
+  CGImageRelease(imageRef);
 
   return image;
 }
@@ -300,7 +334,7 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
   if (overlays.count == 0)
     return baseImage;
   const CGFloat kScale =
-      std::max<CGFloat>(1.0, [_snapshotCache snapshotScaleForDevice]);
+      std::max<CGFloat>(1.0, [_snapshotStorage snapshotScaleForDevice]);
 
   UIGraphicsImageRendererFormat* format =
       [UIGraphicsImageRendererFormat preferredFormat];
@@ -330,13 +364,13 @@ BOOL ViewHierarchyContainsWebView(UIView* view) {
       }];
 }
 
-// Updates the snapshot cache with `snapshot`.
-- (void)updateSnapshotCacheWithImage:(UIImage*)snapshot {
+// Updates the snapshot storage with `snapshot`.
+- (void)updateSnapshotStorageWithImage:(UIImage*)snapshot {
   if (snapshot) {
-    [_snapshotCache setImage:snapshot withSnapshotID:_snapshotID];
+    [_snapshotStorage setImage:snapshot withSnapshotID:_snapshotID];
   } else {
     // Remove any stale snapshot since the snapshot failed.
-    [_snapshotCache removeImageWithSnapshotID:_snapshotID];
+    [_snapshotStorage removeImageWithSnapshotID:_snapshotID];
   }
 }
 

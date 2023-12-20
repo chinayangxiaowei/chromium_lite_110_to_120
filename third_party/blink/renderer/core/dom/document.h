@@ -758,10 +758,11 @@ class CORE_EXPORT Document : public ContainerNode,
   // Gets the description for the specified page. This includes preferred page
   // size and margins in pixels, assuming 96 pixels per inch. The size and
   // margins must be initialized to the default values that are used if auto is
-  // specified. Note that, if the |page_index| variant of the function is used,
-  // layout needs to be complete, since page names are determined during layout.
+  // specified. Updates layout as needed to get the description.
   void GetPageDescription(uint32_t page_index, WebPrintPageDescription*);
   void GetPageDescription(const ComputedStyle&, WebPrintPageDescription*);
+  void GetPageDescriptionNoLifecycleUpdate(const ComputedStyle&,
+                                           WebPrintPageDescription*);
 
   ResourceFetcher* Fetcher() const { return fetcher_.Get(); }
 
@@ -1792,6 +1793,15 @@ class CORE_EXPORT Document : public ContainerNode,
     return slot_assignment_recalc_depth_ == 1;
   }
 
+  bool ShouldSuppressMutationEvents() const {
+    return suppress_mutation_events_;
+  }
+  // To be called from MutationEventSuppressionScope.
+  void SetSuppressMutationEvents(bool suppress) {
+    CHECK_NE(suppress, suppress_mutation_events_);
+    suppress_mutation_events_ = suppress;
+  }
+
   bool IsVerticalScrollEnforced() const { return is_vertical_scroll_enforced_; }
   bool IsFocusAllowed() const;
 
@@ -1997,6 +2007,8 @@ class CORE_EXPORT Document : public ContainerNode,
   void ResetAgent(Agent& agent);
 
   bool SupportsLegacyDOMMutations();
+
+  void EnqueuePageRevealEvent();
 
  protected:
   void ClearXMLVersion() { xml_version_ = String(); }
@@ -2594,6 +2606,7 @@ class CORE_EXPORT Document : public ContainerNode,
 #endif
   unsigned slot_assignment_recalc_depth_ = 0;
   unsigned flat_tree_traversal_forbidden_recursion_depth_ = 0;
+  bool suppress_mutation_events_ = false;
 
   Member<DOMFeaturePolicy> policy_;
 
