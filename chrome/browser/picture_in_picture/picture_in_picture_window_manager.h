@@ -62,7 +62,10 @@ class PictureInPictureWindowManager {
   void EnterPictureInPictureWithController(
       content::PictureInPictureWindowController* pip_window_controller);
 
-  void ExitPictureInPicture();
+  // Closes any existing picture-in-picture windows (video or document pip).
+  // Returns true if a picture-in-picture window was closed, and false if there
+  // were no picture-in-picture windows to close.
+  bool ExitPictureInPicture();
 
   // Called to notify that the initiator web contents should be focused.
   void FocusInitiator();
@@ -88,7 +91,11 @@ class PictureInPictureWindowManager {
       const display::Display& display);
 
   // Used for Document picture-in-picture windows only.
-  static gfx::Size GetMinimumWindowSize();
+  // Note that this is meant to represent the inner window bounds. When the pip
+  // window is drawn, outer bounds may be greater than kMinWindowSize to
+  // accommodate window decorations and ensure the inner bound minimum size
+  // respects kMinWindowSize.
+  static gfx::Size GetMinimumInnerWindowSize();
 
   // Used for Document picture-in-picture windows only.
   static gfx::Size GetMaximumWindowSize(const display::Display& display);

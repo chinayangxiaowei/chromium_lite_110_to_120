@@ -89,16 +89,6 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
 
   const std::u16string& initiator_title() const { return initiator_title_; }
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-  bool source_is_arc() const { return source_is_arc_; }
-#endif
-
-  bool source_is_modifiable() const { return source_is_modifiable_; }
-
-  bool source_has_selection() const { return source_has_selection_; }
-
-  bool print_selection_only() const { return print_selection_only_; }
-
   int pages_per_sheet() const { return pages_per_sheet_; }
 
   const gfx::Rect& printable_area() const { return printable_area_; }
@@ -119,10 +109,6 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
 
   // Save pdf pages temporarily before ready to do N-up conversion.
   void AddPdfPageForNupConversion(base::ReadOnlySharedMemoryRegion pdf_page);
-
-  // Set initial settings for PrintPreviewUI.
-  static void SetInitialParams(content::WebContents* print_preview_dialog,
-                               const mojom::RequestPrintPreviewParams& params);
 
   // Determines whether to cancel a print preview request based on the request
   // id.
@@ -238,6 +224,8 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
       int request_id,
       scoped_refptr<base::RefCountedMemory> data_bytes);
 
+  bool ShouldUseCompositor() const;
+
   // Callbacks for print compositor client.
   void OnPrepareForDocumentToPdfDone(int32_t request_id,
                                      mojom::PrintCompositor::Status status);
@@ -258,6 +246,15 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
                             mojom::PrintCompositor::Status status,
                             base::ReadOnlySharedMemoryRegion region);
 
+#if BUILDFLAG(ENABLE_OOP_PRINTING)
+  // Registers this PrintPreviewUI with the PrintBackendServiceManager. It is
+  // beneficial to have the Print Backend service be present and ready for at
+  // least as long as this UI is around.
+  void RegisterPrintBackendServiceManagerClient();
+
+  void UnregisterPrintBackendServiceManagerClient();
+#endif  // BUILDFLAG(ENABLE_OOP_PRINTING)
+
   WEB_UI_CONTROLLER_TYPE_DECL();
 
   base::TimeTicks initial_preview_start_time_;
@@ -273,20 +270,6 @@ class PrintPreviewUI : public ConstrainedWebDialogUI,
 
   // Weak pointer to the WebUI handler.
   const raw_ptr<PrintPreviewHandler> handler_;
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-  // Indicates whether the source document is from ARC.
-  bool source_is_arc_ = false;
-#endif
-
-  // Indicates whether the source document can be modified.
-  bool source_is_modifiable_ = true;
-
-  // Indicates whether the source document has selection.
-  bool source_has_selection_ = false;
-
-  // Indicates whether only the selection should be printed.
-  bool print_selection_only_ = false;
 
   // Keeps track of whether OnClosePrintPreviewDialog() has been called or not.
   bool dialog_closed_ = false;

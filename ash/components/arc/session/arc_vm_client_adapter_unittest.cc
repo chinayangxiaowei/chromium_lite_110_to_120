@@ -32,9 +32,9 @@
 #include "base/files/scoped_temp_dir.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
-#include "base/guid.h"
 #include "base/logging.h"
 #include "base/memory/ptr_util.h"
+#include "base/memory/raw_ptr.h"
 #include "base/posix/safe_strerror.h"
 #include "base/process/process_metrics.h"
 #include "base/ranges/algorithm.h"
@@ -48,6 +48,7 @@
 #include "base/test/scoped_feature_list.h"
 #include "base/test/scoped_run_loop_timeout.h"
 #include "base/time/time.h"
+#include "base/uuid.h"
 #include "chromeos/ash/components/cryptohome/cryptohome_parameters.h"
 #include "chromeos/ash/components/dbus/concierge/fake_concierge_client.h"
 #include "chromeos/ash/components/dbus/debug_daemon/debug_daemon_client.h"
@@ -111,7 +112,7 @@ std::string GenerateAbstractAddress() {
   std::string address(kArcVmBootNotificationServerAddressPrefix,
                       sizeof(kArcVmBootNotificationServerAddressPrefix) - 1);
   return address.append("-" +
-                        base::GUID::GenerateRandomV4().AsLowercaseString());
+                        base::Uuid::GenerateRandomV4().AsLowercaseString());
 }
 
 bool HasDiskImage(const vm_tools::concierge::StartArcVmRequest& request,
@@ -906,7 +907,7 @@ TEST_F(ArcVmClientAdapterTest, DoesNotGetArcInstanceStoppedOnNestedInstance) {
     }
 
     base::RepeatingCallback<base::RunLoop*()> const run_loop_factory_;
-    Observer* const child_observer_;
+    const raw_ptr<Observer, ExperimentalAsh> child_observer_;
     std::unique_ptr<ArcClientAdapter> nested_adapter_;
     FakeDemoModeDelegate demo_mode_delegate_;
     bool stopped_called_ = false;
@@ -2684,6 +2685,53 @@ TEST_F(ArcVmClientAdapterTest, ArcEnableNotificationRefreshTrue) {
   StartMiniArcWithParams(true, std::move(start_params));
   const auto& request = GetTestConciergeClient()->start_arc_vm_request();
   EXPECT_TRUE(request.mini_instance_request().enable_notifications_refresh());
+}
+
+TEST_F(ArcVmClientAdapterTest, ArcPriorityAppLmkDelayDisabled) {
+  StartMiniArc();
+  UpgradeParams upgrade_params = GetPopulatedUpgradeParams();
+  upgrade_params.enable_priority_app_lmk_delay = false;
+  UpgradeArcWithParams(true, std::move(upgrade_params));
+  EXPECT_FALSE(base::Contains(boot_notification_server()->received_data(),
+                              "ro.boot.arc.lmk.enable_priority_app_delay"));
+  EXPECT_FALSE(
+      base::Contains(boot_notification_server()->received_data(),
+                     "ro.boot.arc.lmk.priority_app_delay_duration_sec"));
+  EXPECT_FALSE(base::Contains(boot_notification_server()->received_data(),
+                              "ro.boot.arc.lmk.priority_apps"));
+}
+
+TEST_F(ArcVmClientAdapterTest, ArcPriorityAppLmkDelayEnabled_NoApp) {
+  StartMiniArc();
+  UpgradeParams upgrade_params = GetPopulatedUpgradeParams();
+  upgrade_params.enable_priority_app_lmk_delay = true;
+  upgrade_params.priority_app_lmk_delay_list = "";
+  UpgradeArcWithParams(true, std::move(upgrade_params));
+  EXPECT_FALSE(base::Contains(boot_notification_server()->received_data(),
+                              "ro.boot.arc.lmk.enable_priority_app_delay"));
+  EXPECT_FALSE(
+      base::Contains(boot_notification_server()->received_data(),
+                     "ro.boot.arc.lmk.priority_app_delay_duration_sec"));
+  EXPECT_FALSE(base::Contains(boot_notification_server()->received_data(),
+                              "ro.boot.arc.lmk.priority_apps"));
+}
+
+TEST_F(ArcVmClientAdapterTest, ArcPriorityAppLmkDelayEnabled_SomeApp) {
+  StartMiniArc();
+  UpgradeParams upgrade_params = GetPopulatedUpgradeParams();
+  upgrade_params.enable_priority_app_lmk_delay = true;
+  upgrade_params.priority_app_lmk_delay_list =
+      "com.example.app1,com.example.app2";
+  upgrade_params.priority_app_lmk_delay_second = 60;
+  UpgradeArcWithParams(true, std::move(upgrade_params));
+  EXPECT_TRUE(base::Contains(boot_notification_server()->received_data(),
+                             "ro.boot.arc.lmk.enable_priority_app_delay=1"));
+  EXPECT_TRUE(base::Contains(
+      boot_notification_server()->received_data(),
+      "ro.boot.arc.lmk.priority_apps=com.example.app1,com.example.app2"));
+  EXPECT_TRUE(
+      base::Contains(boot_notification_server()->received_data(),
+                     "ro.boot.arc.lmk.priority_app_delay_duration_sec=60"));
 }
 
 }  // namespace

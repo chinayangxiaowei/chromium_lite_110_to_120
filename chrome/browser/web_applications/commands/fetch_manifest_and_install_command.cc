@@ -9,6 +9,8 @@
 
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
+#include "base/functional/callback_forward.h"
+#include "base/strings/to_string.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
 #include "chrome/browser/profiles/profile.h"
@@ -28,7 +30,10 @@
 #include "components/webapps/browser/installable/installable_logging.h"
 #include "components/webapps/browser/installable/installable_metrics.h"
 #include "content/public/browser/browser_thread.h"
+#include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_contents_observer.h"
+#include "url/origin.h"
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 #include "ash/components/arc/mojom/app.mojom.h"
@@ -44,6 +49,10 @@
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
+#include "chrome/browser/browser_process.h"
+#include "chrome/browser/profiles/profile_manager.h"
+#include "chrome/browser/web_applications/web_app_provider.h"
+#include "chromeos/constants/chromeos_features.h"
 #include "chromeos/crosapi/mojom/arc.mojom.h"
 #include "chromeos/crosapi/mojom/web_app_service.mojom.h"
 #include "chromeos/lacros/lacros_service.h"
@@ -165,16 +174,17 @@ const LockDescription& FetchManifestAndInstallCommand::lock_description()
 void FetchManifestAndInstallCommand::StartWithLock(
     std::unique_ptr<NoopLock> lock) {
   noop_lock_ = std::move(lock);
+  if (IsWebContentsDestroyed()) {
+    Abort(webapps::InstallResultCode::kWebContentsDestroyed);
+    return;
+  }
+
+  Observe(web_contents_.get());
 
   // This metric is recorded regardless of the installation result.
   if (webapps::InstallableMetrics::IsReportableInstallSource(
           install_surface_)) {
     webapps::InstallableMetrics::TrackInstallEvent(install_surface_);
-  }
-
-  if (IsWebContentsDestroyed()) {
-    Abort(webapps::InstallResultCode::kWebContentsDestroyed);
-    return;
   }
 
   DCHECK(AreWebAppsUserInstallable(
@@ -210,11 +220,28 @@ base::Value FetchManifestAndInstallCommand::ToDebugValue() const {
   return base::Value(std::move(debug_value));
 }
 
+void FetchManifestAndInstallCommand::DidFinishNavigation(
+    content::NavigationHandle* navigation_handle) {
+  if (!navigation_handle->IsInPrimaryMainFrame() ||
+      !navigation_handle->HasCommitted() ||
+      navigation_handle->IsSameDocument()) {
+    return;
+  }
+
+  if (url::IsSameOriginWith(navigation_handle->GetPreviousPrimaryMainFrameURL(),
+                            navigation_handle->GetURL())) {
+    return;
+  }
+
+  Abort(webapps::InstallResultCode::kCancelledDueToMainFrameNavigation);
+}
+
 void FetchManifestAndInstallCommand::Abort(webapps::InstallResultCode code) {
   if (!install_callback_)
     return;
   debug_log_.Set("result_code", base::ToString(code));
   webapps::InstallableMetrics::TrackInstallResult(false);
+  Observe(nullptr);
   SignalCompletionAndSelfDestruct(
       CommandResult::kFailure,
       base::BindOnce(std::move(install_callback_), AppId(), code));
@@ -474,6 +501,15 @@ void FetchManifestAndInstallCommand::OnDialogCompleted(
   finalize_options.add_to_desktop = true;
   finalize_options.add_to_quick_launch_bar = kAddAppsToQuickLaunchBarByDefault;
 
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  if (base::FeatureList::IsEnabled(
+          chromeos::features::kExperimentalWebAppProfileIsolation)) {
+    app_profile_path_ = absl::make_optional(GenerateWebAppProfilePath(app_id_));
+    finalize_options.chromeos_data.emplace();
+    finalize_options.chromeos_data->app_profile_path = app_profile_path_;
+  }
+#endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
+
   DCHECK(app_lock_);
   app_lock_->install_finalizer().FinalizeInstall(
       *web_app_info_, finalize_options,
@@ -531,6 +567,32 @@ void FetchManifestAndInstallCommand::OnInstallCompleted(
     }
   }
   debug_log_.Set("result_code", base::ToString(code));
+
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  // `web_app_info_` might be moved after this point. This is ok since we don't
+  // need it here any more.
+  if (app_profile_path_) {
+    CHECK(base::FeatureList::IsEnabled(
+        chromeos::features::kExperimentalWebAppProfileIsolation));
+    // Create the app profile and install the same app inside it too.
+    g_browser_process->profile_manager()->CreateProfileAsync(
+        app_profile_path_.value(),
+        /*initialized_callback=*/
+        base::BindOnce(
+            [](std::unique_ptr<WebAppInstallInfo> web_app_info,
+               webapps::WebappInstallSource install_surface,
+               Profile* app_profile) {
+              CHECK(app_profile) << "failed to create app profile";
+              auto* provider = WebAppProvider::GetForWebApps(app_profile);
+              provider->scheduler().InstallFromInfo(
+                  std::move(web_app_info),
+                  /*overwrite_existing_manifest_fields=*/true, install_surface,
+                  base::DoNothing());
+            },
+            std::move(web_app_info_), install_surface_),
+        /*created_callback=*/base::DoNothing());
+  }
+#endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
 
   webapps::InstallableMetrics::TrackInstallResult(webapps::IsSuccess(code));
   SignalCompletionAndSelfDestruct(

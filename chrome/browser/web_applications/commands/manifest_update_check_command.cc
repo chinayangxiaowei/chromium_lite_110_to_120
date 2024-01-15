@@ -5,28 +5,37 @@
 #include "chrome/browser/web_applications/commands/manifest_update_check_command.h"
 
 #include "base/feature_list.h"
+#include "base/functional/callback_forward.h"
+#include "base/strings/to_string.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
 #include "chrome/browser/web_applications/callback_utils.h"
+#include "chrome/browser/web_applications/manifest_update_manager.h"
 #include "chrome/browser/web_applications/web_app.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
 #include "chrome/browser/web_applications/web_app_registrar.h"
 #include "chrome/browser/web_applications/web_app_ui_manager.h"
+#include "chrome/browser/web_applications/web_contents/web_app_icon_downloader.h"
 #include "chrome/common/chrome_features.h"
+#include "content/public/browser/navigation_handle.h"
 #include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_contents_observer.h"
 #include "url/gurl.h"
+#include "url/origin.h"
 
 namespace web_app {
 
 ManifestUpdateCheckCommand::ManifestUpdateCheckCommand(
     const GURL& url,
     const AppId& app_id,
+    base::Time check_time,
     base::WeakPtr<content::WebContents> web_contents,
     CompletedCallback callback,
     std::unique_ptr<WebAppDataRetriever> data_retriever)
     : WebAppCommandTemplate<AppLock>("ManifestUpdateCheckCommand"),
       url_(url),
       app_id_(app_id),
+      check_time_(check_time),
       completed_callback_(std::move(callback)),
       lock_description_(app_id),
       web_contents_(web_contents),
@@ -53,6 +62,13 @@ base::Value ManifestUpdateCheckCommand::ToDebugValue() const {
 void ManifestUpdateCheckCommand::StartWithLock(std::unique_ptr<AppLock> lock) {
   lock_ = std::move(lock);
 
+  if (IsWebContentsDestroyed()) {
+    CompleteCommandAndSelfDestruct(
+        ManifestUpdateCheckResult::kWebContentsDestroyed);
+    return;
+  }
+  Observe(web_contents_.get());
+
   // Runs a linear sequence of asynchronous and synchronous steps.
   // This sequence can be early exited at any point by a call to
   // CompleteCommandAndSelfDestruct().
@@ -70,6 +86,23 @@ void ManifestUpdateCheckCommand::StartWithLock(std::unique_ptr<AppLock> lock) {
                      GetWeakPtr()),
 
       base::BindOnce(&ManifestUpdateCheckCommand::CheckComplete, GetWeakPtr()));
+}
+
+void ManifestUpdateCheckCommand::DidFinishNavigation(
+    content::NavigationHandle* navigation_handle) {
+  if (!navigation_handle->IsInPrimaryMainFrame() ||
+      !navigation_handle->HasCommitted() ||
+      navigation_handle->IsSameDocument()) {
+    return;
+  }
+
+  if (url::IsSameOriginWith(navigation_handle->GetPreviousPrimaryMainFrameURL(),
+                            navigation_handle->GetURL())) {
+    return;
+  }
+
+  CompleteCommandAndSelfDestruct(
+      ManifestUpdateCheckResult::kCancelledDueToMainFrameNavigation);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +158,9 @@ void ManifestUpdateCheckCommand::StashNewManifestJson(
     webapps::InstallableStatusCode installable_status) {
   DCHECK_EQ(stage_, ManifestUpdateCheckStage::kDownloadingNewManifestData);
 
+  debug_log_.Set("manifest_url", manifest_url.spec());
+  debug_log_.Set("manifest_installable_result", base::ToString(installable_status));
+
   if (installable_status != webapps::InstallableStatusCode::NO_ERROR_DETECTED) {
     CompleteCommandAndSelfDestruct(ManifestUpdateCheckResult::kAppNotEligible);
     return;
@@ -155,10 +191,10 @@ void ManifestUpdateCheckCommand::DownloadNewIconBitmaps(
   base::flat_set<GURL> icon_urls =
       GetValidIconUrlsToDownload(new_install_info_);
 
+  IconDownloaderOptions options = {.skip_page_favicons = true,
+                                   .fail_all_if_any_fail = true};
   icon_downloader_.emplace(web_contents_.get(), std::move(icon_urls),
-                           std::move(next_step_callback));
-  icon_downloader_->SkipPageFavicons();
-  icon_downloader_->FailAllIfAnyFail();
+                           std::move(next_step_callback), options);
   icon_downloader_->Start();
 }
 
@@ -168,6 +204,8 @@ void ManifestUpdateCheckCommand::StashNewIconBitmaps(
     IconsMap icons_map,
     DownloadedIconsHttpResults icons_http_results) {
   DCHECK_EQ(stage_, ManifestUpdateCheckStage::kDownloadingNewManifestData);
+
+  debug_log_.Set("icon_download_result", base::ToString(result));
 
   RecordIconDownloadMetrics(result, icons_http_results);
 
@@ -331,6 +369,19 @@ ManifestUpdateCheckCommand::MakeAppIconIdentityUpdateDecision() const {
     return IdentityUpdateDecision::kSilentlyAllow;
   }
 
+  // Web apps that were installed by sync but have generated icons get a window
+  // of time where they can "fix" themselves silently to use the site provided
+  // icons.
+  constexpr base::TimeDelta kSyncGeneratedIconFixWindowDuration = base::Days(7);
+  if (base::FeatureList::IsEnabled(
+          features::kWebAppSyncGeneratedIconUpdateFix) &&
+      web_app.is_generated_icon() &&
+      web_app.latest_install_source() == webapps::WebappInstallSource::SYNC &&
+      check_time_ <
+          (web_app.install_time() + kSyncGeneratedIconFixWindowDuration)) {
+    return IdentityUpdateDecision::kSilentlyAllow;
+  }
+
   if (CanShowIdentityUpdateConfirmationDialog(lock_->registrar(), web_app) &&
       base::FeatureList::IsEnabled(features::kPwaUpdateDialogForIcon)) {
     return IdentityUpdateDecision::kGetUserConfirmation;
@@ -467,7 +518,7 @@ const WebApp& ManifestUpdateCheckCommand::GetWebApp() const {
   return *web_app;
 }
 
-bool ManifestUpdateCheckCommand::IsWebContentsDestroyed() const {
+bool ManifestUpdateCheckCommand::IsWebContentsDestroyed() {
   return !web_contents_ || web_contents_->IsBeingDestroyed();
 }
 
@@ -486,12 +537,14 @@ void ManifestUpdateCheckCommand::CompleteCommandAndSelfDestruct(
       case ManifestUpdateCheckResult::kIconDownloadFailed:
       case ManifestUpdateCheckResult::kIconReadFromDiskFailed:
       case ManifestUpdateCheckResult::kWebContentsDestroyed:
+      case ManifestUpdateCheckResult::kCancelledDueToMainFrameNavigation:
         return CommandResult::kFailure;
       case ManifestUpdateCheckResult::kSystemShutdown:
         return CommandResult::kShutdown;
     }
   }();
 
+  Observe(nullptr);
   SignalCompletionAndSelfDestruct(
       command_result,
       base::BindOnce(std::move(completed_callback_), check_result,

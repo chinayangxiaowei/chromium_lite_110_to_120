@@ -18,6 +18,7 @@
 #include "chrome/common/pref_names.h"
 #include "chrome/common/url_constants.h"
 #include "chrome/test/base/ui_test_utils.h"
+#include "components/policy/core/common/policy_pref_names.h"
 #include "components/prefs/pref_service.h"
 #include "content/public/common/content_features.h"
 #include "content/public/test/back_forward_cache_util.h"
@@ -243,7 +244,13 @@ INSTANTIATE_TEST_SUITE_P(ServiceWorker,
                          ExtensionApiCaptureTest,
                          ::testing::Values(ContextType::kServiceWorker));
 
-IN_PROC_BROWSER_TEST_P(ExtensionApiCaptureTest, CaptureVisibleTabJpeg) {
+// https://crbug.com/1450747 Flaky on Mac.
+#if BUILDFLAG(IS_MAC)
+#define MAYBE_CaptureVisibleTabJpeg DISABLED_CaptureVisibleTabJpeg
+#else
+#define MAYBE_CaptureVisibleTabJpeg CaptureVisibleTabJpeg
+#endif
+IN_PROC_BROWSER_TEST_P(ExtensionApiCaptureTest, MAYBE_CaptureVisibleTabJpeg) {
   ASSERT_TRUE(RunExtensionTest("tabs/capture_visible_tab/test_jpeg"))
       << message_;
 }
@@ -352,7 +359,7 @@ IN_PROC_BROWSER_TEST_P(ExtensionApiTabTestWithContextType,
                        IncognitoDisabledByPref) {
   IncognitoModePrefs::SetAvailability(
       browser()->profile()->GetPrefs(),
-      IncognitoModePrefs::Availability::kDisabled);
+      policy::IncognitoModeAvailability::kDisabled);
 
   // This makes sure that creating an incognito window fails due to pref
   // (policy) being set.
@@ -526,5 +533,5 @@ IN_PROC_BROWSER_TEST_F(ExtensionApiTabPrerenderingTest, DISABLED_Prerendering) {
 }
 
 // Adding a new test? Awesome. But API tests are the old hotness. The new
-// hotness is extension_function_test_utils. See tabs_test.cc for an example.
+// hotness is api_test_utils. See tabs_test.cc for an example.
 // We are trying to phase out many uses of API tests as they tend to be flaky.

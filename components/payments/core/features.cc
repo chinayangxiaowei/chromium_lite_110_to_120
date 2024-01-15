@@ -15,11 +15,6 @@ BASE_FEATURE(kWebPaymentsExperimentalFeatures,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // TODO(rouslan): Remove this.
-BASE_FEATURE(kWebPaymentsModifiers,
-             "WebPaymentsModifiers",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-// TODO(rouslan): Remove this.
 BASE_FEATURE(kWebPaymentsSingleAppUiSkip,
              "WebPaymentsSingleAppUiSkip",
              base::FEATURE_ENABLED_BY_DEFAULT);
@@ -71,6 +66,10 @@ BASE_FEATURE(kSecurePaymentConfirmationUseCredentialStoreAPIs,
 // enabled directly or via origin trial.
 BASE_FEATURE(kPaymentHandlerMinimalHeaderUX,
              "PaymentHandlerMinimalHeaderUX",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kPaymentHandlerRequireLinkHeader,
+             "PaymentHandlerRequireLinkHeader",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 }  // namespace features

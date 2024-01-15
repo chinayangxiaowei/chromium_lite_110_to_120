@@ -127,6 +127,11 @@
 #include "storage/browser/file_system/file_system_context.h"
 #endif
 
+#if BUILDFLAG(ENABLE_SUPERVISED_USERS)
+#include "chrome/browser/supervised_user/supervised_user_service.h"
+#include "chrome/browser/supervised_user/supervised_user_service_factory.h"
+#endif  // BUILDFLAG(ENABLE_SUPERVISED_USERS)
+
 using content::BrowserContext;
 using content::BrowserThread;
 using extensions::mojom::ManifestLocation;
@@ -1120,7 +1125,7 @@ void ExtensionService::PostActivateExtension(
   // TODO(kalman): Convert ExtensionSpecialStoragePolicy to a
   // BrowserContextKeyedService and use ExtensionRegistryObserver.
   profile_->GetExtensionSpecialStoragePolicy()->GrantRightsForExtension(
-      extension.get());
+      extension.get(), profile_);
 
   // TODO(kalman): This is broken. The crash reporter is process-wide so doesn't
   // work properly multi-profile. Besides which, it should be using
@@ -1152,7 +1157,7 @@ void ExtensionService::PostDeactivateExtension(
   // TODO(kalman): Convert ExtensionSpecialStoragePolicy to a
   // BrowserContextKeyedService and use ExtensionRegistryObserver.
   profile_->GetExtensionSpecialStoragePolicy()->RevokeRightsForExtension(
-      extension.get());
+      extension.get(), profile_);
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   // Revoke external file access for the extension from its file system context.
@@ -1222,7 +1227,14 @@ void ExtensionService::CheckManagementPolicy() {
 
     // If this profile is not supervised, then remove any supervised user
     // related disable reasons.
-    if (!profile()->IsChild()) {
+    bool is_supervised;
+#if BUILDFLAG(ENABLE_SUPERVISED_USERS)
+    is_supervised = SupervisedUserServiceFactory::GetForProfile(profile())
+                        ->IsSubjectToParentalControls();
+#else
+    is_supervised = false;
+#endif
+    if (!is_supervised) {
       disable_reasons &= (~disable_reason::DISABLE_CUSTODIAN_APPROVAL_REQUIRED);
     }
 
@@ -2276,10 +2288,13 @@ bool ExtensionService::UserCanDisableInstalledExtension(
 void ExtensionService::UnloadAllExtensionsInternal() {
   profile_->GetExtensionSpecialStoragePolicy()->RevokeRightsForAllExtensions();
 
-  registry_->ClearAll();
+  const ExtensionSet extensions = registry_->GenerateInstalledExtensionsSet(
+      ExtensionRegistry::ENABLED | ExtensionRegistry::DISABLED |
+      ExtensionRegistry::TERMINATED);
 
-  RendererStartupHelperFactory::GetForBrowserContext(profile())
-      ->UnloadAllExtensionsForTest();  // IN-TEST
+  for (const auto& extension : extensions) {
+    UnloadExtension(extension->id(), UnloadedExtensionReason::UNINSTALL);
+  }
 
   // TODO(erikkay) should there be a notification for this?  We can't use
   // EXTENSION_UNLOADED since that implies that the extension has

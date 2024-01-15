@@ -87,6 +87,7 @@ class PictureInPictureBrowserFrameView
   // ChromeLocationBarModelDelegate:
   content::WebContents* GetActiveWebContents() const override;
   bool GetURL(GURL* url) const override;
+  bool ShouldPreventElision() override;
   bool ShouldTrimDisplayUrlAfterHostName() const override;
   bool ShouldDisplayURL() const override;
 
@@ -156,6 +157,10 @@ class PictureInPictureBrowserFrameView
   // Returns the height of the top bar area, including the window top border.
   int GetTopAreaHeight() const;
 
+  // Returns the the non-client view area size, i.e. the size of the window
+  // elements where web content is not drawn.
+  gfx::Size GetNonClientViewAreaSize() const;
+
   // Called when mouse entered or exited the pip window.
   void OnMouseEnteredOrExitedWindow(bool entered);
 
@@ -176,6 +181,7 @@ class PictureInPictureBrowserFrameView
   std::vector<gfx::Animation*> GetRenderInactiveAnimationsForTesting();
   views::View* GetBackToTabButtonForTesting();
   views::View* GetCloseButtonForTesting();
+  views::Label* GetWindowTitleForTesting();
 
  private:
   // A model required to use LocationIconView.

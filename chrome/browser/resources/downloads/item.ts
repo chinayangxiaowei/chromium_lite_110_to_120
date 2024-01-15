@@ -21,8 +21,10 @@ import {FocusRowMixin} from 'chrome://resources/cr_elements/focus_row_mixin.js';
 import {assert} from 'chrome://resources/js/assert_ts.js';
 import {focusWithoutInk} from 'chrome://resources/js/focus_without_ink.js';
 import {loadTimeData} from 'chrome://resources/js/load_time_data.js';
+import {mojoString16ToString} from 'chrome://resources/js/mojo_type_util.js';
 import {sanitizeInnerHtml} from 'chrome://resources/js/parse_html_subset.js';
 import {htmlEscape} from 'chrome://resources/js/util_ts.js';
+import {String16} from 'chrome://resources/mojo/mojo/public/mojom/base/string16.mojom-webui.js';
 import {beforeNextRender, PolymerElement} from 'chrome://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
 import {BrowserProxy} from './browser_proxy.js';
@@ -205,10 +207,10 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
   }
 
   /**
-   * @return A reasonably long URL.
+   * @return A JS string of the display URL.
    */
-  private chopUrl_(url: string): string {
-    return url.slice(0, 300);
+  private getDisplayUrlStr_(displayUrl: String16): string {
+    return mojoString16ToString(displayUrl);
   }
 
   private computeClass_(): string {
@@ -514,6 +516,11 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
   }
 
   private observeIsDangerous_() {
+    const removeFileUrlLinks = () => {
+      this.$.url.removeAttribute('href');
+      this.$['file-link'].removeAttribute('href');
+    };
+
     if (!this.data) {
       return;
     }
@@ -524,52 +531,65 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
       DangerType.BLOCKED_PASSWORD_PROTECTED,
     ];
 
+    // Handle various dangerous cases.
     if (this.isDangerous_) {
-      this.$.url.removeAttribute('href');
+      removeFileUrlLinks();
       this.useFileIcon_ = false;
-    } else if (OVERRIDDEN_ICON_TYPES.includes(
-                   this.data.dangerType as DangerType)) {
-      this.useFileIcon_ = false;
-    } else if (this.data.state === States.ASYNC_SCANNING) {
-      this.useFileIcon_ = false;
-    } else if (this.data.state === States.PROMPT_FOR_SCANNING) {
-      this.useFileIcon_ = false;
-    } else {
-      this.$.url.href = this.data.url;
-      const path = this.data.filePath;
-      IconLoaderImpl.getInstance()
-          .loadIcon(this.$['file-icon'], path)
-          .then(success => {
-            if (path === this.data.filePath &&
-                this.data.state !== States.ASYNC_SCANNING) {
-              this.useFileIcon_ = success;
-            }
-          });
+      return;
     }
+    if (OVERRIDDEN_ICON_TYPES.includes(this.data.dangerType as DangerType)) {
+      this.useFileIcon_ = false;
+      return;
+    }
+    if (this.data.state === States.ASYNC_SCANNING) {
+      this.useFileIcon_ = false;
+      return;
+    }
+    if (this.data.state === States.PROMPT_FOR_SCANNING) {
+      this.useFileIcon_ = false;
+      return;
+    }
+
+    // The file is not dangerous. Link the url if supplied.
+    if (this.data.url) {
+      this.$.url.href = this.data.url.url;
+    } else {
+      removeFileUrlLinks();
+    }
+
+    const path = this.data.filePath;
+    IconLoaderImpl.getInstance()
+        .loadIcon(this.$['file-icon'], path)
+        .then(success => {
+          if (path === this.data.filePath &&
+              this.data.state !== States.ASYNC_SCANNING) {
+            this.useFileIcon_ = success;
+          }
+        });
   }
 
-  private onCancelTap_() {
+  private onCancelClick_() {
     this.restoreFocusAfterCancel_ = true;
     this.mojoHandler_!.cancel(this.data.id);
   }
 
-  private onDiscardDangerousTap_() {
+  private onDiscardDangerousClick_() {
     this.mojoHandler_!.discardDangerous(this.data.id);
   }
 
-  private onOpenNowTap_() {
+  private onOpenNowClick_() {
     this.mojoHandler_!.openDuringScanningRequiringGesture(this.data.id);
   }
 
-  private onDeepScanTap_() {
+  private onDeepScanClick_() {
     this.mojoHandler_!.deepScan(this.data.id);
   }
 
-  private onBypassDeepScanTap_() {
+  private onBypassDeepScanClick_() {
     this.mojoHandler_!.bypassDeepScanRequiringGesture(this.data.id);
   }
 
-  private onReviewDangerousTap_() {
+  private onReviewDangerousClick_() {
     this.mojoHandler_!.reviewDangerousRequiringGesture(this.data.id);
   }
 
@@ -578,17 +598,20 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
     this.mojoHandler_!.drag(this.data.id);
   }
 
-  private onFileLinkTap_(e: Event) {
+  private onFileLinkClick_(e: Event) {
     e.preventDefault();
     this.mojoHandler_!.openFileRequiringGesture(this.data.id);
   }
 
-  private onUrlTap_() {
+  private onUrlClick_() {
+    if (!this.data.url) {
+      return;
+    }
     chrome.send(
         'metricsHandler:recordAction', ['Downloads_OpenUrlOfDownloadedItem']);
   }
 
-  private onPauseOrResumeTap_() {
+  private onPauseOrResumeClick_() {
     if (this.isInProgress_) {
       this.mojoHandler_!.pause(this.data.id);
     } else {
@@ -596,7 +619,7 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
     }
   }
 
-  private onRemoveTap_(e: Event) {
+  private onRemoveClick_(e: Event) {
     this.mojoHandler_!.remove(this.data.id);
     const pieces = loadTimeData.getSubstitutedStringPieces(
                        loadTimeData.getString('toastRemovedFromList'),
@@ -615,15 +638,15 @@ export class DownloadsItemElement extends DownloadsItemElementBase {
     e.preventDefault();
   }
 
-  private onRetryTap_() {
+  private onRetryClick_() {
     this.mojoHandler_!.retryDownload(this.data.id);
   }
 
-  private onSaveDangerousTap_() {
+  private onSaveDangerousClick_() {
     this.mojoHandler_!.saveDangerousRequiringGesture(this.data.id);
   }
 
-  private onShowTap_() {
+  private onShowClick_() {
     this.mojoHandler_!.show(this.data.id);
   }
 

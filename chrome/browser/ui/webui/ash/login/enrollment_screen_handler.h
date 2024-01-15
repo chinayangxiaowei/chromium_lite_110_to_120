@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include "base/memory/raw_ptr.h"
 #include "base/values.h"
 #include "chrome/browser/ash/login/enrollment/enrollment_screen_view.h"
 #include "chrome/browser/ash/login/enrollment/enterprise_enrollment_helper.h"
@@ -59,9 +60,6 @@ class EnrollmentScreenHandler : public BaseScreenHandler,
 
   ~EnrollmentScreenHandler() override;
 
-  // Implements WebUIMessageHandler:
-  void RegisterMessages() override;
-
   // Implements EnrollmentScreenView:
   void SetEnrollmentConfig(const policy::EnrollmentConfig& config) override;
   void SetEnrollmentController(Controller* controller) override;
@@ -74,6 +72,7 @@ class EnrollmentScreenHandler : public BaseScreenHandler,
   void Hide() override;
   void ShowSigninScreen() override;
   void ReloadSigninScreen() override;
+  void ResetEnrollmentScreen() override;
   void ShowSkipConfirmationDialog() override;
   void ShowUserError(const std::string& email) override;
   void ShowEnrollmentDuringTrialNotAllowedError() override;
@@ -96,6 +95,7 @@ class EnrollmentScreenHandler : public BaseScreenHandler,
   void InitAfterJavascriptAllowed() override;
   void DeclareLocalizedValues(
       ::login::LocalizedValuesBuilder* builder) override;
+  void DeclareJSCallbacks() override;
   void GetAdditionalParameters(base::Value::Dict* parameters) override;
 
   void ContinueAuthenticationWhenCookiesAvailable(const std::string& user,
@@ -126,7 +126,7 @@ class EnrollmentScreenHandler : public BaseScreenHandler,
   void HandleOnLearnMore();
 
   // Shows a given enrollment step.
-  void ShowStep(const char* step);
+  void ShowStep(const std::string& step);
 
   // Display the given i18n resource as error message.
   void ShowError(int message_id, bool retry);
@@ -166,7 +166,7 @@ class EnrollmentScreenHandler : public BaseScreenHandler,
   void OnAdConfigurationUnlocked(std::string unlocked_data);
 
   // Keeps the controller for this view.
-  Controller* controller_ = nullptr;
+  raw_ptr<Controller, ExperimentalAsh> controller_ = nullptr;
 
   bool show_on_init_ = false;
 

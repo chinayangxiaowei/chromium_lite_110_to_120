@@ -14,6 +14,8 @@
 #include "build/build_config.h"
 #include "chrome/browser/ash/app_mode/kiosk_app_manager.h"
 #include "chrome/browser/ash/login/app_mode/kiosk_launch_controller.h"
+#include "chrome/browser/ash/login/app_mode/test/kiosk_apps_mixin.h"
+#include "chrome/browser/ash/login/app_mode/test/kiosk_test_helpers.h"
 #include "chrome/browser/ash/login/enrollment/auto_enrollment_check_screen.h"
 #include "chrome/browser/ash/login/enrollment/enrollment_screen.h"
 #include "chrome/browser/ash/login/enrollment/enrollment_screen_view.h"
@@ -22,8 +24,6 @@
 #include "chrome/browser/ash/login/test/embedded_policy_test_server_mixin.h"
 #include "chrome/browser/ash/login/test/enrollment_ui_mixin.h"
 #include "chrome/browser/ash/login/test/js_checker.h"
-#include "chrome/browser/ash/login/test/kiosk_apps_mixin.h"
-#include "chrome/browser/ash/login/test/kiosk_test_helpers.h"
 #include "chrome/browser/ash/login/test/login_or_lock_screen_visible_waiter.h"
 #include "chrome/browser/ash/login/test/network_portal_detector_mixin.h"
 #include "chrome/browser/ash/login/test/oobe_base_test.h"
@@ -495,7 +495,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_MISSING_LICENSES_ERROR, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -513,7 +513,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_MISSING_LICENSES_ERROR_MEETS,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -529,7 +529,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_AUTH_ACCOUNT_ERROR, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -546,7 +546,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_ACCOUNT_ERROR_MEETS, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -564,7 +564,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_POLICY_DM_STATUS_SERVICE_INVALID_SERIAL_NUMBER,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -580,7 +580,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_DOMAIN_MISMATCH_ERROR, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -597,7 +597,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   // TODO (antrim, rsorokin): find out why it makes sense to retry here?
   enrollment_ui_.ExpectErrorMessage(
       IDS_POLICY_DM_STATUS_SERVICE_DEVICE_ID_CONFLICT, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -613,7 +613,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_POLICY_DM_STATUS_SERVICE_ACTIVATION_PENDING, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -630,7 +630,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_CONSUMER_ACCOUNT_WITH_PACKAGED_LICENSE,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -646,7 +646,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(IDS_POLICY_DM_STATUS_TEMPORARY_UNAVAILABLE,
                                     /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -663,7 +663,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_ENTERPRISE_ACCOUNT_IS_NOT_ELIGIBLE_TO_ENROLL,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -679,7 +679,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_ENTERPRISE_TOS_HAS_NOT_BEEN_ACCEPTED,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -697,7 +697,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_ENTERPRISE_TOS_HAS_NOT_BEEN_ACCEPTED_MEETS,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -713,7 +713,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_ILLEGAL_ACCOUNT_FOR_PACKAGED_EDU_LICENSE,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -728,7 +728,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(IDS_POLICY_DM_STATUS_HTTP_STATUS_ERROR,
                                     /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -769,7 +769,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
                                     /*can_retry=*/true);
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
 }
 
 // Error during enrollment : Error 418: PACKAGED_DEVICE_KIOSK_DISALLOWED.
@@ -784,7 +784,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_INVALID_PACKAGED_DEVICE_FOR_KIOSK,
       /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -803,7 +803,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
       /*can_retry=*/true);
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
 }
 
 // Error during enrollment : Error fetching policy : 903 - deprovisioned.
@@ -819,7 +819,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentEmbeddedPolicyServerBase,
                                     /*can_retry=*/true);
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
 }
 
 // No state keys on the server. Auto enrollment check should proceed to login.
@@ -1067,7 +1067,7 @@ IN_PROC_BROWSER_TEST_F(EnrollmentRecoveryTest, DifferentDomain) {
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_STATUS_LOCK_WRONG_USER, true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
 }
 
 IN_PROC_BROWSER_TEST_F(InitialEnrollmentTest, EnrollmentForced) {
@@ -1302,7 +1302,7 @@ IN_PROC_BROWSER_TEST_F(KioskEnrollmentPolicyServerTest,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_MISSING_LICENSES_ERROR, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }
@@ -1333,7 +1333,7 @@ IN_PROC_BROWSER_TEST_F(KioskEnrollmentPolicyServerTest,
   enrollment_ui_.WaitForStep(test::ui::kEnrollmentStepError);
   enrollment_ui_.ExpectErrorMessage(
       IDS_ENTERPRISE_ENROLLMENT_MISSING_LICENSES_ERROR, /*can_retry=*/true);
-  enrollment_ui_.RetryAfterError();
+  enrollment_ui_.RetryAndWaitForSigninStep();
   EXPECT_FALSE(StartupUtils::IsDeviceRegistered());
   EXPECT_FALSE(InstallAttributes::Get()->IsEnterpriseManaged());
 }

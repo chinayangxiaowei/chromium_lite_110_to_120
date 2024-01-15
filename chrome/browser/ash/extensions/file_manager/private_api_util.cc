@@ -32,11 +32,12 @@
 #include "chrome/browser/ash/guest_os/public/types.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/common/extensions/api/file_manager_private.h"
+#include "chromeos/ash/components/drivefs/drivefs_pin_manager.h"
 #include "chromeos/ash/components/drivefs/drivefs_util.h"
 #include "chromeos/ash/components/drivefs/sync_status_tracker.h"
 #include "components/drive/drive_api_util.h"
 #include "components/drive/file_errors.h"
-#include "content/public/browser/browser_task_traits.h"
+#include "content/public/browser/browser_thread.h"
 #include "content/public/browser/child_process_security_policy.h"
 #include "mojo/public/cpp/bindings/callback_helpers.h"
 #include "storage/browser/file_system/external_mount_points.h"
@@ -237,6 +238,40 @@ extensions::api::file_manager_private::VmType VmTypeToJs(
       NOTREACHED();
       return extensions::api::file_manager_private::VM_TYPE_NONE;
   }
+}
+
+extensions::api::file_manager_private::BulkPinStage DrivefsPinStageToJs(
+    drivefs::pinning::Stage stage) {
+  switch (stage) {
+    case drivefs::pinning::Stage::kStopped:
+      return extensions::api::file_manager_private::BULK_PIN_STAGE_STOPPED;
+    case drivefs::pinning::Stage::kPaused:
+      return extensions::api::file_manager_private::BULK_PIN_STAGE_PAUSED;
+    case drivefs::pinning::Stage::kGettingFreeSpace:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_GETTING_FREE_SPACE;
+    case drivefs::pinning::Stage::kListingFiles:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_LISTING_FILES;
+    case drivefs::pinning::Stage::kSyncing:
+      return extensions::api::file_manager_private::BULK_PIN_STAGE_SYNCING;
+    case drivefs::pinning::Stage::kSuccess:
+      return extensions::api::file_manager_private::BULK_PIN_STAGE_SUCCESS;
+    case drivefs::pinning::Stage::kCannotGetFreeSpace:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_CANNOT_GET_FREE_SPACE;
+    case drivefs::pinning::Stage::kCannotListFiles:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_CANNOT_LIST_FILES;
+    case drivefs::pinning::Stage::kNotEnoughSpace:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_NOT_ENOUGH_SPACE;
+    case drivefs::pinning::Stage::kCannotEnableDocsOffline:
+      return extensions::api::file_manager_private::
+          BULK_PIN_STAGE_CANNOT_ENABLE_DOCS_OFFLINE;
+  }
+  NOTREACHED();
+  return extensions::api::file_manager_private::BULK_PIN_STAGE_NONE;
 }
 
 }  // namespace
@@ -632,26 +667,15 @@ base::FilePath GetLocalPathFromURL(content::RenderFrameHost* render_frame_host,
   return filesystem_url.path();
 }
 
-void GetSelectedFileInfo(content::RenderFrameHost* render_frame_host,
-                         Profile* profile,
-                         const std::vector<GURL>& file_urls,
+void GetSelectedFileInfo(Profile* profile,
+                         std::vector<base::FilePath> local_paths,
                          GetSelectedFileInfoLocalPathOption local_path_option,
                          GetSelectedFileInfoCallback callback) {
-  DCHECK(render_frame_host);
-  DCHECK(profile);
-
   std::unique_ptr<GetSelectedFileInfoParams> params(
       new GetSelectedFileInfoParams);
   params->local_path_option = local_path_option;
   params->callback = std::move(callback);
-
-  for (const GURL& url : file_urls) {
-    base::FilePath path = GetLocalPathFromURL(render_frame_host, profile, url);
-    if (!path.empty()) {
-      DVLOG(1) << "Selected: file path: " << path;
-      params->file_paths.push_back(std::move(path));
-    }
-  }
+  params->file_paths = std::move(local_paths);
 
   base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
       FROM_HERE,
@@ -710,6 +734,18 @@ bool ToRecentSourceFileType(
       NOTREACHED();
       return false;
   }
+}
+
+extensions::api::file_manager_private::BulkPinProgress BulkPinProgressToJs(
+    const drivefs::pinning::Progress& progress) {
+  extensions::api::file_manager_private::BulkPinProgress result;
+  result.stage = DrivefsPinStageToJs(progress.stage);
+  result.free_space_bytes = progress.free_space;
+  result.required_space_bytes = progress.required_space;
+  result.bytes_to_pin = progress.bytes_to_pin;
+  result.pinned_bytes = progress.pinned_bytes;
+  result.files_to_pin = progress.files_to_pin;
+  return result;
 }
 
 }  // namespace util

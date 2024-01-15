@@ -560,6 +560,10 @@ PDFiumEngine::PDFiumEngine(PDFEngine::Client* client,
 }
 
 PDFiumEngine::~PDFiumEngine() {
+  // Clear all the containers that can prevent unloading.
+  find_results_.clear();
+  selection_.clear();
+
   for (auto& page : pages_)
     page->Unload();
 
@@ -3465,6 +3469,14 @@ gfx::Rect PDFiumEngine::GetPageScreenRect(int page_index) const {
 
 gfx::Rect PDFiumEngine::GetScreenRect(const gfx::Rect& rect) const {
   return draw_utils::GetScreenRect(rect, position_, current_zoom_);
+}
+
+gfx::RectF PDFiumEngine::GetPageBoundingBox(int page_index) {
+  PDFiumPage* page = GetPage(page_index);
+  if (!page) {
+    return gfx::RectF();
+  }
+  return page->GetBoundingBox();
 }
 
 void PDFiumEngine::Highlight(void* buffer,

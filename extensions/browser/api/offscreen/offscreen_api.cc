@@ -92,7 +92,7 @@ ExtensionFunction::ResponseAction OffscreenCreateDocumentFunction::Run() {
     return RespondNow(Error("Only a single `reason` is currently supported."));
   }
 
-  if (base::Contains(deduped_reasons, api::offscreen::REASON_TESTING) &&
+  if (base::Contains(deduped_reasons, api::offscreen::Reason::kTesting) &&
       !base::CommandLine::ForCurrentProcess()->HasSwitch(
           switches::kOffscreenDocumentTesting)) {
     return RespondNow(Error(base::StringPrintf(
@@ -133,8 +133,7 @@ void OffscreenCreateDocumentFunction::OnExtensionHostDestroyed(
     ExtensionHost* host) {
   SendResponseToExtension(
       Error("Offscreen document closed before fully loading."));
-  // The host is destroyed, so ensure we're no longer observing it.
-  DCHECK(!host_observer_.IsObserving());
+  // WARNING: `this` can be deleted now!
 }
 
 void OffscreenCreateDocumentFunction::OnExtensionHostDidStopFirstLoad(
@@ -155,6 +154,7 @@ void OffscreenCreateDocumentFunction::SendResponseToExtension(
 
   Respond(std::move(response_value));
   Release();  // Balanced in Run().
+  // WARNING: `this` can be deleted now!
 }
 
 OffscreenCloseDocumentFunction::OffscreenCloseDocumentFunction() = default;

@@ -30,17 +30,16 @@
 <translation id="1620510694547887537">Câmara</translation>
 <translation id="1633720957382884102">Sites relacionados</translation>
 <translation id="1644574205037202324">Histórico</translation>
-<translation id="1647582022260550163">Tem a certeza de que pretende repor as autorizações e limpar os cookies e os dados de sites?</translation>
+<translation id="1647582022260550163">Tem a certeza de que quer repor as autorizações e limpar os cookies e os dados de sites?</translation>
 <translation id="1660204651932907780">Permitir que os sites reproduzam som (recomendado)</translation>
 <translation id="1677097821151855053">Os cookies e outros dados de sites são utilizados para memorizar o utilizador, por exemplo, para iniciar a sua sessão ou para personalizar anúncios. Para gerir cookies de todos os sites, veja <ph name="BEGIN_LINK" />Definições <ph name="END_LINK" />.</translation>
-<translation id="1688867105868176567">Pretende limpar os dados do site?</translation>
+<translation id="1688867105868176567">Quer limpar os dados do site?</translation>
 <translation id="169515064810179024">Impedir que os sites acedam aos sensores de movimentos</translation>
 <translation id="1717218214683051432">Sensores de movimento</translation>
 <translation id="1743802530341753419">Perguntar antes de permitir a ligação de sites a um dispositivo (recomendado)</translation>
 <translation id="1779089405699405702">Descodificador de imagem</translation>
 <translation id="1785415724048343560">Recomendado para obter a melhor experiência</translation>
 <translation id="1818308510395330587">Para permitir que a app <ph name="APP_NAME" /> utilize a realidade aumentada, ative também a câmara nas <ph name="BEGIN_LINK" />Definições do Android<ph name="END_LINK" />.</translation>
-<translation id="1864927262126810325">De <ph name="SOURCE_NAME" /></translation>
 <translation id="187227595286001730">Os sites relacionados podem ver a sua atividade no grupo</translation>
 <translation id="1887786770086287077">O acesso à localização está desativado para este dispositivo. Ative-o nas <ph name="BEGIN_LINK" />Definições do Android<ph name="END_LINK" />.</translation>
 <translation id="1915307458270490472">Desligar</translation>
@@ -69,7 +68,7 @@
 <translation id="2241634353105152135">Apenas uma vez</translation>
 <translation id="2253414712144136228"><ph name="NAME_OF_LIST_ITEM" /> Remover</translation>
 <translation id="228293613124499805">É provável que a maioria dos sites que visita guarde dados no seu dispositivo, muitas vezes para melhorar a sua experiência ao guardar as suas preferências ou informações que partilha com o site. Recomendamos que mantenha esta definição ativada.</translation>
-<translation id="2289270750774289114">Perguntar quando um site pretende detetar dispositivos Bluetooth próximos (recomendado)</translation>
+<translation id="2289270750774289114">Perguntar quando um site quer detetar dispositivos Bluetooth próximos (recomendado)</translation>
 <translation id="2315043854645842844">O sistema operativo não suporta a seleção do certificado do lado do cliente.</translation>
 <translation id="2321958826496381788">Arraste o controlo de deslize até conseguir ler confortavelmente. O texto deve ter, pelo menos, este tamanho depois de tocar duas vezes num parágrafo.</translation>
 <translation id="2329473609445770916">Este site define os interesses que outros sites podem usar para lhe mostrar anúncios</translation>
@@ -83,6 +82,7 @@
 <translation id="2434158240863470628">Transferência concluída: <ph name="SEPARATOR" /> <ph name="BYTES_DOWNLOADED" /></translation>
 <translation id="244264527810019436">As funcionalidades em alguns sites podem não funcionar no Modo de navegação anónima</translation>
 <translation id="2442870161001914531">Peça sempre o site para computador</translation>
+<translation id="2479148705183875116">Aceder às Definições</translation>
 <translation id="2482878487686419369">Notificações</translation>
 <translation id="2485422356828889247">Desinstalar</translation>
 <translation id="2490684707762498678">Gerido por <ph name="APP_NAME" /></translation>
@@ -102,7 +102,8 @@
 <translation id="2713106313042589954">Desligar câmara</translation>
 <translation id="2717722538473713889">Moradas de email</translation>
 <translation id="2750481671343847896">Os sites podem mostrar pedidos de início de sessão de serviços de identidade.</translation>
-<translation id="2822354292072154809">Tem a certeza de que pretende repor todas as autorizações do site para <ph name="CHOSEN_OBJECT_NAME" />?</translation>
+<translation id="2822354292072154809">Tem a certeza de que quer repor todas as autorizações do site para <ph name="CHOSEN_OBJECT_NAME" />?</translation>
+<translation id="2850913818900871965">Peça a vista de dispositivo móvel</translation>
 <translation id="2870560284913253234">Site</translation>
 <translation id="2874939134665556319">Faixa anterior</translation>
 <translation id="2891975107962658722">Impeça um site de guardar dados no seu dispositivo</translation>
@@ -124,7 +125,6 @@
 <translation id="3162899666601560689">Os sites podem usar cookies para melhorar a experiência de navegação, por exemplo, para manter a sua sessão iniciada ou memorizar os artigos no seu carrinho de compras</translation>
 <translation id="3165022941318558018">Permita que um site use cookies de terceiros</translation>
 <translation id="3198916472715691905"><ph name="STORAGE_AMOUNT" /> de dados armazenados</translation>
-<translation id="3203366800380907218">Da Web</translation>
 <translation id="321187648315454507">Para permitir que a app <ph name="APP_NAME" /> lhe envie notificações, ative também as notificações nas <ph name="BEGIN_LINK" />Definições do Android<ph name="END_LINK" />.</translation>
 <translation id="3227137524299004712">Microfone</translation>
 <translation id="3248611290851046188">Este site define os interesses que outros sites podem usar para lhe mostrar anúncios. Este site também obtém os seus interesses do Chrome para lhe mostrar anúncios mais relevantes.</translation>
@@ -148,6 +148,7 @@
 <translation id="3600792891314830896">Desativar o som dos sites que reproduzem som</translation>
 <translation id="3602290021589620013">Pré-visualizar</translation>
 <translation id="3628308229821498208">Pesquisas sugeridas</translation>
+<translation id="3707034683772193706">Um site que visita pode guardar uma pequena quantidade de informações no Chrome, principalmente para validar que não é um bot</translation>
 <translation id="3721953990244350188">Ignorar e mostrar a ação disponível seguinte</translation>
 <translation id="3744111561329211289">Sincronização em segundo plano</translation>
 <translation id="3763247130972274048">Toque duas vezes no vídeo à esquerda ou à direita para avançar 10 s.</translation>
@@ -222,12 +223,10 @@
 <translation id="509133520954049755">Pedir a vista de computador</translation>
 <translation id="5100237604440890931">Reduzido. Clique para expandir.</translation>
 <translation id="5123685120097942451">Separador de navegação anónima</translation>
-<translation id="5134599672855298214">Pedir a vista de dispositivo móvel (recomendado)</translation>
 <translation id="5186036860380548585">Opção disponível junto à parte superior do ecrã</translation>
 <translation id="5197729504361054390">Os contactos que selecionar serão partilhados com <ph name="BEGIN_BOLD" /><ph name="SITE" /><ph name="END_BOLD" />.</translation>
 <translation id="5216942107514965959">Última visita hoje</translation>
 <translation id="5225463052809312700">Ativar câmara</translation>
-<translation id="5229337741799419985">Esta definição funciona sem saber a sua identidade nem permitir que os sites vejam o seu histórico de navegação</translation>
 <translation id="5234764350956374838">Ignorar</translation>
 <translation id="5264323282659631142">Remover "<ph name="CHIP_LABEL" />"</translation>
 <translation id="528192093759286357">Arraste a partir da parte superior e toque no botão de retrocesso para sair do ecrã inteiro.</translation>
@@ -289,7 +288,7 @@
 <translation id="6196640612572343990">Bloquear cookies de terceiros</translation>
 <translation id="6205314730813004066">Privacidade dos anúncios</translation>
 <translation id="6216432067784365534">Opções de <ph name="NAME_OF_LIST_ITEM" /></translation>
-<translation id="6231752747840485235">Pretende desinstalar a app "<ph name="APP_NAME" />"?</translation>
+<translation id="6231752747840485235">Quer desinstalar a app "<ph name="APP_NAME" />"?</translation>
 <translation id="6262191102408817757">Com base no seu último separador</translation>
 <translation id="6262279340360821358">Bloqueio de <ph name="PERMISSION_1" /> e <ph name="PERMISSION_2" />.</translation>
 <translation id="6270391203985052864">Os sites podem pedir para enviar notificações.</translation>
@@ -314,10 +313,9 @@
 <translation id="6643016212128521049">Limpar</translation>
 <translation id="6689172468748959065">Fotos do perfil</translation>
 <translation id="6697925417670533197">Transferências ativas</translation>
-<translation id="6701547804986694515">Um site que visita pode guardar informações no Chrome que validam que não é um bot. À medida que navega, os sites podem verificar com o Chrome e validar com um site anterior que tenha visitado que provavelmente é uma pessoa real</translation>
 <translation id="6722828510648505498">Bloqueie pedidos de início de sessão dos serviços de identidade.</translation>
 <translation id="6746124502594467657">Mover para baixo</translation>
-<translation id="6749077623962119521">Pretende repor as autorizações?</translation>
+<translation id="6749077623962119521">Quer repor as autorizações?</translation>
 <translation id="6766622839693428701">Deslize rapidamente para baixo para fechar.</translation>
 <translation id="6787751205395685251">Selecione uma opção para <ph name="SITE_NAME" /></translation>
 <translation id="6790428901817661496">Reproduzir</translation>
@@ -347,6 +345,7 @@
 <translation id="7302486331832100261">Normalmente, bloqueia as notificações. Para permitir, toque em Detalhes.</translation>
 <translation id="7366415735885268578">Adicionar um site</translation>
 <translation id="7383715096023715447">Definições do <ph name="DOMAIN" /></translation>
+<translation id="7406113532070524618">Esta definição funciona sem saber a sua identidade nem permitir que os sites vejam o seu histórico de navegação, embora os sites possam partilhar uma pequena quantidade de informações como parte da validação</translation>
 <translation id="7423098979219808738">Perguntar primeiro</translation>
 <translation id="7423538860840206698">Leitura da área de transferência bloqueada</translation>
 <translation id="7425915948813553151">Tema escuro para sites</translation>
@@ -375,7 +374,7 @@
 <translation id="7940722705963108451">Lembrar-me</translation>
 <translation id="7974024493641668069">{COUNT,plural, =1{<ph name="FPS_MEMBERS_COUNT" /> site no grupo de sites de <ph name="FPS_OWNER" /> que pode ver a sua atividade no grupo}other{<ph name="FPS_MEMBERS_COUNT" /> sites no grupo de sites de <ph name="FPS_OWNER" /> que podem ver a sua atividade no grupo}}</translation>
 <translation id="7986741934819883144">Selecionar um contacto</translation>
-<translation id="7999064672810608036">Tem a certeza de que pretende limpar todos os dados locais, incluindo cookies, e repor todas as autorizações para este Website?</translation>
+<translation id="7999064672810608036">Tem a certeza de que quer limpar todos os dados locais, incluindo cookies, e repor todas as autorizações para este Website?</translation>
 <translation id="8007176423574883786">Desativada para este dispositivo</translation>
 <translation id="802154636333426148">Falha ao transferir</translation>
 <translation id="8042586301629853791">Ordenar por:</translation>
@@ -436,6 +435,7 @@
 <translation id="8816026460808729765">Impedir que os sites acedam aos sensores</translation>
 <translation id="8823559166155093873">Bloquear cookies</translation>
 <translation id="8847988622838149491">USB</translation>
+<translation id="8889294078294184559">À medida que navega, os sites podem verificar com o Chrome e validar com um site anterior que tenha visitado que provavelmente é uma pessoa real</translation>
 <translation id="8899807382908246773">Anúncios intrusivos</translation>
 <translation id="8903921497873541725">Ampliar</translation>
 <translation id="8921772741368021346"><ph name="POSITION" />/<ph name="DURATION" /></translation>
@@ -455,7 +455,7 @@
 <translation id="9138217887606523162">O zoom atual é de <ph name="ZOOM_LEVEL" />%%</translation>
 <translation id="9162462602695099906">Esta página é perigosa</translation>
 <translation id="9201023452444595544">Todos os dados offline serão limpos.</translation>
-<translation id="930525582205581608">Pretende esquecer este site?</translation>
+<translation id="930525582205581608">Quer esquecer este site?</translation>
 <translation id="947156494302904893">Os sites que visita podem validar que é uma pessoa real e não um bot</translation>
 <translation id="967624055006145463">Dados armazenados</translation>
 </translationbundle>

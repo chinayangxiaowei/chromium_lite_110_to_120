@@ -127,6 +127,8 @@ VALID_FILE_NAME_REGEX = re.compile(r'^[\w\-=]+$')
 # contain all the disc artifacts created by web tests
 ARTIFACTS_SUB_DIR = 'layout-test-results'
 
+ENABLE_THREADED_COMPOSITING_FLAG = '--enable-threaded-compositing'
+
 
 class Port(object):
     """Abstract class for Port-specific hooks for the web_test package."""
@@ -1116,7 +1118,9 @@ class Port(object):
                                                     filename))
 
     @memoized
-    def wpt_manifest(self, path):
+    def wpt_manifest(self,
+                     path: str,
+                     exclude_jsshell: bool = True) -> WPTManifest:
         assert path in self.WPT_DIRS
         # Convert '/' to the platform-specific separator.
         path = self._filesystem.normpath(path)
@@ -1128,7 +1132,7 @@ class Port(object):
                 'manifest_update', False):
             _log.debug('Generating MANIFEST.json for %s...', path)
             WPTManifest.ensure_manifest(self, path)
-        return WPTManifest(self.host, manifest_path)
+        return WPTManifest(self.host, manifest_path, exclude_jsshell)
 
     def is_wpt_file(self, path):
         """Returns whether a path is a WPT test file."""
@@ -1625,6 +1629,11 @@ class Port(object):
             file_name = 'trace_layout_test_{}_{}.json'.format(
                 self._filesystem.sanitize_filename(test_name), current_time)
             args.append('--trace-startup-file=' + file_name)
+
+        if self._is_in_allowlist_for_threaded_compositing(test_name):
+            if (ENABLE_THREADED_COMPOSITING_FLAG not in args):
+                args.append(ENABLE_THREADED_COMPOSITING_FLAG)
+
         return args
 
     @memoized
@@ -2273,38 +2282,34 @@ class Port(object):
     def sample_process(self, name, pid):
         pass
 
+    @memoized
     def virtual_test_suites(self):
-        if self._virtual_test_suites is None:
-            path_to_virtual_test_suites = self._filesystem.join(
-                self.web_tests_dir(), 'VirtualTestSuites')
-            assert self._filesystem.exists(path_to_virtual_test_suites), \
-                path_to_virtual_test_suites + ' not found'
-            try:
-                test_suite_json = json.loads(
-                    self._filesystem.read_text_file(
-                        path_to_virtual_test_suites))
-                self._virtual_test_suites = []
-                current_time = datetime.now()
-                for json_config in test_suite_json:
-                    # Strings are treated as comments.
-                    if isinstance(json_config, str):
-                        continue
-                    expires = json_config.get('expires', 'never')
-                    if (expires.lower() != 'never' and datetime.strptime(
-                            expires, '%b %d, %Y') <= current_time):
-                        # do not load expired virtual suites
-                        continue
-                    vts = VirtualTestSuite(**json_config)
-                    if any(vts.full_prefix == s.full_prefix
-                           for s in self._virtual_test_suites):
-                        raise ValueError(
-                            '{} contains entries with the same prefix: {!r}. Please combine them'
-                            .format(path_to_virtual_test_suites, json_config))
-                    self._virtual_test_suites.append(vts)
-            except ValueError as error:
-                raise ValueError('{} is not a valid JSON file: {}'.format(
-                    path_to_virtual_test_suites, error))
-        return self._virtual_test_suites
+        path_to_virtual_test_suites = self._filesystem.join(
+            self.web_tests_dir(), 'VirtualTestSuites')
+        assert self._filesystem.exists(path_to_virtual_test_suites), \
+            path_to_virtual_test_suites + ' not found'
+        virtual_test_suites = []
+        try:
+            test_suite_json = json.loads(
+                self._filesystem.read_text_file(path_to_virtual_test_suites))
+            current_time = datetime.now()
+            for json_config in test_suite_json:
+                # Strings are treated as comments.
+                if isinstance(json_config, str):
+                    continue
+                # expired VTSs are loaded and continue to run. We will have a separate
+                # process to delete expired VTSs.
+                vts = VirtualTestSuite(**json_config)
+                if any(vts.full_prefix == s.full_prefix
+                       for s in virtual_test_suites):
+                    raise ValueError(
+                        '{} contains entries with the same prefix: {!r}. Please combine them'
+                        .format(path_to_virtual_test_suites, json_config))
+                virtual_test_suites.append(vts)
+        except ValueError as error:
+            raise ValueError('{} is not a valid JSON file: {}'.format(
+                path_to_virtual_test_suites, error))
+        return virtual_test_suites
 
     def _all_virtual_tests(self, tests_by_dir):
         tests = []
@@ -2519,6 +2524,12 @@ class Port(object):
                 return suite.args
         return []
 
+    def _is_in_allowlist_for_threaded_compositing(self, test_name):
+        # We start with a very simple and small subset of the tests to create
+        # the infrastructure for an allowlist and plan to move to an external
+        # file soon.
+        return test_name.startswith("vibration")
+
     def _build_path(self, *comps):
         """Returns a path from the build directory."""
         return self._build_path_with_target(self._options.target, *comps)
@@ -2644,6 +2655,7 @@ class VirtualTestSuite(object):
                  bases=None,
                  exclusive_tests=None,
                  args=None,
+                 owners=None,
                  expires=None):
         assert VALID_FILE_NAME_REGEX.match(prefix), \
             "Virtual test suite prefix '{}' contains invalid characters".format(prefix)

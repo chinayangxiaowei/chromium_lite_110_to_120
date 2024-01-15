@@ -131,9 +131,12 @@ PictureInPictureWindowManager::EnterVideoPictureInPicture(
   return content::PictureInPictureResult::kSuccess;
 }
 
-void PictureInPictureWindowManager::ExitPictureInPicture() {
-  if (pip_window_controller_)
+bool PictureInPictureWindowManager::ExitPictureInPicture() {
+  if (pip_window_controller_) {
     CloseWindowInternal();
+    return true;
+  }
+  return false;
 }
 
 void PictureInPictureWindowManager::FocusInitiator() {
@@ -192,7 +195,7 @@ PictureInPictureWindowManager::CalculateInitialPictureInPictureWindowBounds(
     gfx::Size window_size(base::saturated_cast<int>(pip_options.width),
                           base::saturated_cast<int>(pip_options.height));
     window_size.SetToMin(GetMaximumWindowSize(display));
-    window_size.SetToMax(GetMinimumWindowSize());
+    window_size.SetToMax(GetMinimumInnerWindowSize());
     window_bounds = gfx::Rect(window_size);
   } else {
     // Otherwise, fall back to the aspect ratio.
@@ -201,10 +204,10 @@ PictureInPictureWindowManager::CalculateInitialPictureInPictureWindowBounds(
                                       : 1.0;
     gfx::Size window_size(work_area.width() / 5, work_area.height() / 5);
     window_size.SetToMin(GetMaximumWindowSize(display));
-    window_size.SetToMax(GetMinimumWindowSize());
+    window_size.SetToMax(GetMinimumInnerWindowSize());
     window_bounds = gfx::Rect(window_size);
     gfx::SizeRectToAspectRatio(gfx::ResizeEdge::kTopLeft, initial_aspect_ratio,
-                               GetMinimumWindowSize(),
+                               GetMinimumInnerWindowSize(),
                                GetMaximumWindowSize(display), &window_bounds);
   }
 
@@ -223,7 +226,7 @@ PictureInPictureWindowManager::CalculateInitialPictureInPictureWindowBounds(
 }
 
 // static
-gfx::Size PictureInPictureWindowManager::GetMinimumWindowSize() {
+gfx::Size PictureInPictureWindowManager::GetMinimumInnerWindowSize() {
   return kMinWindowSize;
 }
 

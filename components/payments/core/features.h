@@ -14,9 +14,6 @@ namespace features {
 // release.
 BASE_DECLARE_FEATURE(kWebPaymentsExperimentalFeatures);
 
-// Used to control the support for Payment Details modifiers.
-BASE_DECLARE_FEATURE(kWebPaymentsModifiers);
-
 // Used to control whether the Payment Sheet can be skipped for Payment Requests
 // with a single URL based payment app and no other info requested.
 BASE_DECLARE_FEATURE(kWebPaymentsSingleAppUiSkip);
@@ -53,6 +50,10 @@ BASE_DECLARE_FEATURE(kSecurePaymentConfirmationUseCredentialStoreAPIs);
 // Desktop only, if enabled PaymentHandler will use the new minimal header UX.
 // See https://crbug.com/1385136.
 BASE_DECLARE_FEATURE(kPaymentHandlerMinimalHeaderUX);
+
+// If enabled, the payment method manifest fetch for Payment Handler must go via
+// a Link header with rel="payment-method-manifest".
+BASE_DECLARE_FEATURE(kPaymentHandlerRequireLinkHeader);
 
 }  // namespace features
 }  // namespace payments

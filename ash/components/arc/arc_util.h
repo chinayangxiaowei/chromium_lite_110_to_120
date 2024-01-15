@@ -235,6 +235,9 @@ void ConfigureUpstartJobs(std::deque<JobDesc> jobs,
 // Gets the ArcVmDataMigrationStatus profile preference.
 ArcVmDataMigrationStatus GetArcVmDataMigrationStatus(PrefService* prefs);
 
+// Gets the ArcVmDatamigrationStrategy profile preference.
+ArcVmDataMigrationStrategy GetArcVmDataMigrationStrategy(PrefService* prefs);
+
 // Sets the ArcVmDataMigrationStatus profile preference.
 void SetArcVmDataMigrationStatus(PrefService* prefs,
                                  ArcVmDataMigrationStatus status);
@@ -267,6 +270,10 @@ uint64_t GetDesiredDiskImageSizeForArcVmDataMigrationInBytes(
 uint64_t GetRequiredFreeDiskSpaceForArcVmDataMigrationInBytes(
     uint64_t android_data_size,
     uint64_t free_disk_space);
+
+// Returns true if ARC app permissions should be shown as read-only in the App
+// Management page.
+bool IsReadOnlyPermissionsEnabled();
 
 }  // namespace arc
 

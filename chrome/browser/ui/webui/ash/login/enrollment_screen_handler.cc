@@ -204,30 +204,6 @@ EnrollmentScreenHandler::EnrollmentScreenHandler()
 
 EnrollmentScreenHandler::~EnrollmentScreenHandler() = default;
 
-// EnrollmentScreenHandler, WebUIMessageHandler implementation --
-
-void EnrollmentScreenHandler::RegisterMessages() {
-  BaseScreenHandler::RegisterMessages();
-  AddCallback("toggleFakeEnrollment",
-              &EnrollmentScreenHandler::HandleToggleFakeEnrollment);
-  AddCallback("oauthEnrollClose", &EnrollmentScreenHandler::HandleClose);
-  AddCallback("oauthEnrollCompleteLogin",
-              &EnrollmentScreenHandler::HandleCompleteLogin);
-  AddCallback("oauthEnrollAdCompleteLogin",
-              &EnrollmentScreenHandler::HandleAdCompleteLogin);
-  AddCallback("oauthEnrollAdUnlockConfiguration",
-              &EnrollmentScreenHandler::HandleAdUnlockConfiguration);
-  AddCallback("enterpriseIdentifierEntered",
-              &EnrollmentScreenHandler::HandleIdentifierEntered);
-  AddCallback("oauthEnrollRetry", &EnrollmentScreenHandler::HandleRetry);
-  AddCallback("frameLoadingCompleted",
-              &EnrollmentScreenHandler::HandleFrameLoadingCompleted);
-  AddCallback("oauthEnrollAttributes",
-              &EnrollmentScreenHandler::HandleDeviceAttributesProvided);
-  AddCallback("oauthEnrollOnLearnMore",
-              &EnrollmentScreenHandler::HandleOnLearnMore);
-}
-
 // EnrollmentScreenHandler
 //      EnrollmentScreenActor implementation -----------------------------------
 
@@ -258,6 +234,12 @@ void EnrollmentScreenHandler::ShowSigninScreen() {
 
 void EnrollmentScreenHandler::ReloadSigninScreen() {
   CallExternalAPI("doReload");
+}
+
+void EnrollmentScreenHandler::ResetEnrollmentScreen() {
+  // The empty string will be replaced by the correct initial step in the screen
+  // initialization code.
+  ShowStep(std::string());
 }
 
 void EnrollmentScreenHandler::ShowUserError(const std::string& email) {
@@ -738,6 +720,27 @@ void EnrollmentScreenHandler::DeclareLocalizedValues(
   /* End of Active Directory strings */
 }
 
+void EnrollmentScreenHandler::DeclareJSCallbacks() {
+  AddCallback("toggleFakeEnrollment",
+              &EnrollmentScreenHandler::HandleToggleFakeEnrollment);
+  AddCallback("oauthEnrollClose", &EnrollmentScreenHandler::HandleClose);
+  AddCallback("oauthEnrollCompleteLogin",
+              &EnrollmentScreenHandler::HandleCompleteLogin);
+  AddCallback("oauthEnrollAdCompleteLogin",
+              &EnrollmentScreenHandler::HandleAdCompleteLogin);
+  AddCallback("oauthEnrollAdUnlockConfiguration",
+              &EnrollmentScreenHandler::HandleAdUnlockConfiguration);
+  AddCallback("enterpriseIdentifierEntered",
+              &EnrollmentScreenHandler::HandleIdentifierEntered);
+  AddCallback("oauthEnrollRetry", &EnrollmentScreenHandler::HandleRetry);
+  AddCallback("frameLoadingCompleted",
+              &EnrollmentScreenHandler::HandleFrameLoadingCompleted);
+  AddCallback("oauthEnrollAttributes",
+              &EnrollmentScreenHandler::HandleDeviceAttributesProvided);
+  AddCallback("oauthEnrollOnLearnMore",
+              &EnrollmentScreenHandler::HandleOnLearnMore);
+}
+
 void EnrollmentScreenHandler::GetAdditionalParameters(
     base::Value::Dict* parameters) {
   parameters->Set("encryptionTypesList", GetEncryptionTypesList());
@@ -958,8 +961,8 @@ void EnrollmentScreenHandler::HandleOnLearnMore() {
   help_app_->ShowHelpTopic(HelpAppLauncher::HELP_DEVICE_ATTRIBUTES);
 }
 
-void EnrollmentScreenHandler::ShowStep(const char* step) {
-  CallExternalAPI("showStep", std::string(step));
+void EnrollmentScreenHandler::ShowStep(const std::string& step) {
+  CallExternalAPI("showStep", step);
 }
 
 void EnrollmentScreenHandler::ShowError(int message_id, bool retry) {

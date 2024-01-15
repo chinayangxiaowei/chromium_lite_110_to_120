@@ -7,6 +7,7 @@
 #include "ash/webui/web_applications/test/sandboxed_web_ui_test_base.h"
 #include "base/files/file_util.h"
 #include "base/files/scoped_temp_dir.h"
+#include "base/memory/raw_ptr.h"
 #include "base/scoped_observation.h"
 #include "base/test/bind.h"
 #include "base/test/metrics/histogram_tester.h"
@@ -75,7 +76,7 @@ class DemoModeAppIntegrationTestBase : public ash::SystemWebAppIntegrationTest {
     base::ScopedAllowBlockingForTesting allow_blocking;
     ASSERT_TRUE(component_dir_.CreateUniqueTempDir());
     content::WebUIConfigMap::GetInstance().RemoveConfig(
-        url::Origin::Create(GURL(ash::kChromeUntrustedUIDemoModeAppURL)));
+        GURL(ash::kChromeUntrustedUIDemoModeAppURL));
     content::WebUIConfigMap::GetInstance().AddUntrustedWebUIConfig(
         std::make_unique<ash::DemoModeAppUntrustedUIConfig>(
             base::BindLambdaForTesting(
@@ -115,7 +116,7 @@ class WidgetFullscreenWaiter : public views::WidgetObserver {
  public:
   explicit WidgetFullscreenWaiter(views::Widget* widget)
       : widget_(widget), is_fullscreen_(widget->IsFullscreen()) {
-    widget_observation_.Observe(widget_);
+    widget_observation_.Observe(widget_.get());
   }
 
   void WaitThenAssert(bool is_fullscreen) {
@@ -134,7 +135,7 @@ class WidgetFullscreenWaiter : public views::WidgetObserver {
       run_loop_.Quit();
     }
   }
-  views::Widget* const widget_;
+  const raw_ptr<views::Widget, ExperimentalAsh> widget_;
   bool is_fullscreen_;
   base::RunLoop run_loop_;
   base::ScopedObservation<views::Widget, views::WidgetObserver>

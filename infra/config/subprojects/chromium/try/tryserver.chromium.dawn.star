@@ -30,7 +30,6 @@ consoles.list_view(
 
 try_.builder(
     name = "dawn-android-arm-deps-rel",
-    branch_selector = branches.selector.ANDROID_BRANCHES,
     mirrors = [
         "ci/Dawn Android arm DEPS Release (Pixel 4)",
     ],
@@ -89,8 +88,7 @@ try_.builder(
     branch_selector = branches.selector.MAC_BRANCHES,
     mirrors = [
         "ci/Dawn Mac x64 DEPS Builder",
-        # Not enough capacity on Mac AMD https://crbug.com/1380184.
-        # "ci/Dawn Mac x64 DEPS Release (AMD)",
+        "ci/Dawn Mac x64 DEPS Release (AMD)",
         "ci/Dawn Mac x64 DEPS Release (Intel)",
     ],
     os = os.MAC_ANY,
@@ -201,11 +199,22 @@ try_.builder(
     name = "mac-dawn-rel",
     mirrors = [
         "ci/Dawn Mac x64 Builder",
-        # Not enough capacity on Mac AMD https://crbug.com/1380184.
-        # "ci/Dawn Mac x64 Release (AMD)",
+        "ci/Dawn Mac x64 Release (AMD)",
         "ci/Dawn Mac x64 Release (Intel)",
     ],
     os = os.MAC_ANY,
+    test_presentation = resultdb.test_presentation(
+        grouping_keys = ["status", "v.test_suite", "v.gpu"],
+    ),
+)
+
+try_.builder(
+    name = "dawn-try-linux-tsan-rel",
+    mirrors = [
+        "ci/Dawn Linux TSAN Release",
+    ],
+    pool = "luci.chromium.gpu.linux.nvidia.try",
+    builderless = True,
     test_presentation = resultdb.test_presentation(
         grouping_keys = ["status", "v.test_suite", "v.gpu"],
     ),
@@ -294,10 +303,27 @@ try_.builder(
 )
 
 try_.builder(
-    name = "dawn-try-win10-x64-asan-rel",
+    name = "dawn-try-win10-x64-intel-asan",
     mirrors = [
-        "ci/Dawn Win10 x64 ASAN Release",
+        "ci/Dawn Win10 x64 ASAN Builder",
+        "ci/Dawn Win10 x64 ASAN Release (Intel)",
     ],
+    pool = "luci.chromium.gpu.win10.intel.try",
+    builderless = True,
+    os = os.WINDOWS_ANY,
+    test_presentation = resultdb.test_presentation(
+        grouping_keys = ["status", "v.test_suite", "v.gpu"],
+    ),
+)
+
+try_.builder(
+    name = "dawn-try-win10-x64-nvidia-asan",
+    mirrors = [
+        "ci/Dawn Win10 x64 ASAN Builder",
+        "ci/Dawn Win10 x64 ASAN Release (NVIDIA)",
+    ],
+    pool = "luci.chromium.gpu.win10.nvidia.try",
+    builderless = True,
     os = os.WINDOWS_ANY,
     test_presentation = resultdb.test_presentation(
         grouping_keys = ["status", "v.test_suite", "v.gpu"],

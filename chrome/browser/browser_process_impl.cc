@@ -69,7 +69,6 @@
 #include "chrome/browser/prefs/chrome_pref_service_factory.h"
 #include "chrome/browser/printing/background_printing_manager.h"
 #include "chrome/browser/printing/print_job_manager.h"
-#include "chrome/browser/printing/print_preview_dialog_controller.h"
 #include "chrome/browser/profiles/profile_manager.h"
 #include "chrome/browser/resource_coordinator/resource_coordinator_parts.h"
 #include "chrome/browser/safe_browsing/safe_browsing_service.h"
@@ -128,7 +127,6 @@
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/service_worker_context.h"
 #include "content/public/browser/storage_partition.h"
-#include "content/public/common/content_features.h"
 #include "content/public/common/content_switches.h"
 #include "content/public/common/network_service_util.h"
 #include "extensions/buildflags/buildflags.h"
@@ -152,12 +150,10 @@
 #include "chrome/browser/media/webrtc/system_media_capture_permissions_stats_mac.h"
 #endif
 
-#if !BUILDFLAG(IS_CHROMEOS_ASH)
-#include "ui/message_center/message_center.h"
-#endif
-
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 #include "components/soda/soda_installer_impl_chromeos.h"
+#else
+#include "ui/message_center/message_center.h"
 #endif
 
 #if BUILDFLAG(IS_ANDROID)
@@ -191,6 +187,7 @@
 #include "chrome/browser/extensions/event_router_forwarder.h"
 #include "chrome/browser/media_galleries/media_file_system_registry.h"
 #include "chrome/browser/ui/apps/chrome_app_window_client.h"
+#include "chrome/common/controlled_frame.h"
 #include "chrome/common/extensions/chrome_extensions_client.h"
 #include "chrome/common/initialize_extensions_client.h"
 #include "components/storage_monitor/storage_monitor.h"
@@ -201,6 +198,10 @@
 #if BUILDFLAG(ENABLE_PLUGINS)
 #include "chrome/browser/plugins/chrome_plugin_service_filter.h"
 #include "content/public/browser/plugin_service.h"
+#endif
+
+#if BUILDFLAG(ENABLE_PRINT_PREVIEW)
+#include "chrome/browser/printing/print_preview_dialog_controller.h"
 #endif
 
 #if BUILDFLAG(ENABLE_SESSION_SERVICE)
@@ -240,34 +241,6 @@ static const int kUpdateCheckIntervalHours = 6;
 // messageloop and there's some deadlock risk. Our only option is to exit
 // anyway.
 static constexpr base::TimeDelta kEndSessionTimeout = base::Seconds(10);
-#endif
-
-#if BUILDFLAG(ENABLE_EXTENSIONS)
-namespace {
-
-bool ControlledFrameBrowserAvailabilityCheck(
-    const std::string& api_full_name,
-    const extensions::Extension* extension,
-    extensions::Feature::Context context,
-    const GURL& url,
-    extensions::Feature::Platform platform,
-    int context_id,
-    bool check_developer_mode,
-    std::unique_ptr<extensions::ContextData> context_data) {
-  return false;
-}
-
-extensions::Feature::FeatureDelegatedAvailabilityCheckMap
-CreateBrowserAvailabilityCheckMap() {
-  extensions::Feature::FeatureDelegatedAvailabilityCheckMap map;
-  for (const auto* item : GetControlledFrameFeatureList()) {
-    map.emplace(item,
-                base::BindRepeating(&ControlledFrameBrowserAvailabilityCheck));
-  }
-  return map;
-}
-
-}  // namespace
 #endif
 
 using content::BrowserThread;
@@ -329,7 +302,8 @@ void BrowserProcessImpl::Init() {
   extension_event_router_forwarder_ =
       base::MakeRefCounted<extensions::EventRouterForwarder>();
 
-  EnsureExtensionsClientInitialized(CreateBrowserAvailabilityCheckMap());
+  EnsureExtensionsClientInitialized(
+      controlled_frame::CreateAvailabilityCheckMap());
 
   extensions_browser_client_ =
       std::make_unique<extensions::ChromeExtensionsBrowserClient>();

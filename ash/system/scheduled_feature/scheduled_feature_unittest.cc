@@ -117,7 +117,7 @@ class PrefChangeObserver {
   }
 
   PrefChangeRegistrar pref_registrar_;
-  const base::Clock* const clock_;
+  const raw_ptr<const base::Clock, ExperimentalAsh> clock_;
   std::vector<std::pair<TimeOfDay, bool>> changes_;
 };
 
@@ -375,13 +375,13 @@ class ScheduledFeatureTest : public NoSessionAshTestBase,
 
  private:
   std::unique_ptr<TestScheduledFeature> feature_;
-  GeolocationController* geolocation_controller_;
+  raw_ptr<GeolocationController, ExperimentalAsh> geolocation_controller_;
   // The `test_clock_` and `tick_clock_` are advanced in unison so that the
   // ScheduledFeature sees time progressing consistently in all facets.
   base::SimpleTestClock test_clock_;
   base::SimpleTestTickClock tick_clock_;
-  base::OneShotTimer* timer_ptr_;
-  TestGeolocationUrlLoaderFactory* factory_;
+  raw_ptr<base::OneShotTimer, ExperimentalAsh> timer_ptr_;
+  raw_ptr<TestGeolocationUrlLoaderFactory, ExperimentalAsh> factory_;
   Geoposition position_;
 };
 
@@ -767,6 +767,29 @@ TEST_F(ScheduledFeatureTest, MAYBE_SunsetSunriseGeoposition) {
   // Timer is running scheduling the start at the sunset of the next day.
   FastForwardTo(TimeOfDay::FromTime(sunrise_time2));
   EXPECT_TRUE(feature()->GetEnabled());
+}
+
+// Tests that the feature is disabled and there are no crashes/unpredictable
+// behavior if there is 24 hours of daylight.
+TEST_F(ScheduledFeatureTest, SunsetSunriseAllDaylight) {
+  // 24 hours of daylight (Kiruna, Sweden)
+  constexpr double kTestLatitude = 67.855800;
+  constexpr double kTestLongitude = 20.225282;
+
+  base::Time now;
+  EXPECT_TRUE(base::Time::FromUTCString("07 Jun 2023 20:30:00.000", &now));
+  test_clock()->SetNow(now);
+  const Geoposition position =
+      CreateGeoposition(kTestLatitude, kTestLongitude, now);
+
+  // Set and fetch position update.
+  SetServerPosition(position);
+  FireTimerToFetchGeoposition();
+
+  feature()->SetScheduleType(ScheduleType::kSunsetToSunrise);
+  EXPECT_FALSE(feature()->GetEnabled());
+  FastForwardBy(base::Days(1));
+  EXPECT_FALSE(feature()->GetEnabled());
 }
 
 // Tests that on device resume from sleep, the feature status is updated

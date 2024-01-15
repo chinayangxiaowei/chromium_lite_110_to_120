@@ -155,9 +155,6 @@ const char kStabilityMetrics[] = "arc.metrics.stability";
 // Android properties. Used only in ARCVM.
 const char kArcSerialNumberSalt[] = "arc.serialno_salt";
 
-// A preference to keep time intervals when snapshotting is allowed.
-const char kArcSnapshotHours[] = "arc.snapshot_hours";
-
 // A preferece to keep ARC snapshot related info in dictionary.
 const char kArcSnapshotInfo[] = "arc.snapshot";
 
@@ -170,11 +167,14 @@ const char kArcVmmSwapOutTime[] = "arc_vmm_swap_out_time";
 // current ARC session.
 const char kWebViewProcessStarted[] = "arc.webview.started";
 
+// An integer preference to indicate the strategy of ARCVM /data migration for
+// enterprise user.
+const char kArcVmDataMigrationStrategy[] = "arc.vm_data_migration_strategy";
+
 void RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
   // Sorted in lexicographical order.
   RegisterDailyMetricsPrefs(registry);
   registry->RegisterStringPref(kArcSerialNumberSalt, std::string());
-  registry->RegisterDictionaryPref(kArcSnapshotHours);
   registry->RegisterDictionaryPref(kArcSnapshotInfo);
   registry->RegisterTimePref(kArcVmmSwapOutTime, base::Time());
   registry->RegisterDictionaryPref(kStabilityMetrics);
@@ -230,6 +230,9 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterIntegerPref(
       kArcVmDataMigrationStatus,
       static_cast<int>(ArcVmDataMigrationStatus::kUnnotified));
+  registry->RegisterIntegerPref(
+      kArcVmDataMigrationStrategy,
+      static_cast<int>(ArcVmDataMigrationStrategy::kDoNotPrompt));
 }
 
 }  // namespace prefs

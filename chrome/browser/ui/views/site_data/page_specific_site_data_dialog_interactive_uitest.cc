@@ -37,7 +37,6 @@
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/common/content_features.h"
 #include "content/public/test/browser_test.h"
-#include "content/public/test/browser_test_utils.h"
 #include "net/dns/mock_host_resolver.h"
 #include "third_party/blink/public/common/features.h"
 #include "ui/base/interaction/element_identifier.h"
@@ -57,11 +56,45 @@
 
 namespace {
 DEFINE_LOCAL_ELEMENT_IDENTIFIER_VALUE(kWebContentsElementId);
+DEFINE_LOCAL_CUSTOM_ELEMENT_EVENT_TYPE(kCookieAccessedEvent);
 const char kFirstPartyAllowedRow[] = "FirstPartyAllowedRow";
 const char kThirdPartyBlockedRow[] = "ThirdPartyBlockedRow";
 const char kOnlyPartitionedRow[] = "OnlyPartitionedRow";
 const char kMixedPartitionedRow[] = "MixedPartitionedRow";
 const char kCookiesDialogHistogramName[] = "Privacy.CookiesInUseDialog.Action";
+
+class CookieChangeObserver : public content::WebContentsObserver {
+ public:
+  CookieChangeObserver(content::WebContents* web_contents,
+                       int num_expected_calls)
+      : content::WebContentsObserver(web_contents),
+        num_expected_calls_(num_expected_calls) {}
+  ~CookieChangeObserver() override = default;
+
+ private:
+  void OnCookiesAccessed(content::RenderFrameHost* render_frame_host,
+                         const content::CookieAccessDetails& details) override {
+    OnCookieAccessed();
+  }
+  void OnCookiesAccessed(content::NavigationHandle* navigation,
+                         const content::CookieAccessDetails& details) override {
+    OnCookieAccessed();
+  }
+
+  void OnCookieAccessed() {
+    if (++num_seen_ == num_expected_calls_) {
+      auto* const el =
+          ui::ElementTracker::GetElementTracker()->GetElementInAnyContext(
+              kBrowserViewElementId);
+      ui::ElementTracker::GetFrameworkDelegate()->NotifyCustomEvent(
+          el, kCookieAccessedEvent);
+    }
+  }
+
+  int num_seen_ = 0;
+  const int num_expected_calls_;
+};
+
 }  // namespace
 
 class PageSpecificSiteDataDialogInteractiveUiTest
@@ -117,19 +150,15 @@ class PageSpecificSiteDataDialogInteractiveUiTest
   // Returns a common sequence of setup steps for all tests.
   MultiStep NavigateAndOpenDialog(
       ui::ElementIdentifier section_id,
-      content::CookieChangeObserver* cookie_observer = nullptr) {
+      CookieChangeObserver* cookie_observer = nullptr) {
     const GURL third_party_cookie_page_url =
         https_server()->GetURL("a.test", GetTestPageRelativeURL());
     return Steps(
         InstrumentTab(kWebContentsElementId),
         NavigateWebContents(kWebContentsElementId, third_party_cookie_page_url),
-        Do(base::BindOnce(
-            [](content::CookieChangeObserver* cookie_observer) {
-              if (cookie_observer) {
-                cookie_observer->Wait();
-              }
-            },
-            cookie_observer)),
+        cookie_observer
+            ? Steps(WaitForEvent(kBrowserViewElementId, kCookieAccessedEvent))
+            : MultiStep(),
         PressButton(kLocationIconElementId),
         PressButton(PageInfoMainView::kCookieButtonElementId),
         PressButton(PageInfoCookiesContentView::kCookieDialogButton),
@@ -197,15 +226,9 @@ class PageSpecificSiteDataDialogInteractiveUiTest
   std::unique_ptr<net::EmbeddedTestServer> https_server_;
 };
 
-// Flaky on ChromeOS: crbug.com/1429381
-#if BUILDFLAG(IS_CHROMEOS)
-#define MAYBE_FirstPartyAllowed DISABLED_FirstPartyAllowed
-#else
-#define MAYBE_FirstPartyAllowed FirstPartyAllowed
-#endif
 IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
-                       MAYBE_FirstPartyAllowed) {
-  content::CookieChangeObserver observer(
+                       FirstPartyAllowed) {
+  CookieChangeObserver observer(
       browser()->tab_strip_model()->GetActiveWebContents(), 6);
   RunTestSequenceInContext(
       context(),
@@ -242,15 +265,9 @@ IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
               IDS_PAGE_SPECIFIC_SITE_DATA_DIALOG_EMPTY_STATE_LABEL))));
 }
 
-// Flaky on ChromeOS: crbug.com/1429381
-#if BUILDFLAG(IS_CHROMEOS)
-#define MAYBE_ThirdPartyBlocked DISABLED_ThirdPartyBlocked
-#else
-#define MAYBE_ThirdPartyBlocked ThirdPartyBlocked
-#endif
 IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
-                       MAYBE_ThirdPartyBlocked) {
-  content::CookieChangeObserver observer(
+                       ThirdPartyBlocked) {
+  CookieChangeObserver observer(
       browser()->tab_strip_model()->GetActiveWebContents(), 6);
   RunTestSequenceInContext(
       context(),
@@ -286,17 +303,9 @@ IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
                     PageSpecificSiteDataDialogAction::kSiteDeleted, 1)));
 }
 
-// Flaky on ChromeOS: crbug.com/1429381
-#if BUILDFLAG(IS_CHROMEOS)
-#define MAYBE_OnlyPartitionedBlockedThirdPartyCookies \
-  DISABLED_OnlyPartitionedBlockedThirdPartyCookies
-#else
-#define MAYBE_OnlyPartitionedBlockedThirdPartyCookies \
-  OnlyPartitionedBlockedThirdPartyCookies
-#endif
 IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
-                       MAYBE_OnlyPartitionedBlockedThirdPartyCookies) {
-  content::CookieChangeObserver observer(
+                       OnlyPartitionedBlockedThirdPartyCookies) {
+  CookieChangeObserver observer(
       browser()->tab_strip_model()->GetActiveWebContents(), 6);
   RunTestSequenceInContext(
       context(),
@@ -326,17 +335,10 @@ IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
                     IDS_PAGE_SPECIFIC_SITE_DATA_DIALOG_BLOCKED_STATE_SUBTITLE),
       Do(ExpectActionCount(PageSpecificSiteDataDialogAction::kSiteBlocked, 1)));
 }
-// Flaky on ChromeOS: crbug.com/1429381
-#if BUILDFLAG(IS_CHROMEOS)
-#define MAYBE_MixedPartitionedBlockedThirdPartyCookies \
-  DISABLED_MixedPartitionedBlockedThirdPartyCookies
-#else
-#define MAYBE_MixedPartitionedBlockedThirdPartyCookies \
-  MixedPartitionedBlockedThirdPartyCookies
-#endif
+
 IN_PROC_BROWSER_TEST_F(PageSpecificSiteDataDialogInteractiveUiTest,
-                       MAYBE_MixedPartitionedBlockedThirdPartyCookies) {
-  content::CookieChangeObserver observer(
+                       MixedPartitionedBlockedThirdPartyCookies) {
+  CookieChangeObserver observer(
       browser()->tab_strip_model()->GetActiveWebContents(), 6);
   RunTestSequenceInContext(
       context(),

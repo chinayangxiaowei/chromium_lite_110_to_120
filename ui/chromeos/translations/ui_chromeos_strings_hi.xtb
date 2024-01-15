@@ -97,7 +97,6 @@
 <translation id="1773212559869067373">प्रमाणीकरण प्रमाणपत्र को स्थानीय रूप से अस्वीकार कर दिया गया</translation>
 <translation id="1775381402323441512">वीडियो की जानकारी</translation>
 <translation id="180035236176489073">इन फ़ाइलों को एक्सेस करने के लिए आपका ऑनलाइन होना ज़रूरी है.</translation>
-<translation id="1805030087840125683">{COUNT,plural, =1{आईडी वाला एक्सटेंशन}one{आईडी वाला एक्सटेंशन}other{आईडी वाले एक्सटेंशन}}</translation>
 <translation id="1807938677607439181">सभी फ़ाइलें</translation>
 <translation id="1810764548349082891">कोई झलक उपलब्ध नहीं है</translation>
 <translation id="1812302367230252929">ऐम्हेरिक ट्रांसलिट्रेशन</translation>
@@ -108,7 +107,6 @@
 <translation id="1834290891154666894">विषय के दूसरे नाम से मिलती-जुलती एंट्री अमान्य है</translation>
 <translation id="1838709767668011582">Google साइट</translation>
 <translation id="1853795129690976061">यह फ़ोल्डर, Linux के साथ शेयर किया गया है</translation>
-<translation id="1859422890169495746">सिर्फ़ यह Chromebook</translation>
 <translation id="1864756863218646478">फ़ाइल नहीं मिल सकी.</translation>
 <translation id="1884013283844450420"><ph name="NETWORK_COUNT" /> में से <ph name="NETWORK_INDEX" /> नेटवर्क, <ph name="NETWORK_NAME" />, कनेक्ट करें</translation>
 <translation id="1920670151694390848">मलयालम ट्रांसलिट्रेशन</translation>
@@ -161,6 +159,7 @@
 <translation id="2304820083631266885">ग्रह</translation>
 <translation id="2305020378527873881"><ph name="VOLUME_NAME" /> को निकाल लिया गया है.</translation>
 <translation id="2307462900900812319">नेटवर्क कॉन्फ़िगर करें</translation>
+<translation id="2312704192806647271">{COUNT,plural, =1{<ph name="BEGIN_LIST" /><ph name="END_LIST" /> आईडी वाला एक्सटेंशन नहीं मिला. अपने एडमिन से संपर्क करें.}one{<ph name="BEGIN_LIST" /><ph name="END_LIST" /> आईडी वाला एक्सटेंशन नहीं मिला. अपने एडमिन से संपर्क करें.}other{<ph name="BEGIN_LIST" /><ph name="END_LIST" /> आईडी वाले एक्सटेंशन नहीं मिले. अपने एडमिन से संपर्क करें.}}</translation>
 <translation id="2325650632570794183">इस तरह की फ़ाइल नहीं खुल सकती है. वैसा ऐप्लिकेशन जिसमें ऐसी फ़ाइल खुल सके, उसे ढूंढने के लिए कृपया 'Chrome वेब स्टोर' पर जाएं.</translation>
 <translation id="2326539130272988168">बुल्गेरियन</translation>
 <translation id="2337715497728194187">Bruschetta के साथ शेयर करें</translation>
@@ -276,6 +275,7 @@
 <translation id="3290356915286466215">असुरक्षित</translation>
 <translation id="3291218047831493686">सिम लॉक सेटिंग में बदलाव करने के लिए इस नेटवर्क से कनेक्ट करें</translation>
 <translation id="3293023191599135697">WEP नेटवर्क से कनेक्ट नहीं किया जा सका</translation>
+<translation id="3295006446256079333">यह वॉल्यूम</translation>
 <translation id="3295357220137379386">डिवाइस व्यस्त है</translation>
 <translation id="3296763833017966289">जॉर्जियाई</translation>
 <translation id="3307875152560779385">यूक्रेनियन</translation>
@@ -412,7 +412,7 @@
 <translation id="4410695710508688828">एक्सट्रैक्ट नहीं किया जा सका. <ph name="ERROR_MESSAGE" /></translation>
 <translation id="4414834425328380570">"<ph name="FILE_NAME" />" को मिटा दिया जाएगा और इसे वापस नहीं लाया जा सकेगा.</translation>
 <translation id="4418686080762064601">अपनी फ़ाइलों के लिए एक शॉर्टकट बनाएं</translation>
-<translation id="4425149324548788773">मेरी डिस्क</translation>
+<translation id="4425149324548788773">मेरी ड्राइव</translation>
 <translation id="4432921877815220091"><ph name="NETWORK_COUNT" /> में से नेटवर्क <ph name="NETWORK_INDEX" />, <ph name="NETWORK_NAME" /> को डिवाइस सेटअप होने के बाद चालू करें. सेटअप आपका एडमिन मैनेज करता है</translation>
 <translation id="4439427728133035643"><ph name="NETWORK_COUNT" /> में से <ph name="NETWORK_INDEX" /> नेटवर्क, <ph name="NETWORK_NAME" />, सिग्नल क्षमता <ph name="SIGNAL_STRENGTH" />%, कनेक्ट करें</translation>
 <translation id="4442424173763614572">DNS लुकअप विफल</translation>
@@ -475,6 +475,7 @@
 <translation id="4843566743023903107">Chromebase</translation>
 <translation id="4850886885716139402">देखें</translation>
 <translation id="485316830061041779">जर्मन</translation>
+<translation id="4862885579661885411">फ़ाइलों की सेटिंग</translation>
 <translation id="4867079195717347957">कॉलम को घटते क्रम में लगाने के लिए क्लिक करें.</translation>
 <translation id="4867297348137739678">पिछले सप्ताह</translation>
 <translation id="4873265419374180291"><ph name="NUMBER_OF_BYTES" /> बाइट</translation>
@@ -801,7 +802,6 @@
 <translation id="7359359531237882347"><ph name="NUMBER_OF_ITEMS" /> आइटम कॉपी किए जा रहे हैं...</translation>
 <translation id="7375951387215729722">फ़ाइल की सूची <ph name="COLUMN_NAME" /> के हिसाब से घटते क्रम में लगाई गई है.</translation>
 <translation id="7377161162143020057">एडमिन नीति के तहत, इस फ़ाइल को कॉपी करने की अनुमति नहीं है</translation>
-<translation id="7392500733467492920">नहीं मिला. अपने एडमिन से संपर्क करें.</translation>
 <translation id="7402503521691663770">ChromeOS Flex वाले डिवाइस</translation>
 <translation id="7408870451288633753">चेक</translation>
 <translation id="7417453074306512035">इथिओपियाई कीबोर्ड</translation>
@@ -871,7 +871,7 @@
 <translation id="7857117644404132472">अपवाद जोड़ें</translation>
 <translation id="7868774406711971383">पोलिश</translation>
 <translation id="7874321682039004450">फ़िलिपीनो</translation>
-<translation id="78946041517601018">शेयर की गईं डिस्क</translation>
+<translation id="78946041517601018">शेयर की गई ड्राइव</translation>
 <translation id="7903984238293908205">काताकाना</translation>
 <translation id="7908793776359722643">किसी पार्टीशन को फ़ॉर्मैट करने से उस पर सेव किया गया पूरा डेटा मिट जाएगा. मिटने के बाद यह सब वापस नहीं पाया जा सकता.</translation>
 <translation id="7911118814695487383">Linux</translation>

@@ -18,7 +18,6 @@
 #include "base/containers/adapters.h"
 #include "base/containers/contains.h"
 #include "base/containers/flat_map.h"
-#include "base/cxx17_backports.h"
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback.h"
@@ -67,7 +66,6 @@
 #include "chrome/browser/ui/views/tabs/tab_strip_layout_types.h"
 #include "chrome/browser/ui/views/tabs/tab_strip_observer.h"
 #include "chrome/browser/ui/views/tabs/tab_strip_types.h"
-#include "chrome/browser/ui/views/tabs/tab_style_views.h"
 #include "chrome/browser/ui/views/tabs/z_orderable_tab_container_element.h"
 #include "chrome/browser/ui/views/touch_uma/touch_uma.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
@@ -87,6 +85,7 @@
 #include "ui/base/models/list_selection_model.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/base/theme_provider.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/color/color_provider.h"
 #include "ui/display/display.h"
 #include "ui/gfx/animation/throb_animation.h"
@@ -130,8 +129,7 @@ std::unique_ptr<TabContainer> MakeTabContainer(
     TabDragContext* drag_context) {
   if (base::FeatureList::IsEnabled(features::kSplitTabStrip)) {
     return std::make_unique<CompoundTabContainer>(
-        raw_ref<TabContainerController>::from_ptr(tab_strip),
-        hover_card_controller, drag_context, *tab_strip, tab_strip);
+        *tab_strip, hover_card_controller, drag_context, *tab_strip, tab_strip);
   }
   return std::make_unique<TabContainerImpl>(
       *tab_strip, hover_card_controller, drag_context, *tab_strip, tab_strip);
@@ -179,7 +177,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
   }
 
   bool OnMouseDragged(const ui::MouseEvent& event) override {
-    ContinueDrag(this, event);
+    (void)ContinueDrag(this, event);
     return true;
   }
 
@@ -190,6 +188,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
   void OnMouseCaptureLost() override { EndDrag(END_DRAG_CAPTURE_LOST); }
 
   void OnGestureEvent(ui::GestureEvent* event) override {
+    Liveness tabstrip_alive = Liveness::kAlive;
     switch (event->type()) {
       case ui::ET_GESTURE_SCROLL_END:
       case ui::ET_SCROLL_FLING_START:
@@ -203,7 +202,8 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
       }
 
       case ui::ET_GESTURE_SCROLL_UPDATE:
-        ContinueDrag(this, *event);
+        // N.B. !! ContinueDrag may enter a nested run loop !!
+        tabstrip_alive = ContinueDrag(this, *event);
         break;
 
       case ui::ET_GESTURE_TAP_DOWN:
@@ -214,6 +214,12 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
         break;
     }
     event->SetHandled();
+
+    // If tabstrip was destroyed (during ContinueDrag above), return early to
+    // avoid UAF below.
+    if (tabstrip_alive == Liveness::kDeleted) {
+      return;
+    }
 
     // TabDragContext gets event capture as soon as a drag session begins, which
     // precludes TabStrip from ever getting events like tap or long tap. Forward
@@ -303,20 +309,20 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
       std::move(drag_controller_set_callback_).Run(drag_controller_.get());
   }
 
-  void ContinueDrag(views::View* view, const ui::LocatedEvent& event) {
-    if (drag_controller_.get() &&
-        drag_controller_->event_source() == EventSourceFromEvent(event)) {
-      gfx::Point screen_location(event.location());
-      views::View::ConvertPointToScreen(view, &screen_location);
-
-      // Note: |tab_strip_| can be destroyed during drag, also destroying
-      // |this|.
-      base::WeakPtr<TabDragContext> weak_ptr(weak_factory_.GetWeakPtr());
-      drag_controller_->Drag(screen_location);
-
-      if (!weak_ptr)
-        return;
+  Liveness ContinueDrag(views::View* view, const ui::LocatedEvent& event) {
+    if (!drag_controller_.get() ||
+        drag_controller_->event_source() != EventSourceFromEvent(event)) {
+      return Liveness::kAlive;
     }
+
+    gfx::Point screen_location(event.location());
+    views::View::ConvertPointToScreen(view, &screen_location);
+
+    // Note: `tab_strip_` can be destroyed during drag, also destroying `this`.
+    base::WeakPtr<TabDragContext> weak_ptr(weak_factory_.GetWeakPtr());
+    drag_controller_->Drag(screen_location);
+
+    return weak_ptr ? Liveness::kAlive : Liveness::kDeleted;
   }
 
   bool EndDrag(EndDragReason reason) {
@@ -452,7 +458,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     constexpr int kHorizontalMoveThreshold = 16;  // DIPs.
 
     double ratio = static_cast<double>(tab_strip_->GetInactiveTabWidth()) /
-                   TabStyle::GetStandardWidth();
+                   TabStyle::Get()->GetStandardWidth();
     return base::ClampRound(ratio * kHorizontalMoveThreshold);
   }
 
@@ -491,7 +497,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     DCHECK(!views.empty());
 
     std::vector<gfx::Rect> bounds;
-    const int overlap = TabStyle::GetTabOverlap();
+    const int overlap = TabStyle::Get()->GetTabOverlap();
     int x = 0;
     for (const TabSlotView* view : views) {
       const int width = view->width();
@@ -834,7 +840,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     if (candidate_index == 0)
       return 0;
 
-    const int tab_overlap = TabStyle::GetTabOverlap();
+    const int tab_overlap = TabStyle::Get()->GetTabOverlap();
 
     // We'll insert just right of the tab at |candidate_index| - 1.
     int ideal_x =
@@ -873,7 +879,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
           return 0;
         const int header_width =
             GetTabGroupHeader(*right_group)->bounds().width() -
-            TabStyle::GetTabOverlap();
+            TabStyle::Get()->GetTabOverlap();
         return header_width;
       }
     }
@@ -910,7 +916,8 @@ TabStrip::TabStrip(std::unique_ptr<TabStripController> controller)
           *AddChildViewAt(MakeTabContainer(this,
                                            hover_card_controller_.get(),
                                            base::to_address(drag_context_)),
-                          0)) {
+                          0)),
+      style_(TabStyle::Get()) {
   // TODO(pbos): This is probably incorrect, the background of individual tabs
   // depend on their selected state. This should probably be pushed down into
   // tabs.
@@ -954,7 +961,7 @@ int TabStrip::GetSizeNeededForViews(const std::vector<TabSlotView*>& views) {
   for (const TabSlotView* view : views)
     width += view->width();
   if (!views.empty())
-    width -= TabStyle::GetTabOverlap() * (views.size() - 1);
+    width -= TabStyle::Get()->GetTabOverlap() * (views.size() - 1);
   return width;
 }
 
@@ -1152,8 +1159,16 @@ void TabStrip::OnGroupClosed(const tab_groups::TabGroupId& group) {
 
 bool TabStrip::ShouldDrawStrokes() const {
   // If the controller says we can't draw strokes, don't.
-  if (!controller_->CanDrawStrokes())
+  if (!controller_->CanDrawStrokes()) {
     return false;
+  }
+
+  // The Tabstrip in the refreshed style does not meet the contrast ratio
+  // requirements listed below but does not have strokes for Tabs or the bottom
+  // border.
+  if (features::IsChromeRefresh2023()) {
+    return false;
+  }
 
   // The tabstrip normally avoids strokes and relies on the active tab
   // contrasting sufficiently with the frame background.  When there isn't
@@ -1304,7 +1319,7 @@ absl::optional<int> TabStrip::GetFocusedTabIndex() const {
 }
 
 views::View* TabStrip::GetTabViewForPromoAnchor(int index_hint) {
-  return tab_at(base::clamp(index_hint, 0, GetTabCount() - 1));
+  return tab_at(std::clamp(index_hint, 0, GetTabCount() - 1));
 }
 
 views::View* TabStrip::GetDefaultFocusableChild() {
@@ -1579,8 +1594,10 @@ void TabStrip::MaybeStartDrag(
   drag_context_->MaybeStartDrag(source, event, original_selection);
 }
 
-void TabStrip::ContinueDrag(views::View* view, const ui::LocatedEvent& event) {
-  drag_context_->ContinueDrag(view, event);
+TabSlotController::Liveness TabStrip::ContinueDrag(
+    views::View* view,
+    const ui::LocatedEvent& event) {
+  return drag_context_->ContinueDrag(view, event);
 }
 
 bool TabStrip::EndDrag(EndDragReason reason) {

@@ -50,12 +50,12 @@ ARC_EXPORT extern const char kArcVmDataMigrationStatus[];
 ARC_EXPORT extern const char kArcIsManaged[];
 ARC_EXPORT extern const char kEcryptfsMigrationStrategy[];
 ARC_EXPORT extern const char kEngagementPrefsPrefix[];
+ARC_EXPORT extern const char kArcVmDataMigrationStrategy[];
 
 // Local state prefs in lexicographical order.
 ARC_EXPORT extern const char kAnrPendingCount[];
 ARC_EXPORT extern const char kAnrPendingDuration[];
 ARC_EXPORT extern const char kArcSerialNumberSalt[];
-ARC_EXPORT extern const char kArcSnapshotHours[];
 ARC_EXPORT extern const char kArcSnapshotInfo[];
 ARC_EXPORT extern const char kArcVmmSwapOutTime[];
 ARC_EXPORT extern const char kStabilityMetrics[];

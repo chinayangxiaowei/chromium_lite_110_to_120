@@ -258,7 +258,7 @@ struct PA_ALIGNAS(64) PA_COMPONENT_EXPORT(PARTITION_ALLOC) PartitionRoot {
     kEnabled,
   };
 
-  enum class BucketDistribution : uint8_t { kDefault, kCoarser, kDenser };
+  enum class BucketDistribution : uint8_t { kDefault, kDenser };
 
   // Flags accessed on fast paths.
   //
@@ -272,11 +272,11 @@ struct PA_ALIGNAS(64) PA_COMPONENT_EXPORT(PARTITION_ALLOC) PartitionRoot {
     // Defines whether the root should be scanned.
     ScanMode scan_mode;
 
-    // It's important to default to the coarser distribution, otherwise a switch
-    // from dense -> coarse would leave some buckets with dirty memory forever,
-    // since no memory would be allocated from these, their freelist would
-    // typically not be empty, making these unreclaimable.
-    BucketDistribution bucket_distribution = BucketDistribution::kCoarser;
+    // It's important to default to the 'default' distribution, otherwise a
+    // switch from 'dense' -> 'default' would leave some buckets with dirty
+    // memory forever, since no memory would be allocated from these, their
+    // freelist would typically not be empty, making these unreclaimable.
+    BucketDistribution bucket_distribution = BucketDistribution::kDefault;
 
     bool with_thread_cache = false;
 
@@ -436,11 +436,6 @@ struct PA_ALIGNAS(64) PA_COMPONENT_EXPORT(PARTITION_ALLOC) PartitionRoot {
   PA_ALWAYS_INLINE static PartitionRoot* FromAddrInFirstSuperpage(
       uintptr_t address);
 
-  PA_ALWAYS_INLINE void DecreaseTotalSizeOfAllocatedBytes(SlotSpan* slot_span)
-      PA_EXCLUSIVE_LOCKS_REQUIRED(lock_);
-  PA_ALWAYS_INLINE void IncreaseTotalSizeOfAllocatedBytes(SlotSpan* slot_span,
-                                                          size_t raw_size)
-      PA_EXCLUSIVE_LOCKS_REQUIRED(lock_);
   PA_ALWAYS_INLINE void DecreaseTotalSizeOfAllocatedBytes(uintptr_t addr,
                                                           size_t len)
       PA_EXCLUSIVE_LOCKS_REQUIRED(lock_);
@@ -608,10 +603,7 @@ struct PA_ALIGNAS(64) PA_COMPONENT_EXPORT(PARTITION_ALLOC) PartitionRoot {
   // This is safe to do because we are switching to a bucket distribution with
   // more buckets, meaning any allocations we have done before the switch are
   // guaranteed to have a bucket under the new distribution when they are
-  // eventually deallocated. We do not need synchronization here or below.
-  void SwitchToDefaultBucketDistribution() {
-    flags.bucket_distribution = BucketDistribution::kDefault;
-  }
+  // eventually deallocated. We do not need synchronization here.
   void SwitchToDenserBucketDistribution() {
     flags.bucket_distribution = BucketDistribution::kDenser;
   }
@@ -620,7 +612,7 @@ struct PA_ALIGNAS(64) PA_COMPONENT_EXPORT(PARTITION_ALLOC) PartitionRoot {
   // cannot allocate from, which will not cause problems besides wasting
   // memory.
   void ResetBucketDistributionForTesting() {
-    flags.bucket_distribution = BucketDistribution::kCoarser;
+    flags.bucket_distribution = BucketDistribution::kDefault;
   }
 
   ThreadCache* thread_cache_for_testing() const {
@@ -1052,6 +1044,7 @@ enum class PtrPosWithinAlloc {
 //
 // This isn't a general purpose function. The caller is responsible for ensuring
 // that the ref-count is in place for this allocation.
+PA_COMPONENT_EXPORT(PARTITION_ALLOC)
 PtrPosWithinAlloc IsPtrWithinSameAlloc(uintptr_t orig_address,
                                        uintptr_t test_address,
                                        size_t type_size);
@@ -1065,8 +1058,18 @@ PA_ALWAYS_INLINE void PartitionAllocFreeForRefCounting(uintptr_t slot_start) {
   // supports reference counts.
   PA_DCHECK(root->brp_enabled());
 
-  // memset() can be really expensive.
+  // Iterating over the entire slot can be really expensive.
 #if BUILDFLAG(PA_EXPENSIVE_DCHECKS_ARE_ON)
+  auto hook = PartitionAllocHooks::GetQuarantineOverrideHook();
+  // If we have a hook the object segment is not necessarily filled
+  // with |kQuarantinedByte|.
+  if (PA_LIKELY(!hook)) {
+    unsigned char* object =
+        static_cast<unsigned char*>(root->SlotStartToObject(slot_start));
+    for (size_t i = 0; i < slot_span->GetUsableSize(root); ++i) {
+      PA_DCHECK(object[i] == kQuarantinedByte);
+    }
+  }
   DebugMemset(SlotStartAddr2Ptr(slot_start), kFreedByte,
               slot_span->GetUtilizedSlotSize()
 #if BUILDFLAG(PUT_REF_COUNT_IN_PREVIOUS_SLOT)
@@ -1147,7 +1150,8 @@ PartitionRoot<thread_safe>::AllocFromBucket(Bucket* bucket,
     *usable_size = slot_span->GetUsableSize(this);
   }
   PA_DCHECK(slot_span->GetUtilizedSlotSize() <= slot_span->bucket->slot_size);
-  IncreaseTotalSizeOfAllocatedBytes(slot_span, raw_size);
+  IncreaseTotalSizeOfAllocatedBytes(
+      slot_start, slot_span->GetSlotSizeForBookkeeping(), raw_size);
 
 #if BUILDFLAG(USE_FREESLOT_BITMAP)
   if (!slot_span->bucket->is_direct_mapped()) {
@@ -1416,12 +1420,15 @@ template <bool thread_safe>
 PA_ALWAYS_INLINE void PartitionRoot<thread_safe>::FreeInSlotSpan(
     uintptr_t slot_start,
     SlotSpan* slot_span) {
-  DecreaseTotalSizeOfAllocatedBytes(slot_span);
+  DecreaseTotalSizeOfAllocatedBytes(slot_start,
+                                    slot_span->GetSlotSizeForBookkeeping());
+
 #if BUILDFLAG(USE_FREESLOT_BITMAP)
   if (!slot_span->bucket->is_direct_mapped()) {
     internal::FreeSlotBitmapMarkSlotAsFree(slot_start);
   }
 #endif
+
   return slot_span->Free(slot_start);
 }
 
@@ -1500,7 +1507,11 @@ PA_ALWAYS_INLINE void PartitionRoot<thread_safe>::RawFreeBatch(
   // corresponding pages were faulted in (without acquiring the lock). So there
   // is no need to touch pages manually here before the lock.
   ::partition_alloc::internal::ScopedGuard guard{lock_};
-  DecreaseTotalSizeOfAllocatedBytes(slot_span);
+  // TODO(thiabaud): Fix the accounting here. The size is correct, but the
+  // pointer is not. This only affects local tools that record each allocation,
+  // not our metrics.
+  DecreaseTotalSizeOfAllocatedBytes(
+      0u, slot_span->GetSlotSizeForBookkeeping() * size);
   slot_span->AppendFreeList(head, tail, size);
 }
 
@@ -1584,24 +1595,6 @@ PartitionRoot<thread_safe>::FromAddrInFirstSuperpage(uintptr_t address) {
   uintptr_t super_page = address & internal::kSuperPageBaseMask;
   PA_DCHECK(internal::IsReservationStart(super_page));
   return FromFirstSuperPage(super_page);
-}
-
-template <bool thread_safe>
-PA_ALWAYS_INLINE void
-PartitionRoot<thread_safe>::IncreaseTotalSizeOfAllocatedBytes(
-    SlotSpan* slot_span,
-    size_t raw_size) {
-  IncreaseTotalSizeOfAllocatedBytes(reinterpret_cast<uintptr_t>(slot_span),
-                                    slot_span->GetSlotSizeForBookkeeping(),
-                                    raw_size);
-}
-
-template <bool thread_safe>
-PA_ALWAYS_INLINE void
-PartitionRoot<thread_safe>::DecreaseTotalSizeOfAllocatedBytes(
-    SlotSpan* slot_span) {
-  DecreaseTotalSizeOfAllocatedBytes(reinterpret_cast<uintptr_t>(slot_span),
-                                    slot_span->GetSlotSizeForBookkeeping());
 }
 
 template <bool thread_safe>
@@ -1807,11 +1800,9 @@ PA_ALWAYS_INLINE uint16_t PartitionRoot<thread_safe>::SizeToBucketIndex(
     BucketDistribution bucket_distribution) {
   switch (bucket_distribution) {
     case BucketDistribution::kDefault:
-      return internal::BucketIndexLookup::GetIndexForDenserBuckets(size);
-    case BucketDistribution::kCoarser:
-      return internal::BucketIndexLookup::GetIndex(size);
+      return internal::BucketIndexLookup::GetIndexForDefaultBuckets(size);
     case BucketDistribution::kDenser:
-      return internal::BucketIndexLookup::GetIndexFor8Buckets(size);
+      return internal::BucketIndexLookup::GetIndexForDenserBuckets(size);
   }
 }
 

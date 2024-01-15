@@ -10,7 +10,6 @@
 #include "base/functional/callback_helpers.h"
 #include "base/memory/ptr_util.h"
 #include "base/memory/raw_ptr.h"
-#include "components/viz/common/resources/resource_sizes.h"
 #include "gpu/command_buffer/common/shared_image_trace_utils.h"
 #include "gpu/command_buffer/common/shared_image_usage.h"
 #include "gpu/command_buffer/service/dxgi_shared_handle_manager.h"
@@ -68,29 +67,31 @@ size_t NumPlanes(DXGI_FORMAT dxgi_format) {
 
 viz::SharedImageFormat PlaneFormat(DXGI_FORMAT dxgi_format, size_t plane) {
   DCHECK_LT(plane, NumPlanes(dxgi_format));
-  viz::ResourceFormat format;
+  viz::SharedImageFormat format;
   switch (dxgi_format) {
     case DXGI_FORMAT_NV12:
       // Y plane is accessed as R8 and UV plane is accessed as RG88 in D3D.
-      format = plane == 0 ? viz::RED_8 : viz::RG_88;
+      format = plane == 0 ? viz::SinglePlaneFormat::kR_8
+                          : viz::SinglePlaneFormat::kRG_88;
       break;
     case DXGI_FORMAT_P010:
-      format = plane == 0 ? viz::R16_EXT : viz::RG16_EXT;
+      format = plane == 0 ? viz::SinglePlaneFormat::kR_16
+                          : viz::SinglePlaneFormat::kRG_1616;
       break;
     case DXGI_FORMAT_B8G8R8A8_UNORM:
-      format = viz::BGRA_8888;
+      format = viz::SinglePlaneFormat::kBGRA_8888;
       break;
     case DXGI_FORMAT_R10G10B10A2_UNORM:
-      format = viz::RGBA_1010102;
+      format = viz::SinglePlaneFormat::kRGBA_1010102;
       break;
     case DXGI_FORMAT_R16G16B16A16_FLOAT:
-      format = viz::RGBA_F16;
+      format = viz::SinglePlaneFormat::kRGBA_F16;
       break;
     default:
       NOTREACHED();
-      format = viz::BGRA_8888;
+      format = viz::SinglePlaneFormat::kBGRA_8888;
   }
-  return viz::SharedImageFormat::SinglePlane(format);
+  return format;
 }
 
 WGPUTextureFormat DXGIToWGPUFormat(DXGI_FORMAT dxgi_format) {
@@ -307,12 +308,15 @@ std::unique_ptr<D3DImageBacking> D3DImageBacking::Create(
   const bool has_webgpu_usage = !!(usage & SHARED_IMAGE_USAGE_WEBGPU);
   // Keyed mutexes are required for Dawn interop but are not used for XR
   // composition where fences are used instead.
-  DCHECK(!has_webgpu_usage || dxgi_shared_handle_state);
-
+  CHECK(!has_webgpu_usage || dxgi_shared_handle_state);
+  // SHARED_IMAGE_USAGE_VIDEO_DECODE means that this is for D3D11VideoDecoder.
+  const bool has_video_decode_usage =
+      !!(usage & SHARED_IMAGE_USAGE_VIDEO_DECODE);
   std::vector<scoped_refptr<GLTextureHolder>> gl_texture_holders;
-  // Do not cache a GL texture in the backing if it could be owned by WebGPU
-  // since there's no GL context to MakeCurrent in the destructor.
-  if (!has_webgpu_usage) {
+  // Do not cache GL textures in the backing if it could be owned by WebGPU, or
+  // the video decoder, since there could be no GL context to MakeCurrent in the
+  // destructor.
+  if (!has_webgpu_usage && !has_video_decode_usage) {
     for (int plane = 0; plane < format.NumberOfPlanes(); plane++) {
       gfx::Size plane_size = format.GetPlaneSize(plane, size);
       // For legacy multiplanar formats, format() is plane format (eg. RED, RG)
@@ -341,7 +345,7 @@ std::unique_ptr<D3DImageBacking> D3DImageBacking::Create(
 
 std::unique_ptr<D3DImageBacking> D3DImageBacking::CreateFromGLTexture(
     const Mailbox& mailbox,
-    viz::ResourceFormat format,
+    viz::SharedImageFormat format,
     const gfx::Size& size,
     const gfx::ColorSpace& color_space,
     GrSurfaceOrigin surface_origin,
@@ -356,9 +360,8 @@ std::unique_ptr<D3DImageBacking> D3DImageBacking::CreateFromGLTexture(
       base::PassKey<D3DImageBacking>(), std::move(gl_texture),
       gl::ScopedEGLImage());
   return base::WrapUnique(new D3DImageBacking(
-      mailbox, viz::SharedImageFormat::SinglePlane(format), size, color_space,
-      surface_origin, alpha_type, usage, std::move(d3d11_texture),
-      {std::move(gl_texture_holder)},
+      mailbox, format, size, color_space, surface_origin, alpha_type, usage,
+      std::move(d3d11_texture), {std::move(gl_texture_holder)},
       /*dxgi_shared_handle_state=*/nullptr, texture_target, array_slice));
 }
 
@@ -372,13 +375,13 @@ D3DImageBacking::CreateFromVideoTexture(
     Microsoft::WRL::ComPtr<ID3D11Texture2D> d3d11_texture,
     unsigned array_slice,
     scoped_refptr<DXGISharedHandleState> dxgi_shared_handle_state) {
-  DCHECK(d3d11_texture);
-  DCHECK(SupportsVideoFormat(dxgi_format));
-  DCHECK_EQ(mailboxes.size(), NumPlanes(dxgi_format));
+  CHECK(d3d11_texture);
+  CHECK(SupportsVideoFormat(dxgi_format));
+  CHECK_EQ(mailboxes.size(), NumPlanes(dxgi_format));
 
   // Shared handle and keyed mutex are required for Dawn interop.
   const bool has_webgpu_usage = usage & gpu::SHARED_IMAGE_USAGE_WEBGPU;
-  DCHECK(!has_webgpu_usage || dxgi_shared_handle_state);
+  CHECK(!has_webgpu_usage || dxgi_shared_handle_state);
 
   std::vector<std::unique_ptr<SharedImageBacking>> shared_images(
       NumPlanes(dxgi_format));
@@ -395,29 +398,17 @@ D3DImageBacking::CreateFromVideoTexture(
     // value from default-construction.
     constexpr gfx::ColorSpace kInvalidColorSpace;
 
-    // TODO(sunnyps): Switch to GL_TEXTURE_2D since it's now supported by ANGLE.
+    // TODO(crbug.com/1430349): Switch to GL_TEXTURE_2D since it's now supported
+    // by ANGLE.
     constexpr GLenum kTextureTarget = GL_TEXTURE_EXTERNAL_OES;
 
-    // Do not cache a GL texture in the backing if it could be owned by WebGPU
-    // since there's no GL context to MakeCurrent in the destructor.
-    std::vector<scoped_refptr<GLTextureHolder>> gl_texture_holders;
-    if (!has_webgpu_usage) {
-      // Creating the GL texture doesn't require exclusive access to the
-      // underlying D3D11 texture.
-      auto texture_holder = CreateGLTexture(
-          plane_format, plane_size, kInvalidColorSpace, d3d11_texture,
-          kTextureTarget, array_slice, plane_index);
-      if (!texture_holder) {
-        LOG(ERROR) << "Failed to create GL texture.";
-        return {};
-      }
-      gl_texture_holders.push_back(std::move(texture_holder));
-    }
-
+    // Do not cache GL textures in the backing since it's owned by the video
+    // decoder, and there could be no GL context to MakeCurrent in the
+    // destructor.
     shared_images[plane_index] = base::WrapUnique(new D3DImageBacking(
         mailbox, plane_format, plane_size, kInvalidColorSpace,
         kTopLeft_GrSurfaceOrigin, kPremul_SkAlphaType, usage, d3d11_texture,
-        std::move(gl_texture_holders), dxgi_shared_handle_state, kTextureTarget,
+        /*gl_texture_holders=*/{}, dxgi_shared_handle_state, kTextureTarget,
         array_slice, plane_index));
     if (!shared_images[plane_index])
       return {};
@@ -461,7 +452,10 @@ D3DImageBacking::D3DImageBacking(
       swap_chain_(std::move(swap_chain)),
       is_back_buffer_(is_back_buffer) {
   const bool has_webgpu_usage = !!(usage & SHARED_IMAGE_USAGE_WEBGPU);
-  DCHECK(has_webgpu_usage || !gl_texture_holders_.empty());
+  const bool has_video_decode_usage =
+      !!(usage & SHARED_IMAGE_USAGE_VIDEO_DECODE);
+  CHECK(has_webgpu_usage || has_video_decode_usage ||
+        !gl_texture_holders_.empty());
   if (d3d11_texture_)
     d3d11_texture_->GetDevice(&d3d11_device_);
 }
@@ -1116,7 +1110,8 @@ D3DImageBacking::ProduceGLTexturePassthrough(SharedImageManager* manager,
       manager, this, tracker, std::move(gl_texture_holders));
 }
 
-std::unique_ptr<SkiaImageRepresentation> D3DImageBacking::ProduceSkia(
+std::unique_ptr<SkiaGaneshImageRepresentation>
+D3DImageBacking::ProduceSkiaGanesh(
     SharedImageManager* manager,
     MemoryTypeTracker* tracker,
     scoped_refptr<SharedContextState> context_state) {
