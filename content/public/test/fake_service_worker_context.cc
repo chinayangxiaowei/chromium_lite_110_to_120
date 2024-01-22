@@ -12,6 +12,7 @@
 #include "base/notreached.h"
 #include "base/task/single_thread_task_runner.h"
 #include "content/public/browser/service_worker_context_observer.h"
+#include "third_party/blink/public/common/associated_interfaces/associated_interface_provider.h"
 #include "third_party/blink/public/common/messaging/transferable_message.h"
 #include "third_party/blink/public/common/storage_key/storage_key.h"
 
@@ -36,6 +37,12 @@ void FakeServiceWorkerContext::RegisterServiceWorker(
   NOTREACHED();
 }
 void FakeServiceWorkerContext::UnregisterServiceWorker(
+    const GURL& scope,
+    const blink::StorageKey& key,
+    ResultCallback callback) {
+  NOTREACHED();
+}
+void FakeServiceWorkerContext::UnregisterServiceWorkerImmediately(
     const GURL& scope,
     const blink::StorageKey& key,
     ResultCallback callback) {
@@ -119,10 +126,13 @@ bool FakeServiceWorkerContext::IsLiveRunningServiceWorker(
 service_manager::InterfaceProvider&
 FakeServiceWorkerContext::GetRemoteInterfaces(
     int64_t service_worker_version_id) {
-  NOTREACHED();
-  static service_manager::InterfaceProvider interface_provider(
-      base::SingleThreadTaskRunner::GetCurrentDefault());
-  return interface_provider;
+  NOTREACHED_NORETURN();
+}
+
+blink::AssociatedInterfaceProvider&
+FakeServiceWorkerContext::GetRemoteAssociatedInterfaces(
+    int64_t service_worker_version_id) {
+  NOTREACHED_NORETURN();
 }
 
 void FakeServiceWorkerContext::StartServiceWorkerForNavigationHint(

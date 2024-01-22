@@ -50,6 +50,9 @@ class FakeServiceWorkerContext : public ServiceWorkerContext {
   void UnregisterServiceWorker(const GURL& scope,
                                const blink::StorageKey& key,
                                ResultCallback callback) override;
+  void UnregisterServiceWorkerImmediately(const GURL& scope,
+                                          const blink::StorageKey& key,
+                                          ResultCallback callback) override;
   ServiceWorkerExternalRequestResult StartingExternalRequest(
       int64_t service_worker_version_id,
       content::ServiceWorkerExternalRequestTimeoutType timeout_type,
@@ -83,6 +86,8 @@ class FakeServiceWorkerContext : public ServiceWorkerContext {
   bool IsLiveStartingServiceWorker(int64_t service_worker_version_id) override;
   bool IsLiveRunningServiceWorker(int64_t service_worker_version_id) override;
   service_manager::InterfaceProvider& GetRemoteInterfaces(
+      int64_t service_worker_version_id) override;
+  blink::AssociatedInterfaceProvider& GetRemoteAssociatedInterfaces(
       int64_t service_worker_version_id) override;
   void StartServiceWorkerAndDispatchMessage(
       const GURL& scope,

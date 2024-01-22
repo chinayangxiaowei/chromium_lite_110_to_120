@@ -95,12 +95,6 @@ namespace {
 // Password is considered not generated when user edits it below 4 characters.
 constexpr int kMinimumLengthForEditedPassword = 4;
 
-// Kill switch for fix preventing Autifill heuristics being passed to the
-// Password Manager as server predictions. See crbug.com/1492875.
-BASE_FEATURE(kSkipAutofillHeuristicsFix,
-             "SkipAutofillHeuristicsFix",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 }  // namespace
 
 NSString* const kPasswordFormSuggestionSuffix = @" ••••••••";
@@ -387,9 +381,8 @@ NSString* const kPasswordFormSuggestionSuffix = @" ••••••••";
                         (AutofillManager::Observer::FieldTypeSource)source {
   // Heuristics predictions are not relevant to PWM because it runs its own
   // heuristics - only server predictions are.
-  if (base::FeatureList::IsEnabled(kSkipAutofillHeuristicsFix) &&
-      source == AutofillManager::Observer::FieldTypeSource::
-                    kHeuristicsOrAutocomplete) {
+  if (source ==
+      AutofillManager::Observer::FieldTypeSource::kHeuristicsOrAutocomplete) {
     return;
   }
 
@@ -857,7 +850,7 @@ NSString* const kPasswordFormSuggestionSuffix = @" ••••••••";
     autofill::FormSignature formSignature =
         found ? CalculateFormSignature(form) : autofill::FormSignature(0);
     autofill::FieldSignature fieldSignature = autofill::FieldSignature(0);
-    int maxLength = 0;
+    uint64_t maxLength = 0;
 
     if (found) {
       for (const autofill::FormFieldData& field : form.fields) {

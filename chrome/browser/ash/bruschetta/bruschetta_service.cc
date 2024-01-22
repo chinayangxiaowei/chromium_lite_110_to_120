@@ -49,9 +49,8 @@ BruschettaService::BruschettaService(Profile* profile) : profile_(profile) {
     return;
   }
 
-  ash::ConciergeClient* concierge = ash::ConciergeClient::Get();
-  if (concierge != nullptr) {
-    vm_observer_.Observe(concierge);
+  if (auto* concierge = ash::ConciergeClient::Get(); concierge) {
+    concierge->AddVmObserver(this);
   }
 
   pref_observer_.Init(profile_->GetPrefs());
@@ -85,7 +84,13 @@ BruschettaService::BruschettaService(Profile* profile) : profile_(profile) {
   OnPolicyChanged();
 }
 
-BruschettaService::~BruschettaService() = default;
+BruschettaService::~BruschettaService() {
+  // ConciergeClient may be destroyed prior to BruschettaService in tests.
+  // Therefore we do this instead of ScopedObservation.
+  if (auto* concierge = ash::ConciergeClient::Get(); concierge) {
+    concierge->RemoveVmObserver(this);
+  }
+}
 
 BruschettaService* BruschettaService::GetForProfile(Profile* profile) {
   return BruschettaServiceFactory::GetForProfile(profile);
@@ -94,10 +99,16 @@ BruschettaService* BruschettaService::GetForProfile(Profile* profile) {
 void BruschettaService::OnPolicyChanged() {
   for (auto guest_id :
        guest_os::GetContainers(profile_, guest_os::VmType::BRUSCHETTA)) {
-    const std::string& config_id =
-        GetContainerPrefValue(profile_, guest_id,
-                              guest_os::prefs::kBruschettaConfigId)
-            ->GetString();
+    std::string config_id;
+    const base::Value* pref_value = GetContainerPrefValue(
+        profile_, guest_id, guest_os::prefs::kBruschettaConfigId);
+    if (pref_value) {
+      config_id = pref_value->GetString();
+    } else {
+      LOG(WARNING) << "Missing container prefs for VM " << guest_id.vm_name;
+      BlockLaunch(std::move(guest_id));
+      continue;
+    }
 
     absl::optional<const base::Value::Dict*> config_opt =
         GetRunnableConfig(profile_, config_id);

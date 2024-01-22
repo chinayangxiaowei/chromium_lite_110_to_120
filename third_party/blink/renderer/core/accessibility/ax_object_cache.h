@@ -46,6 +46,7 @@ struct AXTreeUpdate;
 
 namespace blink {
 
+class AbstractInlineTextBox;
 class AriaNotificationOptions;
 class AXObject;
 class AccessibleNode;
@@ -55,7 +56,6 @@ class HTMLTableElement;
 class HTMLFrameOwnerElement;
 class HTMLSelectElement;
 class LocalFrameView;
-class NGAbstractInlineTextBox;
 struct PhysicalRect;
 
 class CORE_EXPORT AXObjectCache : public GarbageCollected<AXObjectCache> {
@@ -106,7 +106,7 @@ class CORE_EXPORT AXObjectCache : public GarbageCollected<AXObjectCache> {
   virtual void Remove(Node*) = 0;
   virtual void RemoveSubtreeWhenSafe(Node*, bool remove_root = true) = 0;
   virtual void RemovePopup(Document*) = 0;
-  virtual void Remove(NGAbstractInlineTextBox*) = 0;
+  virtual void Remove(AbstractInlineTextBox*) = 0;
 
   virtual const Element* RootAXEditableElement(const Node*) = 0;
 
@@ -122,6 +122,9 @@ class CORE_EXPORT AXObjectCache : public GarbageCollected<AXObjectCache> {
   virtual void NodeIsConnected(Node*) = 0;
   // Called when a node is attached to the layout tree.
   virtual void NodeIsAttached(Node*) = 0;
+  // Called when a subtree is attached to the layout tree because of
+  // content-visibility or previously display:none content gaining layout.
+  virtual void SubtreeIsAttached(Node*) = 0;
 
   // Called to process queued subtree removals when flat tree traversal is safe.
   virtual void ProcessSubtreeRemovals() = 0;
@@ -152,7 +155,9 @@ class CORE_EXPORT AXObjectCache : public GarbageCollected<AXObjectCache> {
                                           const AtomicString& event_type) = 0;
 
   // Handle any notifications which arrived while layout was dirty.
-  virtual void ProcessDeferredAccessibilityEvents(Document&) = 0;
+  // If |force|, then process regardless of any active batching or pauses.
+  virtual void ProcessDeferredAccessibilityEvents(Document&,
+                                                  bool force = false) = 0;
 
   // Changes to virtual Accessibility Object Model nodes.
   virtual void HandleAttributeChanged(const QualifiedName& attr_name,
@@ -202,6 +207,8 @@ class CORE_EXPORT AXObjectCache : public GarbageCollected<AXObjectCache> {
   virtual AXID GetExistingAXID(Node*) = 0;
 
   virtual AXObject* ObjectFromAXID(AXID) const = 0;
+
+  virtual AXObject* Root() = 0;
 
   virtual AXID GenerateAXID() const = 0;
 

@@ -13,6 +13,7 @@
 #include "base/task/single_thread_task_runner.h"
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/render_process_host_observer.h"
+#include "third_party/blink/public/common/associated_interfaces/associated_interface_provider.h"
 
 namespace performance_manager {
 
@@ -131,6 +132,13 @@ void ServiceWorkerContextAdapter::UnregisterServiceWorker(
   NOTIMPLEMENTED();
 }
 
+void ServiceWorkerContextAdapter::UnregisterServiceWorkerImmediately(
+    const GURL& scope,
+    const blink::StorageKey& key,
+    ResultCallback callback) {
+  NOTIMPLEMENTED();
+}
+
 content::ServiceWorkerExternalRequestResult
 ServiceWorkerContextAdapter::StartingExternalRequest(
     int64_t service_worker_version_id,
@@ -221,10 +229,13 @@ bool ServiceWorkerContextAdapter::IsLiveRunningServiceWorker(
 service_manager::InterfaceProvider&
 ServiceWorkerContextAdapter::GetRemoteInterfaces(
     int64_t service_worker_version_id) {
-  NOTIMPLEMENTED();
-  static base::NoDestructor<service_manager::InterfaceProvider>
-      interface_provider(base::SingleThreadTaskRunner::GetCurrentDefault());
-  return *interface_provider;
+  NOTREACHED_NORETURN();
+}
+
+blink::AssociatedInterfaceProvider&
+ServiceWorkerContextAdapter::GetRemoteAssociatedInterfaces(
+    int64_t service_worker_version_id) {
+  NOTREACHED_NORETURN();
 }
 
 void ServiceWorkerContextAdapter::StartServiceWorkerAndDispatchMessage(

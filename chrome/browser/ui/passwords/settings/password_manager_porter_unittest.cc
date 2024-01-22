@@ -18,7 +18,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/test/mock_callback.h"
 #include "build/build_config.h"
-#include "chrome/browser/password_manager/password_store_factory.h"
+#include "chrome/browser/password_manager/profile_password_store_factory.h"
 #include "chrome/browser/ui/chrome_select_file_policy.h"
 #include "chrome/test/base/chrome_render_view_host_test_harness.h"
 #include "chrome/test/base/testing_profile.h"
@@ -298,7 +298,7 @@ TEST_F(PasswordManagerPorterTest, PasswordExport) {
               SetDestination(temp_file_path()));
 
   porter().SetExporterForTesting(std::move(mock_password_manager_exporter_));
-  porter().Export(web_contents());
+  porter().Export(web_contents()->GetWeakPtr());
 }
 
 TEST_F(PasswordManagerPorterTest, CancelExportFileSelection) {
@@ -312,7 +312,7 @@ TEST_F(PasswordManagerPorterTest, CancelExportFileSelection) {
   EXPECT_CALL(*mock_password_manager_exporter_, Cancel());
 
   porter().SetExporterForTesting(std::move(mock_password_manager_exporter_));
-  porter().Export(web_contents());
+  porter().Export(web_contents()->GetWeakPtr());
 }
 
 TEST_F(PasswordManagerPorterTest, CancelExport) {
@@ -324,7 +324,7 @@ TEST_F(PasswordManagerPorterTest, CancelExport) {
   EXPECT_CALL(*mock_password_manager_exporter_, Cancel());
 
   porter().SetExporterForTesting(std::move(mock_password_manager_exporter_));
-  porter().Export(web_contents());
+  porter().Export(web_contents()->GetWeakPtr());
   porter().CancelExport();
 }
 
@@ -347,9 +347,6 @@ TEST_F(PasswordManagerPorterTest, ImportDismissedOnCanceledFileSelection) {
 }
 
 TEST_F(PasswordManagerPorterTest, ContinueImportWithConflicts) {
-  base::test::ScopedFeatureList feature_list{
-      password_manager::features::kPasswordsImportM2};
-
   password_manager::PasswordForm test_form;
   test_form.url = GURL("https://test.com");
   test_form.signon_realm = test_form.url.spec();
@@ -395,9 +392,6 @@ TEST_F(PasswordManagerPorterTest, ContinueImportWithConflicts) {
 }
 
 TEST_F(PasswordManagerPorterTest, RejectNewImportsWhenConflictsNotResolved) {
-  base::test::ScopedFeatureList feature_list{
-      password_manager::features::kPasswordsImportM2};
-
   password_manager::PasswordForm test_form;
   test_form.url = GURL("https://test.com");
   test_form.signon_realm = test_form.url.spec();
@@ -441,9 +435,6 @@ TEST_F(PasswordManagerPorterTest, RejectNewImportsWhenConflictsNotResolved) {
 }
 
 TEST_F(PasswordManagerPorterTest, ResetImporterTriggersFileDeletion) {
-  base::test::ScopedFeatureList feature_list{
-      password_manager::features::kPasswordsImportM2};
-
   ASSERT_TRUE(base::WriteFile(temp_file_path(),
                               "origin,username,password\n"
                               "https://test.com,username,secret\n"));

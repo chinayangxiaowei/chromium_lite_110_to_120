@@ -9,7 +9,6 @@
 #include "third_party/blink/renderer/core/dom/layout_tree_builder_traversal.h"
 #include "third_party/blink/renderer/core/dom/node_computed_style.h"
 #include "third_party/blink/renderer/core/dom/pseudo_element.h"
-#include "third_party/blink/renderer/core/html/html_olist_element.h"
 #include "third_party/blink/renderer/core/html/list_item_ordinal.h"
 #include "third_party/blink/renderer/core/layout/counter_node.h"
 #include "third_party/blink/renderer/core/layout/layout_counter.h"
@@ -42,7 +41,7 @@ StyleContainmentScopeTree::FindOrCreateEnclosingScopeForElement(
     return scope;
   }
   // Return root scope if nothing found.
-  return root_scope_;
+  return root_scope_.Get();
 }
 
 void StyleContainmentScopeTree::DestroyScopeForElement(const Element& element) {
@@ -62,7 +61,7 @@ StyleContainmentScope* StyleContainmentScopeTree::CreateScopeForElement(
     const Element& element) {
   auto entry = scopes_.find(&element);
   if (entry != scopes_.end()) {
-    return entry->value;
+    return entry->value.Get();
   }
   StyleContainmentScope* scope =
       MakeGarbageCollected<StyleContainmentScope>(&element, this);
@@ -71,10 +70,12 @@ StyleContainmentScope* StyleContainmentScopeTree::CreateScopeForElement(
   scopes_.insert(&element, scope);
   // Try to find if we create a scope anywhere between the parent and existing
   // children. If so, reattach the child and the quotes.
+  bool parent_has_changed = false;
   auto children = parent->Children();
   for (StyleContainmentScope* child : children) {
     if (child != scope &&
         scope->IsAncestorOf(child->GetElement(), parent->GetElement())) {
+      parent_has_changed = true;
       parent->RemoveChild(child);
       scope->AppendChild(child);
     }
@@ -83,12 +84,14 @@ StyleContainmentScope* StyleContainmentScopeTree::CreateScopeForElement(
   auto quotes = parent->Quotes();
   for (LayoutQuote* quote : quotes) {
     if (scope->IsAncestorOf(quote->GetOwningPseudo(), parent->GetElement())) {
+      parent_has_changed = true;
       parent->DetachQuote(*quote);
       scope->AttachQuote(*quote);
     }
   }
-  UpdateOutermostCountersDirtyScope(parent);
-  UpdateOutermostQuotesDirtyScope(parent);
+  StyleContainmentScope* changed_scope = parent_has_changed ? parent : nullptr;
+  UpdateOutermostCountersDirtyScope(changed_scope);
+  UpdateOutermostQuotesDirtyScope(changed_scope);
   return scope;
 }
 
@@ -102,7 +105,7 @@ StyleContainmentScope* FindCommonAncestor(StyleContainmentScope* scope1,
   if (!scope2) {
     return scope1;
   }
-  HeapVector<StyleContainmentScope*> ancestors1, ancestors2;
+  HeapVector<Member<StyleContainmentScope>> ancestors1, ancestors2;
   for (StyleContainmentScope* it = scope1; it; it = it->Parent()) {
     if (it == scope2) {
       return scope2;
@@ -122,7 +125,7 @@ StyleContainmentScope* FindCommonAncestor(StyleContainmentScope* scope1,
     --anc2;
   }
   int pos = anc1 == int(ancestors1.size()) - 1 ? anc1 : anc1 + 1;
-  return ancestors1[pos];
+  return ancestors1[pos].Get();
 }
 
 }  // namespace
@@ -159,33 +162,34 @@ void StyleContainmentScopeTree::AddCounterToObjectMap(
     LayoutObject& object,
     const AtomicString& identifier,
     CounterNode& counter) {
-  auto it = object_counters_map_.find(&object);
-  if (it != object_counters_map_.end()) {
-    DCHECK(it->value->find(identifier) == it->value->end());
-    it->value->insert(identifier, &counter);
+  auto identifier_map = object_counters_map_.find(identifier);
+  if (identifier_map != object_counters_map_.end()) {
+    DCHECK(identifier_map->value->find(&object) ==
+           identifier_map->value->end());
+    identifier_map->value->insert(&object, &counter);
   } else {
-    auto* object_map =
-        MakeGarbageCollected<HeapHashMap<AtomicString, Member<CounterNode>>>();
-    object_map->insert(identifier, &counter);
-    object_counters_map_.insert(&object, object_map);
+    auto* object_map = MakeGarbageCollected<
+        HeapHashMap<Member<LayoutObject>, Member<CounterNode>>>();
+    object_map->insert(&object, &counter);
+    object_counters_map_.insert(identifier, object_map);
   }
 }
 
 CounterNode* StyleContainmentScopeTree::PopCounterFromObjectMap(
     LayoutObject& object,
     const AtomicString& identifier) {
-  auto it = object_counters_map_.find(&object);
-  if (it == object_counters_map_.end()) {
+  auto identifier_map = object_counters_map_.find(identifier);
+  if (identifier_map == object_counters_map_.end()) {
     return nullptr;
   }
-  auto map_it = it->value->find(identifier);
-  if (map_it == it->value->end()) {
+  auto object_map = identifier_map->value->find(&object);
+  if (object_map == identifier_map->value->end()) {
     return nullptr;
   }
-  CounterNode* counter = map_it->value;
-  it->value->erase(map_it);
-  if (!it->value->size()) {
-    object_counters_map_.erase(it);
+  CounterNode* counter = object_map->value;
+  identifier_map->value->erase(object_map);
+  if (!identifier_map->value->size()) {
+    object_counters_map_.erase(identifier_map);
   }
   return counter;
 }
@@ -205,11 +209,10 @@ void StyleContainmentScopeTree::RemoveCounterForLayoutObject(
   if (counter) {
     StyleContainmentScope* scope = counter->Scope()->StyleScope();
     CountersScopeTree* tree = scope->GetCountersScopeTree();
-    Element& root_element = counter->Scope()->RootElement();
-    tree->RemoveCounterFromScope(*counter, *counter->Scope());
-    if (identifier == "list-item") {
-      if (auto* o_list_element = DynamicTo<HTMLOListElement>(root_element)) {
-        ListItemOrdinal::InvalidateAllItemsForOrderedList(o_list_element);
+    tree->RemoveCounterFromScope(*counter, *counter->Scope(), identifier);
+    if (identifier == list_item_) {
+      if (ListItemOrdinal::Get(*object.GetNode())) {
+        ListItemOrdinal::ItemInsertedOrRemoved(&object);
       }
     }
     UpdateOutermostCountersDirtyScope(scope->Parent() ? scope->Parent()
@@ -219,16 +222,15 @@ void StyleContainmentScopeTree::RemoveCounterForLayoutObject(
 
 void StyleContainmentScopeTree::RemoveListItemCounterForLayoutObject(
     LayoutObject& object) {
-  CounterNode* counter =
-      PopCounterFromObjectMap(object, AtomicString("list-item"));
+  // Remove the counter from the counters cache.
+  CounterNode* counter = PopCounterFromObjectMap(object, list_item_);
   if (counter) {
     StyleContainmentScope* scope = counter->Scope()->StyleScope();
     CountersScopeTree* tree =
         counter->Scope()->StyleScope()->GetCountersScopeTree();
-    Element& root_element = counter->Scope()->RootElement();
-    tree->RemoveCounterFromScope(*counter, *counter->Scope());
-    if (auto* o_list_element = DynamicTo<HTMLOListElement>(root_element)) {
-      ListItemOrdinal::InvalidateAllItemsForOrderedList(o_list_element);
+    tree->RemoveCounterFromScope(*counter, *counter->Scope(), list_item_);
+    if (ListItemOrdinal::Get(*object.GetNode())) {
+      ListItemOrdinal::ItemInsertedOrRemoved(&object);
     }
     UpdateOutermostCountersDirtyScope(scope->Parent() ? scope->Parent()
                                                       : scope);

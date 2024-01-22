@@ -83,6 +83,7 @@
 
 #if BUILDFLAG(IS_LINUX)
 #include "ui/base/ime/linux/text_edit_command_auralinux.h"
+#include "ui/base/ime/text_input_flags.h"
 #include "ui/linux/linux_ui.h"
 #endif
 
@@ -750,7 +751,8 @@ bool Textfield::OnKeyPressed(const ui::KeyEvent& event) {
   auto* linux_ui = ui::LinuxUi::instance();
   std::vector<ui::TextEditCommandAuraLinux> commands;
   if (!handled && linux_ui &&
-      linux_ui->GetTextEditCommandsForEvent(event, &commands)) {
+      linux_ui->GetTextEditCommandsForEvent(event, ui::TEXT_INPUT_FLAG_NONE,
+                                            &commands)) {
     for (const auto& command : commands) {
       if (IsTextEditCommandEnabled(command.command())) {
         ExecuteTextEditCommand(command.command());
@@ -932,7 +934,8 @@ bool Textfield::SkipDefaultKeyEventProcessing(const ui::KeyEvent& event) {
   // Skip any accelerator handling that conflicts with custom keybindings.
   auto* linux_ui = ui::LinuxUi::instance();
   std::vector<ui::TextEditCommandAuraLinux> commands;
-  if (linux_ui && linux_ui->GetTextEditCommandsForEvent(event, &commands)) {
+  if (linux_ui && linux_ui->GetTextEditCommandsForEvent(
+                      event, ui::TEXT_INPUT_FLAG_NONE, &commands)) {
     const auto is_enabled = [this](const auto& command) {
       return IsTextEditCommandEnabled(command.command());
     };
@@ -1034,6 +1037,11 @@ void Textfield::GetAccessibleNodeData(ui::AXNodeData* node_data) {
     if (GetReadOnly())
       node_data->SetRestriction(ax::mojom::Restriction::kReadOnly);
   }
+  node_data->AddIntAttribute(
+      ax::mojom::IntAttribute::kTextDirection,
+      static_cast<int32_t>(GetTextDirection() == base::i18n::RIGHT_TO_LEFT
+                               ? ax::mojom::WritingDirection::kRtl
+                               : ax::mojom::WritingDirection::kLtr));
   if (text_input_type_ == ui::TEXT_INPUT_TYPE_PASSWORD) {
     node_data->AddState(ax::mojom::State::kProtected);
     node_data->SetValue(std::u16string(
@@ -1951,42 +1959,25 @@ bool Textfield::SetCompositionFromExistingText(
 
 #if BUILDFLAG(IS_CHROMEOS)
 gfx::Range Textfield::GetAutocorrectRange() const {
-  return model_->autocorrect_range();
+  // TODO(b/316461955): Implement autocorrect UI for native fields.
+  NOTIMPLEMENTED_LOG_ONCE();
+  return gfx::Range();
 }
 
 gfx::Rect Textfield::GetAutocorrectCharacterBounds() const {
-  gfx::Range autocorrect_range = model_->autocorrect_range();
-  if (autocorrect_range.is_empty())
-    return gfx::Rect();
-
-  gfx::RenderText* render_text = GetRenderText();
-  const gfx::SelectionModel caret(autocorrect_range, gfx::CURSOR_BACKWARD);
-  gfx::Rect rect;
-  rect = render_text->GetCursorBounds(caret, false);
-
-  ConvertRectToScreen(this, &rect);
-  return rect;
+  // TODO(b/316461955): Implement autocorrect UI for native fields.
+  NOTIMPLEMENTED_LOG_ONCE();
+  return gfx::Rect();
 }
 
 bool Textfield::SetAutocorrectRange(const gfx::Range& range) {
   if (!range.is_empty()) {
     base::UmaHistogramEnumeration("InputMethod.Assistive.Autocorrect.Count",
                                   TextInputClient::SubClass::kTextField);
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    auto* input_method_manager = ash::input_method::InputMethodManager::Get();
-    if (input_method_manager &&
-        ash::extension_ime_util::IsExperimentalMultilingual(
-            input_method_manager->GetActiveIMEState()
-                ->GetCurrentInputMethod()
-                .id())) {
-      base::UmaHistogramEnumeration(
-          "InputMethod.MultilingualExperiment.Autocorrect.Count",
-          TextInputClient::SubClass::kTextField);
-    }
-#endif
   }
-  return model_->SetAutocorrectRange(range);
+  // TODO(b/316461955): Implement autocorrect UI for native fields.
+  NOTIMPLEMENTED_LOG_ONCE();
+  return false;
 }
 
 bool Textfield::AddGrammarFragments(

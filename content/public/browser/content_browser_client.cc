@@ -19,7 +19,7 @@
 #include "build/build_config.h"
 #include "build/buildflag.h"
 #include "build/chromeos_buildflags.h"
-#include "content/browser/webid/mdocs/mdoc_provider.h"
+#include "content/browser/webid/digital_credentials/digital_credential_provider.h"
 #include "content/public/browser/anchor_element_preconnect_delegate.h"
 #include "content/public/browser/authenticator_request_client_delegate.h"
 #include "content/public/browser/browser_accessibility_state.h"
@@ -541,7 +541,8 @@ bool ContentBrowserClient::IsInterestGroupAPIAllowed(
 bool ContentBrowserClient::IsPrivacySandboxReportingDestinationAttested(
     content::BrowserContext* browser_context,
     const url::Origin& destination_origin,
-    content::PrivacySandboxInvokingAPI invoking_api) {
+    content::PrivacySandboxInvokingAPI invoking_api,
+    bool post_impression_reporting) {
   return false;
 }
 
@@ -549,17 +550,25 @@ void ContentBrowserClient::OnAuctionComplete(
     RenderFrameHost* render_frame_host,
     InterestGroupManager::InterestGroupDataKey data_key) {}
 
+network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
+    AttributionReportingOsApiState state,
+    content::WebContents* web_contents) {
+  switch (state) {
+    case AttributionReportingOsApiState::kDisabled:
+      return network::mojom::AttributionSupport::kWeb;
+    case AttributionReportingOsApiState::kEnabled:
+      return network::mojom::AttributionSupport::kWebAndOs;
+  }
+}
+
 bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
     content::BrowserContext* browser_context,
     AttributionReportingOperation operation,
     content::RenderFrameHost* rfh,
     const url::Origin* source_origin,
     const url::Origin* destination_origin,
-    const url::Origin* reporting_origin) {
-  return true;
-}
-
-bool ContentBrowserClient::IsWebAttributionReportingAllowed() {
+    const url::Origin* reporting_origin,
+    bool* can_bypass) {
   return true;
 }
 
@@ -864,6 +873,14 @@ void ContentBrowserClient::AddPresentationObserver(
 void ContentBrowserClient::RemovePresentationObserver(
     PresentationObserver* observer,
     WebContents* web_contents) {}
+
+bool ContentBrowserClient::AddPrivacySandboxAttestationsObserver(
+    PrivacySandboxAttestationsObserver* observer) {
+  return true;
+}
+
+void ContentBrowserClient::RemovePrivacySandboxAttestationsObserver(
+    PrivacySandboxAttestationsObserver* observer) {}
 
 void ContentBrowserClient::OpenURL(
     content::SiteInstance* site_instance,
@@ -1249,8 +1266,18 @@ bool ContentBrowserClient::ShouldSandboxNetworkService() {
 }
 
 bool ContentBrowserClient::ShouldRunOutOfProcessSystemDnsResolution() {
-  return base::FeatureList::IsEnabled(
-      network::features::kOutOfProcessSystemDnsResolution);
+// This is only useful on Linux desktop and Android where system DNS
+// resolution cannot always run in a sandboxed network process. The Mac and
+// Windows sandboxing systems allow us to specify system DNS resolution as an
+// allowed action, and ChromeOS uses a simple, known system DNS configuration
+// that can be adequately sandboxed.
+// Currently Android's network service will not run out of process or sandboxed,
+// so OutOfProcessSystemDnsResolution is not currently enabled on Android.
+#if BUILDFLAG(IS_LINUX)
+  return true;
+#else
+  return false;
+#endif
 }
 
 std::string ContentBrowserClient::GetProduct() {
@@ -1463,7 +1490,8 @@ ContentBrowserClient::CreateIdentityRequestDialogController(
   return std::make_unique<IdentityRequestDialogController>();
 }
 
-std::unique_ptr<MDocProvider> ContentBrowserClient::CreateMDocProvider() {
+std::unique_ptr<DigitalCredentialProvider>
+ContentBrowserClient::CreateDigitalCredentialProvider() {
   return nullptr;
 }
 
@@ -1559,6 +1587,13 @@ bool ContentBrowserClient::IsThirdPartyStoragePartitioningAllowed(
     content::BrowserContext*,
     const url::Origin&) {
   return true;
+}
+
+bool ContentBrowserClient::AreDeprecatedAutomaticBeaconCredentialsAllowed(
+    content::BrowserContext* browser_context,
+    const GURL& destination_url,
+    const url::Origin& top_frame_origin) {
+  return false;
 }
 
 bool ContentBrowserClient::

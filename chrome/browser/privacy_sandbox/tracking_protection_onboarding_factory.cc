@@ -6,6 +6,9 @@
 #include <memory>
 #include "base/no_destructor.h"
 #include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/profiles/profile_selections.h"
+#include "chrome/browser/tpcd/experiment/tpcd_experiment_features.h"
+#include "chrome/common/channel_info.h"
 
 TrackingProtectionOnboardingFactory*
 TrackingProtectionOnboardingFactory::GetInstance() {
@@ -20,7 +23,12 @@ TrackingProtectionOnboardingFactory::GetForProfile(Profile* profile) {
 }
 
 TrackingProtectionOnboardingFactory::TrackingProtectionOnboardingFactory()
-    : ProfileKeyedServiceFactory("TrackingProtectionOnboarding") {}
+    : ProfileKeyedServiceFactory("TrackingProtectionOnboarding",
+                                 ProfileSelections::Builder()
+                                     // Excluding Ash Internal profiles such as
+                                     // the signin or the lockscreen profile.
+                                     .WithAshInternals(ProfileSelection::kNone)
+                                     .Build()) {}
 
 std::unique_ptr<KeyedService>
 TrackingProtectionOnboardingFactory::BuildServiceInstanceForBrowserContext(
@@ -28,5 +36,6 @@ TrackingProtectionOnboardingFactory::BuildServiceInstanceForBrowserContext(
   Profile* profile = Profile::FromBrowserContext(context);
 
   return std::make_unique<privacy_sandbox::TrackingProtectionOnboarding>(
-      profile->GetPrefs());
+      profile->GetPrefs(), chrome::GetChannel(),
+      tpcd::experiment::kEnableSilentOnboarding.Get());
 }

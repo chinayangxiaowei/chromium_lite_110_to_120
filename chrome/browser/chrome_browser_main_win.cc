@@ -41,11 +41,11 @@
 #include "base/win/pe_image.h"
 #include "base/win/registry.h"
 #include "base/win/win_util.h"
-#include "base/win/windows_version.h"
 #include "base/win/wrapped_window_proc.h"
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
 #include "chrome/browser/about_flags.h"
+#include "chrome/browser/active_use_util.h"
 #include "chrome/browser/browser_features.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/enterprise/browser_management/management_service_factory.h"
@@ -546,6 +546,12 @@ void ChromeBrowserMainPartsWin::PostBrowserStart() {
 
   InitializeChromeElf();
 
+#if BUILDFLAG(USE_GOOGLE_UPDATE_INTEGRATION)
+  if constexpr (kShouldRecordActiveUse) {
+    did_run_updater_.emplace();
+  }
+#endif
+
   // Query feature first, to include full population in field trial.
   if (base::FeatureList::IsEnabled(features::kAppBoundEncryptionMetrics) &&
       install_static::IsSystemInstall()) {
@@ -553,16 +559,12 @@ void ChromeBrowserMainPartsWin::PostBrowserStart() {
   }
 
   // Record Processor Metrics. This is very low priority, hence posting as
-  // BEST_EFFORT to start after Chrome startup has completed. This metric is
-  // only available starting Windows 10.
-  if (base::win::OSInfo::GetInstance()->version() >=
-      base::win::Version::WIN10) {
-    scoped_refptr<base::SequencedTaskRunner> task_runner =
-        base::ThreadPool::CreateSequencedTaskRunner(
-            {base::MayBlock(), base::TaskPriority::BEST_EFFORT});
-    task_runner->PostTask(FROM_HERE,
-                          base::BindOnce(&DelayedRecordProcessorMetrics));
-  }
+  // BEST_EFFORT to start after Chrome startup has completed.
+  scoped_refptr<base::SequencedTaskRunner> task_runner =
+      base::ThreadPool::CreateSequencedTaskRunner(
+          {base::MayBlock(), base::TaskPriority::BEST_EFFORT});
+  task_runner->PostTask(FROM_HERE,
+                        base::BindOnce(&DelayedRecordProcessorMetrics));
 
   // Write current executable path to the User Data directory to inform
   // Progressive Web App launchers, which run from within the User Data

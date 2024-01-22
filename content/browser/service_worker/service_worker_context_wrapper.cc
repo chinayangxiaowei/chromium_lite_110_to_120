@@ -567,6 +567,23 @@ void ServiceWorkerContextWrapper::UnregisterServiceWorker(
     const GURL& scope,
     const blink::StorageKey& key,
     ResultCallback callback) {
+  UnregisterServiceWorkerImpl(scope, key, /*is_immediate=*/false,
+                              std::move(callback));
+}
+
+void ServiceWorkerContextWrapper::UnregisterServiceWorkerImmediately(
+    const GURL& scope,
+    const blink::StorageKey& key,
+    ResultCallback callback) {
+  UnregisterServiceWorkerImpl(scope, key, /*is_immediate=*/true,
+                              std::move(callback));
+}
+
+void ServiceWorkerContextWrapper::UnregisterServiceWorkerImpl(
+    const GURL& scope,
+    const blink::StorageKey& key,
+    bool is_immediate,
+    ResultCallback callback) {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
 
   if (!context_core_) {
@@ -575,7 +592,7 @@ void ServiceWorkerContextWrapper::UnregisterServiceWorker(
     return;
   }
   context()->UnregisterServiceWorker(
-      net::SimplifyUrlForRequest(scope), key, /*is_immediate=*/false,
+      net::SimplifyUrlForRequest(scope), key, is_immediate,
       WrapResultCallbackToTakeStatusCode(std::move(callback)));
 }
 
@@ -995,6 +1012,19 @@ ServiceWorkerContextWrapper::GetRemoteInterfaces(
   // checking it first.
   auto& version = *context()->GetLiveVersion(service_worker_version_id);
   return version.worker_host()->remote_interfaces();
+}
+
+blink::AssociatedInterfaceProvider&
+ServiceWorkerContextWrapper::GetRemoteAssociatedInterfaces(
+    int64_t service_worker_version_id) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  CHECK(IsLiveRunningServiceWorker(service_worker_version_id));
+
+  // This function should only be called on live running service workers
+  // so it should be safe to dereference the returned pointer without
+  // checking it first.
+  auto& version = *context()->GetLiveVersion(service_worker_version_id);
+  return *version.associated_interface_provider();
 }
 
 scoped_refptr<ServiceWorkerRegistration>

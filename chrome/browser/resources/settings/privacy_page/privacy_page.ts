@@ -8,6 +8,7 @@
  * security settings.
  */
 import 'chrome://resources/cr_components/settings_prefs/prefs.js';
+import 'chrome://resources/cr_elements/icons.html.js';
 import 'chrome://resources/cr_elements/cr_button/cr_button.js';
 import 'chrome://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'chrome://resources/cr_elements/cr_link_row/cr_link_row.js';
@@ -28,7 +29,7 @@ import {PrefsMixin} from 'chrome://resources/cr_components/settings_prefs/prefs_
 import {CrLinkRowElement} from 'chrome://resources/cr_elements/cr_link_row/cr_link_row.js';
 import {I18nMixin} from 'chrome://resources/cr_elements/i18n_mixin.js';
 import {WebUiListenerMixin} from 'chrome://resources/cr_elements/web_ui_listener_mixin.js';
-import {assert, assertNotReached} from 'chrome://resources/js/assert_ts.js';
+import {assert, assertNotReached} from 'chrome://resources/js/assert.js';
 import {focusWithoutInk} from 'chrome://resources/js/focus_without_ink.js';
 import {PluralStringProxyImpl} from 'chrome://resources/js/plural_string_proxy.js';
 import {PolymerElement} from 'chrome://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
@@ -513,22 +514,33 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
         (locationDefaultValue.setting === ContentSetting.ASK);
   }
 
-  private onLocationAskClicked_() {
-    this.isLocationAllowed_ = true;
-    this.setPrefValue('generated.geolocation', SettingsState.CPSS);
+  private onLocationTopLevelRadioChanged_(event: CustomEvent<{value: string}>) {
+    const radioButtonName = event.detail.value;
+    switch (radioButtonName) {
+      case 'location-block-radio-button':
+        this.setPrefValue('generated.geolocation', SettingsState.BLOCK);
+        this.isLocationAllowed_ = false;
+        break;
+      case 'location-ask-radio-button':
+        this.setPrefValue('generated.geolocation', SettingsState.CPSS);
+        this.isLocationAllowed_ = true;
+        break;
+    }
   }
 
-  private onNotificationAskClicked_() {
-    this.isNotificationAllowed_ = true;
-    this.setPrefValue('generated.notification', SettingsState.CPSS);
-  }
-
-  private onLocationBlockClicked_() {
-    this.isLocationAllowed_ = false;
-  }
-
-  private onNotificationBlockClicked_() {
-    this.isNotificationAllowed_ = false;
+  private onNotificationTopLevelRadioChanged_(
+      event: CustomEvent<{value: string}>) {
+    const radioButtonName = event.detail.value;
+    switch (radioButtonName) {
+      case 'notification-block-radio-button':
+        this.setPrefValue('generated.notification', SettingsState.BLOCK);
+        this.isNotificationAllowed_ = false;
+        break;
+      case 'notification-ask-radio-button':
+        this.setPrefValue('generated.notification', SettingsState.CPSS);
+        this.isNotificationAllowed_ = true;
+        break;
+    }
   }
 
   private onPrivacyGuideClick_() {
@@ -556,11 +568,10 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
 
     this.notificationPermissionsReviewHeader_ =
         await PluralStringProxyImpl.getInstance().getPluralString(
-            'safetyCheckNotificationPermissionReviewPrimaryLabel',
-            permissions.length);
+            'safetyHubNotificationPermissionsPrimaryLabel', permissions.length);
     this.notificationPermissionsReviewSubheader_ =
         await PluralStringProxyImpl.getInstance().getPluralString(
-            'safetyCheckNotificationPermissionReviewSecondaryLabel',
+            'safetyHubNotificationPermissionsSecondaryLabel',
             permissions.length);
   }
 

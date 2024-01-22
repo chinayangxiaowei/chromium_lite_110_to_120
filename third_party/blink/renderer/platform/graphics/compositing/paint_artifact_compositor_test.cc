@@ -4964,17 +4964,9 @@ TEST_P(PaintArtifactCompositorTest, DirectlySetScrollOffset) {
 }
 
 TEST_P(PaintArtifactCompositorTest, AddNonCompositedScrollNodes) {
-  uint32_t main_thread_scrolling_reason =
-      cc::MainThreadScrollingReason::kNotScrollingOnMain;
-  if (!RuntimeEnabledFeatures::CompositeScrollAfterPaintEnabled()) {
-    main_thread_scrolling_reason =
-        cc::MainThreadScrollingReason::kNotOpaqueForTextAndLCDText;
-    ASSERT_TRUE(cc::MainThreadScrollingReason::HasNonCompositedScrollReasons(
-        main_thread_scrolling_reason));
-  }
   auto scroll_state =
       ScrollState1(PropertyTreeState::Root(), CompositingReason::kNone,
-                   main_thread_scrolling_reason);
+                   cc::MainThreadScrollingReason::kNotScrollingOnMain);
 
   WTF::Vector<const TransformPaintPropertyNode*> scroll_translation_nodes;
   scroll_translation_nodes.push_back(&scroll_state.Transform());
@@ -4984,8 +4976,7 @@ TEST_P(PaintArtifactCompositorTest, AddNonCompositedScrollNodes) {
           .Chunk(1)
           .ScrollHitTest(scroll_state.Transform().ScrollNode()->ContainerRect(),
                          &scroll_state.Transform())
-          // In CompositeScrollAfterPaint, this chunk being non-opaque makes
-          // the scroll not composited.
+          // This chunk being non-opaque makes the scroll not composited.
           .Chunk(2)
           .Properties(scroll_state.Transform(), c0(), e0())
           .Build(),
@@ -5001,8 +4992,6 @@ TEST_P(PaintArtifactCompositorTest, AddNonCompositedScrollNodes) {
 TEST_P(PaintArtifactCompositorTest, AddUnpaintedNonCompositedScrollNodes) {
   const uint32_t main_thread_scrolling_reason =
       cc::MainThreadScrollingReason::kNotOpaqueForTextAndLCDText;
-  ASSERT_TRUE(cc::MainThreadScrollingReason::HasNonCompositedScrollReasons(
-      main_thread_scrolling_reason));
   auto scroll_state =
       ScrollState1(PropertyTreeState::Root(), CompositingReason::kNone,
                    main_thread_scrolling_reason);
@@ -5108,6 +5097,32 @@ TEST_P(PaintArtifactCompositorTest,
   const auto* cc_clip_expander =
       GetPropertyTrees().clip_tree().Node(LayerAt(0)->clip_tree_index());
   EXPECT_TRUE(cc_clip_expander->AppliesLocalClip());
+}
+
+TEST_P(PaintArtifactCompositorTest,
+       CreatePictureLayerForSolidColorBackdropFilterMask) {
+  CompositorFilterOperations filter;
+  filter.AppendBlurFilter(5);
+  auto backdrop_filter = CreateBackdropFilterEffect(e0(), filter);
+
+  EffectPaintPropertyNode::State mask_state;
+  mask_state.local_transform_space = &t0();
+  mask_state.output_clip = &c0();
+  mask_state.blend_mode = SkBlendMode::kDstIn;
+  mask_state.direct_compositing_reasons =
+      CompositingReason::kBackdropFilterMask;
+  auto mask =
+      EffectPaintPropertyNode::Create(*backdrop_filter, std::move(mask_state));
+
+  Update(TestPaintArtifact()
+             .Chunk(t0(), c0(), *backdrop_filter)
+             .RectDrawing(gfx::Rect(150, 150, 100, 100), Color::kWhite)
+             .Chunk(t0(), c0(), *mask)
+             .RectDrawing(gfx::Rect(150, 150, 100, 100), Color::kBlack)
+             .IsSolidColor()
+             .Build());
+  ASSERT_EQ(2u, LayerCount());
+  EXPECT_FALSE(LayerAt(1)->IsSolidColorLayerForTesting());
 }
 
 }  // namespace blink

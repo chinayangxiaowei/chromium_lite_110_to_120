@@ -31,8 +31,6 @@ BASE_DECLARE_FEATURE(kChromeLabs);
 extern const char kChromeLabsActivationParameterName[];
 extern const base::FeatureParam<int> kChromeLabsActivationPercentage;
 
-BASE_DECLARE_FEATURE(kChromeWhatsNewUI);
-
 BASE_DECLARE_FEATURE(kExtensionsMenuInAppMenu);
 bool IsExtensionMenuInRootAppMenu();
 
@@ -60,8 +58,6 @@ BASE_DECLARE_FEATURE(kHaTSWebUI);
 BASE_DECLARE_FEATURE(kLightweightExtensionOverrideConfirmations);
 #endif
 
-BASE_DECLARE_FEATURE(kPowerBookmarksSidePanel);
-
 BASE_DECLARE_FEATURE(kQuickCommands);
 
 BASE_DECLARE_FEATURE(kResponsiveToolbar);
@@ -86,6 +82,10 @@ BASE_DECLARE_FEATURE(kSidePanelWebView);
 BASE_DECLARE_FEATURE(kSidePanelCompanionDefaultPinned);
 
 BASE_DECLARE_FEATURE(kSidePanelPinning);
+
+BASE_DECLARE_FEATURE(kSidePanelMinimumWidth);
+extern const base::FeatureParam<int> kSidePanelMinimumWidthParameter;
+int GetSidePanelMinimumWidth();
 #endif
 
 BASE_DECLARE_FEATURE(kSidePanelJourneysQueryless);

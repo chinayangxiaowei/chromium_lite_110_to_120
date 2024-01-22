@@ -380,6 +380,15 @@ void SplitViewMetricsController::OnPostWindowStateTypeChange(
   if (is_snapped == was_snapped)
     return;
 
+  if (was_snapped &&
+      chromeos::IsSnappedWindowStateType(first_closed_state_type_) &&
+      old_type != first_closed_state_type_) {
+    // If a window in the opposite side of `first_closed_state_type_` gets
+    // unsnapped, record the max duration to indicate a second snapped window
+    // was never closed after the first window.
+    RecordCloseTwoWindowsDuration(kSequentialSnapActionMaxTime);
+  }
+
   MaybeStartOrEndRecordBothSnappedClamshellSplitView();
 }
 
@@ -529,6 +538,10 @@ void SplitViewMetricsController::AddObservedWindow(aura::Window* window) {
 }
 
 void SplitViewMetricsController::RemoveObservedWindow(aura::Window* window) {
+  if (window->is_destroying()) {
+    MaybeStartOrEndRecordCloseTwoWindowsDuration(window);
+  }
+
   if (window == first_snapped_window_) {
     if (window->is_destroying()) {
       // If `first_snapped_window_` was destroyed, record the max duration to
@@ -662,8 +675,28 @@ void SplitViewMetricsController::RecordMinimizeTwoWindowsDuration(
   first_minimized_time_ = base::TimeTicks();
 }
 
+void SplitViewMetricsController::RecordCloseTwoWindowsDuration(
+    const base::TimeDelta& elapsed_time) {
+  base::UmaHistogramCustomTimes(kCloseTwoWindowsDurationHistogramName,
+                                /*sample=*/elapsed_time,
+                                kSequentialSnapActionMinTime,
+                                kSequentialSnapActionMaxTime, /*buckets=*/100);
+  // Reset `first_closed_state_type_` to kDefault to stop recording.
+  first_closed_state_type_ = chromeos::WindowStateType::kDefault;
+  first_closed_time_ = base::TimeTicks();
+}
+
 void SplitViewMetricsController::MaybeStartOrEndRecordSnapTwoWindowsDuration(
     WindowState* window_state) {
+  // If `first_snapped_window_` is no longer snapped, record the max duration to
+  // indicate a second window was never snapped on the opposite side.
+  if (first_snapped_window_ &&
+      !WindowState::Get(first_snapped_window_)->IsSnapped()) {
+    // Any state type change can change `first_snapped_window_`'s state type
+    // (i.e. float). This must be reset before we check `first_snapped_window_`
+    // below.
+    RecordSnapTwoWindowsDuration(kSequentialSnapActionMaxTime);
+  }
   if (window_state->IsSnapped()) {
     if (first_snapped_window_ && !first_snapped_time_.is_null() &&
         window_state->window() != first_snapped_window_ &&
@@ -680,11 +713,6 @@ void SplitViewMetricsController::MaybeStartOrEndRecordSnapTwoWindowsDuration(
     first_snapped_window_ = window_state->window();
     first_snapped_time_ = base::TimeTicks::Now();
     return;
-  }
-  // If `first_snapped_window_` is no longer snapped, record the max duration to
-  // indicate a second window was never snapped on the opposite side.
-  if (window_state->window() == first_snapped_window_) {
-    RecordSnapTwoWindowsDuration(kSequentialSnapActionMaxTime);
   }
 }
 
@@ -711,6 +739,26 @@ void SplitViewMetricsController::
     // If the first window is no longer minimized or snapped, record the max
     // duration to indicate no other window was snapped then minimized.
     RecordMinimizeTwoWindowsDuration(kSequentialSnapActionMaxTime);
+  }
+}
+
+void SplitViewMetricsController::MaybeStartOrEndRecordCloseTwoWindowsDuration(
+    aura::Window* window) {
+  if (auto* window_state = WindowState::Get(window);
+      window_state && window_state->IsSnapped()) {
+    if (!chromeos::IsSnappedWindowStateType(first_closed_state_type_)) {
+      // If `first_closed_state_type_` is reset to kDefault, start recording.
+      first_closed_state_type_ = window_state->GetStateType();
+      first_closed_time_ = base::TimeTicks::Now();
+      return;
+    }
+    // If `window` has the opposite state type of `first_closed_state_type_`,
+    // record the duration.
+    if (GetOppositeSnapType(window) == first_closed_state_type_ &&
+        !first_closed_time_.is_null()) {
+      RecordCloseTwoWindowsDuration(base::TimeTicks::Now() -
+                                    first_closed_time_);
+    }
   }
 }
 
