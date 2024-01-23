@@ -21,6 +21,7 @@
 #include "base/strings/string_util.h"
 #include "base/time/time.h"
 #include "device/udev_linux/scoped_udev.h"
+#include "ui/base/ime/ash/extension_ime_util.h"
 #include "ui/base/ime/ash/ime_keyboard.h"
 #include "ui/base/ime/ash/input_method_manager.h"
 #include "ui/base/ui_base_features.h"
@@ -39,6 +40,7 @@
 #include "ui/events/event_rewriter.h"
 #include "ui/events/event_utils.h"
 #include "ui/events/keycodes/dom/dom_code.h"
+#include "ui/events/keycodes/dom/dom_key.h"
 #include "ui/events/keycodes/dom/keycode_converter.h"
 #include "ui/events/keycodes/keyboard_code_conversion.h"
 #include "ui/events/keycodes/keyboard_codes_posix.h"
@@ -304,6 +306,17 @@ bool IsISOLevel5ShiftUsedByCurrentInputMethod() {
   // TODO(yusukes): Remove the restriction.
   auto* manager = ash::input_method::InputMethodManager::Get();
   return manager->IsISOLevel5ShiftUsedByCurrentInputMethod();
+}
+
+bool IsFirstPartyKoreanIME() {
+  auto* manager = ash::input_method::InputMethodManager::Get();
+  if (!manager) {
+    return false;
+  }
+
+  auto current_input_method =
+      manager->GetActiveIMEState()->GetCurrentInputMethod();
+  return ash::extension_ime_util::IsCros1pKorean(current_input_method.id());
 }
 
 struct KeyboardRemapping {
@@ -735,8 +748,7 @@ bool MaybeRewriteAltBasedShortcutToSixPackKeyAction(
       {// Alt+Down -> Next (aka PageDown)
        {EF_ALT_DOWN, VKEY_DOWN},
        {EF_NONE, DomCode::PAGE_DOWN, DomKey::PAGE_DOWN, VKEY_NEXT}}};
-  if (!::features::IsImprovedKeyboardShortcutsEnabled() ||
-      !::features::IsDeprecateAltBasedSixPackEnabled()) {
+  if (!::features::IsImprovedKeyboardShortcutsEnabled()) {
     if (RewriteWithKeyboardRemappings(kLegacySixPackRemappings,
                                       std::size(kLegacySixPackRemappings),
                                       incoming, state)) {
@@ -1100,8 +1112,23 @@ bool EventRewriterAsh::RewriteModifierKeys(const KeyEvent& key_event,
           GetRemappedKey(device_id, mojom::ModifierKey::kControl,
                          prefs::kLanguageRemapControlKeyTo, delegate_);
       break;
-    case DomCode::ALT_LEFT:
     case DomCode::ALT_RIGHT:
+      // For the Korean IME, right alt is used for Korean/English mode
+      // switching. It should not be rewritten under any circumstance. Due to
+      // b/311333438, the DomKey from the given keyboard layout is ignored.
+      // Additionally, due to b/311327069, the DomCode and DomKey both get
+      // remapped every time a modifier is pressed, even if it is not remapped.
+      // By special casing right alt only for the Korean IME, we avoid this
+      // problem.
+
+      // TODO(b/311333438, b/311327069): Implement a complete solution to deal
+      // with modifier remapping.
+      if (key_event.GetDomKey() == DomKey::HANGUL_MODE &&
+          IsFirstPartyKoreanIME()) {
+        break;
+      }
+      [[fallthrough]];
+    case DomCode::ALT_LEFT:
       // ALT key
       characteristic_flag = EF_ALT_DOWN;
       remapped_key = GetRemappedKey(device_id, mojom::ModifierKey::kAlt,
@@ -1611,8 +1638,7 @@ void EventRewriterAsh::RewriteExtendedKeys(const KeyEvent& key_event,
 
   // TODO(crbug.com/1179893): This workaround isn't needed once Alt rewrites
   // are deprecated.
-  if ((!::features::IsImprovedKeyboardShortcutsEnabled() ||
-       !::features::IsDeprecateAltBasedSixPackEnabled()) &&
+  if ((!::features::IsImprovedKeyboardShortcutsEnabled()) &&
       ((incoming.flags & (EF_COMMAND_DOWN | EF_ALT_DOWN)) ==
        (EF_COMMAND_DOWN | EF_ALT_DOWN))) {
     // Allow Search to avoid rewriting extended keys.

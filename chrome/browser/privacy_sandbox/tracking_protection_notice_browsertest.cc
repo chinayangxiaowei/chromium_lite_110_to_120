@@ -22,6 +22,7 @@
 #include "chrome/test/base/in_process_browser_test.h"
 #include "chrome/test/base/ui_test_utils.h"
 #include "components/content_settings/core/browser/cookie_settings.h"
+#include "components/content_settings/core/common/features.h"
 #include "components/content_settings/core/common/pref_names.h"
 #include "components/feature_engagement/public/feature_constants.h"
 #include "components/privacy_sandbox/privacy_sandbox_features.h"
@@ -213,7 +214,7 @@ class TrackingProtectionBaseNoticeBrowserTest : public InProcessBrowserTest {
  protected:
   explicit TrackingProtectionBaseNoticeBrowserTest(
       const std::vector<base::test::FeatureRef>& enabled_features,
-      const std::vector<base::test::FeatureRef>& disabled_features) {
+      const std::vector<base::test::FeatureRef>& disabled_features = {}) {
     feature_list_.InitAndEnableFeatures(enabled_features, disabled_features);
   }
 
@@ -237,7 +238,6 @@ class TrackingProtectionBaseNoticeBrowserTest : public InProcessBrowserTest {
   }
 
   virtual std::vector<base::test::FeatureRef> EnabledFeatures() = 0;
-
   virtual std::vector<base::test::FeatureRef> DisabledFeatures() = 0;
 
   net::EmbeddedTestServer https_server_{net::EmbeddedTestServer::TYPE_HTTPS};
@@ -260,7 +260,8 @@ class TrackingProtectionOnboardingNoticeBrowserTest
   }
 
   std::vector<base::test::FeatureRef> DisabledFeatures() override {
-    return {features::kCookieDeprecationFacilitatedTesting};
+    return {privacy_sandbox::kTrackingProtectionOnboardingRollback,
+            features::kCookieDeprecationFacilitatedTesting};
   }
 
   bool IsOnboardingPromoActive(Browser* browser) {
@@ -1117,6 +1118,33 @@ IN_PROC_BROWSER_TEST_F(TrackingProtectionOffboardingNoticeBrowserTest,
       true, 1);
 }
 
+IN_PROC_BROWSER_TEST_F(TrackingProtectionOffboardingNoticeBrowserTest,
+                       PRE_StopsObserving) {
+  onboarding_service()->MaybeMarkEligible();
+  onboarding_service()->NoticeShown(NoticeType::kOnboarding);
+}
+
+IN_PROC_BROWSER_TEST_F(TrackingProtectionOffboardingNoticeBrowserTest,
+                       StopsObserving) {
+  // Setup
+  auto lock = BrowserFeaturePromoController::BlockActiveWindowCheckForTesting();
+  WaitForFeatureEngagement(browser());
+
+  // Navigates to eligible page.
+  browser()->window()->Activate();
+  ui_test_utils::NavigateToURLWithDispositionBlockUntilNavigationsComplete(
+      browser(), https_server_.GetURL("a.test", "/empty.html"), 1,
+      WindowOpenDisposition::NEW_FOREGROUND_TAB,
+      ui_test_utils::BROWSER_TEST_WAIT_FOR_LOAD_STOP);
+
+  EXPECT_TRUE(TabStripModelObserver::IsObservingAny(notice_service()));
+  PressPromoButton(browser());
+  // Verification - Observation stops
+  EXPECT_FALSE(TabStripModelObserver::IsObservingAny(notice_service()));
+  EXPECT_FALSE(privacy_sandbox::TrackingProtectionNoticeService::TabHelper::
+                   IsHelperNeeded(browser()->profile()));
+}
+
 struct TrackingProtectionSurveyTestData {
   // Inputs
   std::vector<base::test::FeatureRefAndParams> features;
@@ -1140,7 +1168,9 @@ class TrackingProtectionHatsBaseTest : public InProcessBrowserTest {
   explicit TrackingProtectionHatsBaseTest(
       const std::vector<base::test::FeatureRefAndParams>&
           allow_and_enable_features) {
-    feature_list_.InitWithFeaturesAndParameters(allow_and_enable_features, {});
+    feature_list_.InitWithFeaturesAndParameters(
+        allow_and_enable_features,
+        {content_settings::features::kTrackingProtection3pcd});
   }
 
   void SetUpOnMainThread() override {
