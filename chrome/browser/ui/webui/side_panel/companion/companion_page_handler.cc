@@ -14,7 +14,6 @@
 #include "chrome/browser/companion/core/utils.h"
 #include "chrome/browser/companion/text_finder/text_finder_manager.h"
 #include "chrome/browser/companion/text_finder/text_highlighter_manager.h"
-#include "chrome/browser/companion/visual_search/features.h"
 #include "chrome/browser/companion/visual_search/visual_search_suggestions_service_factory.h"
 #include "chrome/browser/feature_engagement/tracker_factory.h"
 #include "chrome/browser/profiles/profile.h"
@@ -29,6 +28,7 @@
 #include "chrome/browser/ui/webui/side_panel/companion/companion_side_panel_untrusted_ui.h"
 #include "chrome/browser/ui/webui/side_panel/companion/signin_delegate_impl.h"
 #include "chrome/browser/unified_consent/unified_consent_service_factory.h"
+#include "chrome/common/companion/visual_search/features.h"
 #include "chrome/common/webui_url_constants.h"
 #include "components/feature_engagement/public/event_constants.h"
 #include "components/feature_engagement/public/feature_constants.h"
@@ -69,9 +69,9 @@ CompanionPageHandler::CompanionPageHandler(
                               GetProfile()->GetPrefs())) {
   identity_manager_observation_.Observe(
       IdentityManagerFactory::GetForProfile(GetProfile()));
+  // TODO(crbug.com/1476887): Observe PCO similarly.
   consent_helper_observation_.Observe(consent_helper_.get());
-  if (base::FeatureList::IsEnabled(
-          visual_search::features::kVisualSearchSuggestions)) {
+  if (visual_search::features::IsVisualSearchSuggestionsEnabled()) {
     visual_search_host_ =
         std::make_unique<visual_search::VisualSearchClassifierHost>(
             visual_search::VisualSearchSuggestionsServiceFactory::GetForProfile(
@@ -171,11 +171,11 @@ void CompanionPageHandler::DidFinishLoad(
 }
 
 void CompanionPageHandler::SendVisualSearchResult(
-    const std::vector<std::string>& results) {
+    const visual_search::VisualSuggestionsResults& results) {
   std::vector<side_panel::mojom::VisualSearchResultPtr> final_results;
   for (const auto& result : results) {
-    final_results.emplace_back(
-        side_panel::mojom::VisualSearchResult::New(result));
+    final_results.emplace_back(side_panel::mojom::VisualSearchResult::New(
+        result.base64_img, result.alt_text));
   }
   page_->OnDeviceVisualClassificationResult(std::move(final_results));
   base::UmaHistogramTimes(
@@ -187,7 +187,7 @@ void CompanionPageHandler::SendVisualSearchResult(
 }
 
 void CompanionPageHandler::HandleVisualSearchResult(
-    const std::vector<std::string> results,
+    const visual_search::VisualSuggestionsResults results,
     const VisualSuggestionsMetrics metrics) {
   // This is the only place where we log UKM metrics for the visual
   // classification pipeline. We record the metrics even when the UI is not
@@ -221,7 +221,7 @@ void CompanionPageHandler::OnLoadingState(
   if (loading_state == side_panel::mojom::LoadingState::kStartedLoading) {
     ui_loading_start_time_ = base::TimeTicks::Now();
     if (visual_result) {
-      SendVisualSearchResult(visual_result.value().second);
+      SendVisualSearchResult(visual_result.value());
     } else {
       visual_search::VisualSearchClassifierHost::ResultCallback callback =
           base::BindOnce(&CompanionPageHandler::HandleVisualSearchResult,
@@ -253,6 +253,7 @@ void CompanionPageHandler::ShowUI() {
     // page.
     auto* browser = GetBrowser();
     if (!browser) {
+      base::UmaHistogramBoolean("Companion.SidePanel.ShowUiSuccess", false);
       return;
     }
 
@@ -272,6 +273,8 @@ void CompanionPageHandler::ShowUI() {
     // Register a modal dialog manager to show permissions dialog like those
     // requested from the feedback UI.
     RegisterModalDialogManager(browser);
+
+    base::UmaHistogramBoolean("Companion.SidePanel.ShowUiSuccess", true);
 
     // If searching the text query succeeds, then early return.
     if (OnSearchTextQuery()) {
@@ -295,18 +298,19 @@ bool CompanionPageHandler::OnSearchTextQuery() {
   auto* helper = companion::CompanionTabHelper::FromWebContents(web_contents());
   CHECK(helper);
   const std::string query = helper->GetTextQuery();
+  std::unique_ptr<base::Time> query_start_time =
+      helper->GetTextQueryStartTime();
   if (query.empty()) {
     return false;
   }
 
-  // Only notify the companion UI the page changed if we can share
-  // information about the page by user consent.
   GURL page_url;
   if (IsUserPermittedToSharePageInfoWithCompanion(GetProfile()->GetPrefs())) {
     page_url = web_contents()->GetVisibleURL();
   }
 
-  GURL companion_url = url_builder_->BuildCompanionURL(page_url, query);
+  GURL companion_url = url_builder_->BuildCompanionURL(
+      page_url, query, std::move(query_start_time));
   page_->LoadCompanionPage(companion_url);
   return true;
 }

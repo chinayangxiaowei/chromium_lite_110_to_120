@@ -8,7 +8,7 @@
 
 #import <CoreSpotlight/CoreSpotlight.h>
 
-#import "base/mac/foundation_util.h"
+#import "base/apple/foundation_util.h"
 #import "base/metrics/histogram_macros.h"
 #import "base/strings/sys_string_conversions.h"
 #import "base/time/time.h"
@@ -18,7 +18,7 @@
 #import "ios/chrome/app/spotlight/searchable_item_factory.h"
 #import "ios/chrome/app/spotlight/spotlight_interface.h"
 #import "ios/chrome/app/spotlight/spotlight_logger.h"
-#import "ios/chrome/browser/bookmarks/local_or_syncable_bookmark_model_factory.h"
+#import "ios/chrome/browser/bookmarks/model/local_or_syncable_bookmark_model_factory.h"
 #import "ios/chrome/browser/favicon/ios_chrome_large_icon_service_factory.h"
 
 namespace {
@@ -35,6 +35,9 @@ class SpotlightBookmarkModelBridge;
 
 // Called from the BrowserBookmarkModelBridge from C++ -> ObjC.
 @interface BookmarksSpotlightManager ()
+
+// Set at shutdown. Will not continue indexing when set.
+@property(nonatomic, assign) BOOL isShuttingDown;
 
 // Detaches the `SpotlightBookmarkModelBridge` from the bookmark model. The
 // manager must not be used after calling this method.
@@ -247,7 +250,7 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 - (BOOL)shouldReindex {
   NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
 
-  NSDate* date = base::mac::ObjCCast<NSDate>(
+  NSDate* date = base::apple::ObjCCast<NSDate>(
       [userDefaults objectForKey:@(spotlight::kSpotlightLastIndexingDateKey)]);
   if (!date) {
     return YES;
@@ -257,7 +260,7 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
   if (timeSinceLastIndexing >= kDelayBetweenTwoIndexing) {
     return YES;
   }
-  NSNumber* lastIndexedVersion = base::mac::ObjCCast<NSNumber>([userDefaults
+  NSNumber* lastIndexedVersion = base::apple::ObjCCast<NSNumber>([userDefaults
       objectForKey:@(spotlight::kSpotlightLastIndexingVersionKey)]);
   if (!lastIndexedVersion) {
     return YES;
@@ -271,6 +274,9 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 }
 
 - (void)reindexBookmarksIfNeeded {
+  if (self.isShuttingDown) {
+    return;
+  }
   if (!_bookmarkModel->loaded() || _initialIndexDone) {
     return;
   }
@@ -284,6 +290,10 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 // multiple nodes with same URL and title, they will be merged into a single
 // spotlight item but will have tags from each of the bookmrk nodes.
 - (void)refreshItemWithURL:(const GURL&)URL title:(NSString*)title {
+  if (self.isShuttingDown) {
+    return;
+  }
+
   std::vector<const bookmarks::BookmarkNode*> nodesMatchingURL;
   _bookmarkModel->GetNodesByURL(URL, &nodesMatchingURL);
 
@@ -324,6 +334,9 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 }
 
 - (void)refreshNodeInIndex:(const bookmarks::BookmarkNode*)node {
+  if (self.isShuttingDown) {
+    return;
+  }
   if (_nodesIndexed > kMaxInitialIndexSize) {
     return;
   }
@@ -338,6 +351,8 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 }
 
 - (void)shutdown {
+  self.isShuttingDown = YES;
+  [self.searchableItemFactory cancelItemsGeneration];
   [self detachBookmarkModel];
 }
 
@@ -357,6 +372,10 @@ class SpotlightBookmarkModelBridge : public bookmarks::BookmarkModelObserver {
 }
 
 - (void)completedClearAllSpotlightItems {
+  if (self.isShuttingDown) {
+    return;
+  }
+
   // If this method is called before bookmark model loaded, or after it
   // unloaded, reindexing won't be possible. The latter should happen at
   // shutdown, so the reindex can't happen until next app start. In the former

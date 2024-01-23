@@ -71,10 +71,10 @@ using metrics_util::MigrationToOSCrypt;
 #endif
 
 // The current version number of the login database schema.
-constexpr int kCurrentVersionNumber = 39;
+constexpr int kCurrentVersionNumber = 40;
 // The oldest version of the schema such that a legacy Chrome client using that
 // version can still read/write the current database.
-constexpr int kCompatibleVersionNumber = 39;
+constexpr int kCompatibleVersionNumber = 40;
 
 base::Pickle SerializeAlternativeElementVector(
     const AlternativeElementVector& vector) {
@@ -573,8 +573,12 @@ void InitializeBuilders(SQLTableBuilders builders) {
   builders.logins->AddColumn("keychain_identifier", "BLOB");
   SealVersion(builders, /*expected_version=*/39u);
 
-  static_assert(kCurrentVersionNumber == 39, "Seal the recent version");
-  DCHECK_EQ(static_cast<size_t>(COLUMN_NUM), builders.logins->NumberOfColumns())
+  // Version 40.
+  // Migrate password notes encryption to OSCrypt.
+  SealVersion(builders, /*expected_version=*/40u);
+
+  static_assert(kCurrentVersionNumber == 40, "Seal the recent version");
+  CHECK_EQ(static_cast<size_t>(COLUMN_NUM), builders.logins->NumberOfColumns())
       << "Adjust LoginDatabaseTableColumns if you change column definitions "
          "here.";
 }
@@ -1046,7 +1050,6 @@ std::string GeneratePlaceholders(size_t count) {
   return result;
 }
 
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 // Fills |form| with necessary data required to be removed from the database
 // and returns it.
 PasswordForm GetFormForRemoval(sql::Statement& statement) {
@@ -1058,16 +1061,31 @@ PasswordForm GetFormForRemoval(sql::Statement& statement) {
   form.signon_realm = statement.ColumnString(COLUMN_SIGNON_REALM);
   return form;
 }
-#endif
 
 // Whether we should try to return the decryptable passwords while the
 // encryption service fails for some passwords.
 bool ShouldReturnPartialPasswords() {
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
   return base::FeatureList::IsEnabled(features::kSkipUndecryptablePasswords);
-#else
-  return false;
-#endif
+}
+
+std::unique_ptr<sync_pb::EntityMetadata> DecryptAndParseSyncEntityMetadata(
+    const std::string& encrypted_serialized_metadata) {
+  std::string decrypted_serialized_metadata;
+  if (!OSCrypt::DecryptString(encrypted_serialized_metadata,
+                              &decrypted_serialized_metadata)) {
+    DLOG(WARNING) << "Failed to decrypt PASSWORD model type "
+                     "sync_pb::EntityMetadata.";
+    return nullptr;
+  }
+
+  auto entity_metadata = std::make_unique<sync_pb::EntityMetadata>();
+  if (!entity_metadata->ParseFromString(decrypted_serialized_metadata)) {
+    DLOG(WARNING) << "Failed to deserialize PASSWORD model type "
+                     "sync_pb::EntityMetadata.";
+    return nullptr;
+  }
+
+  return entity_metadata;
 }
 
 }  // namespace
@@ -1205,7 +1223,10 @@ bool LoginDatabase::Init() {
     db_.Close();
     return false;
   }
-
+  if (migration_success) {
+    migration_success = password_notes_table_.MigrateTable(
+        current_version, is_account_store_.value());
+  }
   if (migration_success && current_version <= 15) {
     migration_success = stats_table_.MigrateToVersion(16);
   }
@@ -1911,6 +1932,20 @@ bool LoginDatabase::IsEmpty() {
 bool LoginDatabase::DeleteAndRecreateDatabaseFile() {
   TRACE_EVENT0("passwords", "LoginDatabase::DeleteAndRecreateDatabaseFile");
   DCHECK(db_.is_open());
+
+#if BUILDFLAG(IS_IOS)
+  {  // Scope the statement so the database closes properly.
+    // Clear keychain on iOS before deleting passwords.
+    sql::Statement s(
+        db_.GetUniqueStatement("SELECT keychain_identifier FROM logins"));
+    while (s.Step()) {
+      std::string keychain_identifier;
+      s.ColumnBlobAsString(0, &keychain_identifier);
+      DeleteEncryptedPasswordFromKeychain(keychain_identifier);
+    }
+  }
+#endif
+
   meta_table_.Reset();
   db_.Close();
   sql::Database::Delete(db_path_);
@@ -1918,7 +1953,6 @@ bool LoginDatabase::DeleteAndRecreateDatabaseFile() {
 }
 
 DatabaseCleanupResult LoginDatabase::DeleteUndecryptableLogins() {
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
   TRACE_EVENT0("passwords", "LoginDatabase::DeleteUndecryptableLogins");
   // If the Keychain in MacOS or the real secret key in Linux is unavailable,
   // don't delete any logins.
@@ -1963,7 +1997,6 @@ DatabaseCleanupResult LoginDatabase::DeleteUndecryptableLogins() {
     metrics_util::LogDeleteUndecryptableLoginsReturnValue(
         metrics_util::DeleteCorruptedPasswordsResult::kSuccessPasswordsDeleted);
   }
-#endif
 
   return DatabaseCleanupResult::kSuccess;
 }
@@ -1990,6 +2023,13 @@ LoginDatabase::SyncMetadataStore::SyncMetadataStore(sql::Database* db)
 
 LoginDatabase::SyncMetadataStore::~SyncMetadataStore() = default;
 
+std::unique_ptr<sync_pb::EntityMetadata>
+LoginDatabase::SyncMetadataStore::GetSyncEntityMetadataForStorageKeyForTest(
+    syncer::ModelType model_type,
+    const std::string& storage_key) {
+  return GetSyncEntityMetadataForStorageKey(model_type, storage_key);
+}
+
 std::unique_ptr<syncer::MetadataBatch>
 LoginDatabase::SyncMetadataStore::GetAllSyncEntityMetadata(
     syncer::ModelType model_type) {
@@ -2003,28 +2043,45 @@ LoginDatabase::SyncMetadataStore::GetAllSyncEntityMetadata(
   while (s.Step()) {
     int storage_key_int = s.ColumnInt(0);
     std::string storage_key = base::NumberToString(storage_key_int);
-    std::string encrypted_serialized_metadata = s.ColumnString(1);
-    std::string decrypted_serialized_metadata;
-    if (!OSCrypt::DecryptString(encrypted_serialized_metadata,
-                                &decrypted_serialized_metadata)) {
-      DLOG(WARNING) << "Failed to decrypt PASSWORD model type "
-                       "sync_pb::EntityMetadata.";
+    std::unique_ptr<sync_pb::EntityMetadata> entity_metadata =
+        DecryptAndParseSyncEntityMetadata(s.ColumnString(1));
+    if (!entity_metadata) {
       return nullptr;
     }
-
-    auto entity_metadata = std::make_unique<sync_pb::EntityMetadata>();
-    if (entity_metadata->ParseFromString(decrypted_serialized_metadata)) {
-      metadata_batch->AddMetadata(storage_key, std::move(entity_metadata));
-    } else {
-      DLOG(WARNING) << "Failed to deserialize PASSWORD model type "
-                       "sync_pb::EntityMetadata.";
-      return nullptr;
-    }
+    metadata_batch->AddMetadata(storage_key, std::move(entity_metadata));
   }
   if (!s.Succeeded()) {
     return nullptr;
   }
   return metadata_batch;
+}
+
+std::unique_ptr<sync_pb::EntityMetadata>
+LoginDatabase::SyncMetadataStore::GetSyncEntityMetadataForStorageKey(
+    syncer::ModelType model_type,
+    const std::string& storage_key) {
+  CHECK_EQ(model_type, syncer::PASSWORDS);
+
+  int storage_key_int = 0;
+  if (!base::StringToInt(storage_key, &storage_key_int)) {
+    DLOG(ERROR) << "Invalid storage key. Failed to convert the storage key to "
+                   "an integer.";
+    return nullptr;
+  }
+
+  sql::Statement s(db_->GetCachedStatement(
+      SQL_FROM_HERE,
+      base::StringPrintf("SELECT metadata FROM %s WHERE storage_key=?",
+                         kPasswordsSyncEntitiesMetadataTableName)
+          .c_str()));
+  s.BindInt(0, storage_key_int);
+
+  if (!s.Step()) {
+    // No entity metadata found for this storage key.
+    return nullptr;
+  }
+
+  return DecryptAndParseSyncEntityMetadata(s.ColumnString(0));
 }
 
 std::unique_ptr<sync_pb::ModelTypeState>
@@ -2125,9 +2182,23 @@ bool LoginDatabase::SyncMetadataStore::UpdateEntityMetadata(
     return s.Run();
   }
   CHECK_EQ(model_type, syncer::PASSWORDS);
-  bool had_unsynced_deletions = HasUnsyncedPasswordDeletions();
+
+  // This ongoing operation may influence the value returned by
+  // HasUnsyncedPasswordDeletions() only if the storage key being updated
+  // represents a pending deletion AND the new metadata is not (necessary but
+  // not sufficient condition). Because HasUnsyncedPasswordDeletions() may be
+  // expensive, it is evaluated lazily to avoid performance issues.
+  //
+  // Note: No need for an explicit "is unsynced" check: Once the deletion is
+  // committed, the metadata entry is removed.
+  std::unique_ptr<sync_pb::EntityMetadata> previous_metadata =
+      GetSyncEntityMetadataForStorageKey(model_type, storage_key);
+  bool was_unsynced_deletion =
+      previous_metadata && previous_metadata->is_deleted();
+
   bool result = s.Run();
-  if (result && had_unsynced_deletions && !HasUnsyncedPasswordDeletions() &&
+  if (result && was_unsynced_deletion && !metadata.is_deleted() &&
+      !HasUnsyncedPasswordDeletions() &&
       password_deletions_have_synced_callback_) {
     password_deletions_have_synced_callback_.Run(/*success=*/true);
   }
@@ -2156,9 +2227,22 @@ bool LoginDatabase::SyncMetadataStore::ClearEntityMetadata(
     return s.Run();
   }
   CHECK_EQ(model_type, syncer::PASSWORDS);
-  bool had_unsynced_deletions = HasUnsyncedPasswordDeletions();
+
+  // This ongoing operation may influence the value returned by
+  // HasUnsyncedPasswordDeletions() only if the storage key being cleared
+  // represents a pending deletion (necessary but not sufficient condition).
+  // Because HasUnsyncedPasswordDeletions() may be expensive, it is evaluated
+  // lazily to avoid performance issues.
+  //
+  // Note: No need for an explicit "is unsynced" check: Once the deletion is
+  // committed, the metadata entry is removed.
+  std::unique_ptr<sync_pb::EntityMetadata> previous_metadata =
+      GetSyncEntityMetadataForStorageKey(model_type, storage_key);
+  bool was_unsynced_deletion =
+      previous_metadata && previous_metadata->is_deleted();
+
   bool result = s.Run();
-  if (result && had_unsynced_deletions && !HasUnsyncedPasswordDeletions() &&
+  if (result && was_unsynced_deletion && !HasUnsyncedPasswordDeletions() &&
       password_deletions_have_synced_callback_) {
     password_deletions_have_synced_callback_.Run(/*success=*/true);
   }
@@ -2205,18 +2289,24 @@ void LoginDatabase::SyncMetadataStore::SetPasswordDeletionsHaveSyncedCallback(
 bool LoginDatabase::SyncMetadataStore::HasUnsyncedPasswordDeletions() {
   TRACE_EVENT0("passwords", "SyncMetadataStore::HasUnsyncedDeletions");
 
-  std::unique_ptr<syncer::MetadataBatch> batch =
-      GetAllSyncEntityMetadata(syncer::PASSWORDS);
-  if (!batch) {
-    return false;
-  }
-  for (const auto& metadata_entry : batch->GetAllMetadata()) {
+  sql::Statement s(db_->GetCachedStatement(
+      SQL_FROM_HERE, base::StringPrintf("SELECT metadata FROM %s",
+                                        kPasswordsSyncEntitiesMetadataTableName)
+                         .c_str()));
+
+  while (s.Step()) {
+    std::unique_ptr<sync_pb::EntityMetadata> entity_metadata =
+        DecryptAndParseSyncEntityMetadata(s.ColumnString(0));
+    if (!entity_metadata) {
+      return false;
+    }
     // Note: No need for an explicit "is unsynced" check: Once the deletion is
     // committed, the metadata entry is removed.
-    if (metadata_entry.second->is_deleted()) {
+    if (entity_metadata->is_deleted()) {
       return true;
     }
   }
+
   return false;
 }
 

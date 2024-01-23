@@ -28,7 +28,6 @@ THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 BROWSER_CONFIG_TO_TARGET_SUFFIX_MAP = {
     'android-chromium': '_android_chrome',
     'android-chromium-monochrome': '_android_monochrome',
-    'android-weblayer': '_android_weblayer',
     'android-webview': '_android_webview',
 }
 
@@ -36,14 +35,6 @@ BROWSER_CONFIG_TO_TARGET_SUFFIX_MAP = {
 class BBGenErr(Exception):
   def __init__(self, message):
     super(BBGenErr, self).__init__(message)
-
-
-# This class is only present to accommodate certain machines on
-# chromium.android.fyi which run certain tests as instrumentation
-# tests, but not as gtests. If this discrepancy were fixed then the
-# notion could be removed.
-class TestSuiteTypes(object):  # pylint: disable=useless-object-inheritance
-  GTEST = 'gtest'
 
 
 class BaseGenerator(object):  # pylint: disable=useless-object-inheritance
@@ -278,7 +269,6 @@ def check_matrix_identifier(sub_suite=None,
 
 class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
   def __init__(self, args):
-    self.this_dir = THIS_DIR
     self.args = args
     self.waterfalls = None
     self.test_suites = None
@@ -411,7 +401,7 @@ class BBJSONGenerator(object):  # pylint: disable=useless-object-inheritance
       return fp.read()
 
   def write_file(self, file_path, contents):
-    with open(file_path, 'w') as fp:
+    with open(file_path, 'w', newline='') as fp:
       fp.write(contents)
 
   # pylint: disable=inconsistent-return-statements

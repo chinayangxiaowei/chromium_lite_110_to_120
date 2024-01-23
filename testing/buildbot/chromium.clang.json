@@ -301,7 +301,6 @@
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json",
           "--platform=fuchsia"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_web_tests",
         "merge": {
           "args": [
@@ -330,7 +329,6 @@
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json",
           "--platform=fuchsia"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_wpt_tests",
         "merge": {
           "args": [
@@ -764,7 +762,6 @@
           "--num-retries=3",
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_web_tests",
         "merge": {
           "args": [
@@ -793,7 +790,6 @@
           "--num-retries=3",
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_wpt_tests",
         "merge": {
           "args": [
@@ -840,7 +836,6 @@
         "args": [
           "--test-type=integration"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "chromedriver_py_tests",
         "merge": {
           "script": "//testing/merge_scripts/standard_isolated_script_merge.py"
@@ -1149,7 +1144,6 @@
           "--num-retries=3",
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_web_tests",
         "merge": {
           "args": [
@@ -1179,7 +1173,6 @@
           "--num-retries=3",
           "--write-run-histories-to=${ISOLATED_OUTDIR}/run_histories.json"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "blink_wpt_tests",
         "merge": {
           "args": [
@@ -1228,7 +1221,6 @@
         "args": [
           "--test-type=integration"
         ],
-        "check_flakiness_for_new_tests": false,
         "isolate_name": "chromedriver_py_tests",
         "merge": {
           "script": "//testing/merge_scripts/standard_isolated_script_merge.py"
@@ -2076,7 +2068,7 @@
           "--out-dir",
           "${ISOLATED_OUTDIR}",
           "--xcode-build-version",
-          "15a5209g",
+          "15a5229m",
           "--xctest"
         ],
         "isolate_name": "base_unittests",
@@ -2102,7 +2094,7 @@
           },
           "named_caches": [
             {
-              "name": "xcode_ios_15a5209g",
+              "name": "xcode_ios_15a5229m",
               "path": "Xcode.app"
             },
             {
@@ -2144,7 +2136,7 @@
           "--out-dir",
           "${ISOLATED_OUTDIR}",
           "--xcode-build-version",
-          "15a5209g",
+          "15a5229m",
           "--xctest"
         ],
         "isolate_name": "base_unittests",
@@ -2172,7 +2164,7 @@
           "expiration": 21600,
           "named_caches": [
             {
-              "name": "xcode_ios_15a5209g",
+              "name": "xcode_ios_15a5229m",
               "path": "Xcode.app"
             }
           ],

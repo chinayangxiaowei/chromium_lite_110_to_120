@@ -337,6 +337,8 @@ std::unique_ptr<network::ResourceRequest> CreateResourceRequest(
         request_info.begin_params->impression->runtime_features;
   }
 
+  new_request->shared_storage_writable = request_info.shared_storage_writable;
+
   return new_request;
 }
 
@@ -689,10 +691,10 @@ void NavigationURLLoaderImpl::MaybeStartLoader(
     next_interceptor->MaybeCreateLoader(
         *resource_request_, browser_context_,
         base::BindOnce(&NavigationURLLoaderImpl::MaybeStartLoader,
-                       base::Unretained(this), next_interceptor),
+                       weak_factory_.GetWeakPtr(), next_interceptor),
         base::BindOnce(
             &NavigationURLLoaderImpl::FallbackToNonInterceptedRequest,
-            base::Unretained(this)));
+            weak_factory_.GetWeakPtr()));
     return;
   }
 
@@ -911,8 +913,8 @@ void NavigationURLLoaderImpl::OnReceiveResponse(
     return;
   }
 
-  bool must_download = download_utils::MustDownload(url_, head_->headers.get(),
-                                                    head_->mime_type);
+  bool must_download = download_utils::MustDownload(
+      browser_context_, url_, head_->headers.get(), head_->mime_type);
   bool known_mime_type = blink::IsSupportedMimeType(head_->mime_type);
 
 #if BUILDFLAG(ENABLE_PLUGINS)

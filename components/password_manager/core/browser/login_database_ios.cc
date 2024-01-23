@@ -10,18 +10,26 @@
 
 #include <memory>
 
+#include "base/apple/foundation_util.h"
+#include "base/apple/osstatus_logging.h"
+#include "base/apple/scoped_cftyperef.h"
 #include "base/base64.h"
 #include "base/logging.h"
-#include "base/mac/foundation_util.h"
-#include "base/mac/mac_logging.h"
-#include "base/mac/scoped_cftyperef.h"
+#include "base/metrics/histogram_functions.h"
 #include "base/strings/sys_string_conversions.h"
 #include "base/strings/utf_string_conversions.h"
 #include "components/os_crypt/sync/os_crypt.h"
 #include "components/password_manager/core/common/passwords_directory_util_ios.h"
 #include "sql/statement.h"
 
-using base::ScopedCFTypeRef;
+using base::apple::ScopedCFTypeRef;
+
+namespace {
+// Retrieval from keychain may fail unexpectedly. e.g. if the keychain
+// identifier that Chrome has is incorrect. This constant is not among error
+// codes that can be returned by the keychain.
+constexpr int kUnknownRetrievalError = -1;
+}  // namespace
 
 namespace password_manager {
 
@@ -96,6 +104,9 @@ OSStatus GetTextFromKeychainIdentifier(const std::string& keychain_identifier,
 
   ScopedCFTypeRef<CFStringRef> item_ref(
       base::SysUTF8ToCFStringRef(keychain_identifier));
+  if (item_ref == nil) {
+    return kUnknownRetrievalError;
+  }
   ScopedCFTypeRef<CFMutableDictionaryRef> query(
       CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks,
                                 &kCFTypeDictionaryValueCallBacks));
@@ -112,7 +123,7 @@ OSStatus GetTextFromKeychainIdentifier(const std::string& keychain_identifier,
     return status;
   }
 
-  CFDataRef data = base::mac::CFCast<CFDataRef>(data_cftype);
+  CFDataRef data = base::apple::CFCast<CFDataRef>(data_cftype);
   const size_t size = CFDataGetLength(data);
   std::unique_ptr<UInt8[]> buffer(new UInt8[size]);
   CFDataGetBytes(data, CFRangeMake(0, size), buffer.get());
@@ -140,9 +151,8 @@ void DeleteEncryptedPasswordFromKeychain(
   CFDictionarySetValue(query, kSecAttrAccount, item_ref);
 
   OSStatus status = SecItemDelete(query);
-  if (status != errSecSuccess && status != errSecItemNotFound) {
-    NOTREACHED() << "Unable to remove password from keychain: " << status;
-  }
+  base::UmaHistogramSparse("PasswordManager.LoginDatabase.DeleteFromKeychain",
+                           static_cast<int>(status));
 
   // Delete the temporary passwords directory, since there might be leftover
   // temporary files used for password export that contain the password being
@@ -185,16 +195,16 @@ OSStatus GetAllPasswordsFromKeychain(
   if (status != errSecSuccess) {
     return status;
   }
-  CFArrayRef results = base::mac::CFCast<CFArrayRef>(result);
+  CFArrayRef results = base::apple::CFCast<CFArrayRef>(result);
   const CFIndex count = CFArrayGetCount(results);
   for (CFIndex i = 0; i < count; ++i) {
-    CFDictionaryRef dict = base::mac::CFCast<CFDictionaryRef>(
+    CFDictionaryRef dict = base::apple::CFCast<CFDictionaryRef>(
         CFArrayGetValueAtIndex(results, i));
     std::string key = base::SysCFStringRefToUTF8(
-        base::mac::GetValueFromDictionary<CFStringRef>(dict,
+        base::apple::GetValueFromDictionary<CFStringRef>(dict,
                                                          kSecAttrAccount));
 
-    if (CFDataRef data = base::mac::GetValueFromDictionary<CFDataRef>(
+    if (CFDataRef data = base::apple::GetValueFromDictionary<CFDataRef>(
             dict, kSecValueData)) {
       const size_t size = CFDataGetLength(data);
       std::vector<UInt8> buffer(size);

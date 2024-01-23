@@ -20,7 +20,6 @@
 <translation id="1371239764779356792">اجازه دادن به سایتی برای ذخیره کردن داده در دستگاه</translation>
 <translation id="1383876407941801731">جستجو</translation>
 <translation id="1384959399684842514">بارگیری موقتاً متوقف شد</translation>
-<translation id="1409426117486808224">نمای ساده‌شده برای برگه‌های باز</translation>
 <translation id="1415402041810619267">نشانی وب کوتاه‌شده</translation>
 <translation id="1426410128494586442">بله</translation>
 <translation id="1446450296470737166">‏اجازه کنترل کامل دستگاه‌های MIDI</translation>
@@ -51,7 +50,6 @@
 <translation id="1984937141057606926">مجاز، به‌غیراز شخص ثالث</translation>
 <translation id="1989112275319619282">مشاهده محتوای موجود در فروشگاه ما</translation>
 <translation id="1994173015038366702">نشانی وب سایت</translation>
-<translation id="1999195646219379110">{COUNT,plural, =1{۱ روز دیگر منقضی می‌شود}one{# روز دیگر منقضی می‌شود}other{# روز دیگر منقضی می‌شود}}</translation>
 <translation id="2004697686368036666">ممکن است ویژگی‌های برخی‌از سایت‌ها کار نکند</translation>
 <translation id="2025115093177348061">واقعیت افزوده</translation>
 <translation id="2030769033451695672">برای برگشتن به <ph name="URL_OF_THE_CURRENT_TAB" /> ضربه بزنید</translation>
@@ -117,9 +115,10 @@
 <translation id="2932883381142163287">گزارش سوءاستفاده</translation>
 <translation id="2968755619301702150">بیننده گواهی</translation>
 <translation id="300526633675317032">این کار کل <ph name="SIZE_IN_KB" /> فضای ذخیره‌سازی وب‌سایت را پاک می‌کند.</translation>
-<translation id="3008272652534848354">بازنشانی مجوزها</translation>
+<translation id="3008272652534848354">بازنشانی اجازه‌ها</translation>
 <translation id="301521992641321250">مسدود‌شده به‌طور خودکار</translation>
 <translation id="3069226013421428034">ورود به سیستم شخص ثالث برای سایت خاصی مجاز می‌شود.</translation>
+<translation id="3082992102194421695">{COUNT,plural, =1{فردا منقضی می‌شود}one{‫# روز دیگر منقضی می‌شود}other{‫# روز دیگر منقضی می‌شود}}</translation>
 <translation id="310297983047869047">اسلاید قبلی</translation>
 <translation id="3109724472072898302">جمع شده</translation>
 <translation id="3114012059975132928">پخش‌کننده ویدیو</translation>
@@ -179,6 +178,7 @@
 <translation id="4002066346123236978">عنوان</translation>
 <translation id="4008040567710660924">کوکی‌ها را برای سایت خاصی مجاز کنید.</translation>
 <translation id="4046123991198612571">آهنگ بعدی</translation>
+<translation id="4053720452172726777">‏‫سفارشی کردن و کنترل Google Chrome</translation>
 <translation id="4149994727733219643">نمای ساده‌شده برای صفحه‌های وب</translation>
 <translation id="4151930093518524179">بزرگ‌نمایی پیش‌فرض</translation>
 <translation id="4165986682804962316">تنظیمات سایت</translation>
@@ -215,7 +215,7 @@
 <translation id="4883854917563148705">تنظیمات مدیریت‌شده بازنشانی نشدند</translation>
 <translation id="4887024562049524730">قبل از اینکه به سایت‌ها اجازه داده شود به دستگاه و داده‌های واقعیت مجازی دسترسی یابند سؤال شود (توصیه می‌شود)</translation>
 <translation id="4955223779495905865">یکی از سایت‌هایی که بازدید می‌کنید می‌تواند از سایت‌های دیگر محتوایی مثل تصویر، آگهی، و نوشتار جاسازی کند. هریک از این سایت‌ها می‌توانند برای شخصی کردن تجربه شما کوکی و داده‌های دیگر ذخیره کنند.</translation>
-<translation id="4962975101802056554">لغو همه مجوزها برای دستگاه</translation>
+<translation id="4962975101802056554">لغو همه اجازه‌ها برای دستگاه</translation>
 <translation id="497421865427891073">جلو رفتن</translation>
 <translation id="4976702386844183910">آخرین بازدید: <ph name="DATE" /></translation>
 <translation id="4985206706500620449">کوکی‌های شخص ثالث را برای این سایت مجاز کرده‌اید</translation>
@@ -257,7 +257,6 @@
 <translation id="5545693483061321551">سایت‌ها نمی‌توانند از کوکی‌های شما برای دیدن فعالیت مرور شما در سایت‌های مختلف و برای مثال شخصی‌سازی آگهی‌ها استفاده کنند. ممکن است ویژگی‌های برخی‌از سایت‌ها کار نکند.</translation>
 <translation id="5553374991681107062">جدیدترین</translation>
 <translation id="5556459405103347317">بار کردن مجدد</translation>
-<translation id="5596627076506792578">گزینه‌های بیشتر</translation>
 <translation id="5649053991847567735">بارگیری‌های خودکار</translation>
 <translation id="5668404140385795438">لغو درخواست وب‌سایت برای جلوگیری از بزرگ‌نمایی</translation>
 <translation id="5677928146339483299">مسدود است</translation>
@@ -269,7 +268,7 @@
 <translation id="5723967018671998714">کوکی‌های شخص ثالث در «حالت ناشناس» مسدود شده‌اند</translation>
 <translation id="5740126560802162366">سایت‌ها می‌توانند در دستگاه داده ذخیره کنند</translation>
 <translation id="5771720122942595109"><ph name="PERMISSION_1" /> مسدود شد</translation>
-<translation id="5804241973901381774">مجوزها</translation>
+<translation id="5804241973901381774">اجازه‌ها</translation>
 <translation id="5810805850857689118">با این کار، همه داده‌ها و کوکی‌های <ph name="ORIGIN" /> و همه سایت‌های تحت آن پاک خواهد شد</translation>
 <translation id="5860033963881614850">خاموش</translation>
 <translation id="5876056640971328065">مکث ویدیو</translation>
@@ -341,7 +340,6 @@
 <translation id="7000754031042624318">‏در تنظیمات Android غیرفعال شده است</translation>
 <translation id="7016516562562142042">برای موتور جستجوی فعلی مجاز است</translation>
 <translation id="702275896380648118">‏این سایت چیزهایی را که می‌پسندید شناسایی می‌کند و سپس به سایت‌های دیگر آگهی پیشنهاد می‌دهد. این سایت همچنین موضوع‌های آگهی شما را از Chrome دریافت می‌کند تا آگهی‌های مرتبط‌تری به شما نشان دهد.</translation>
-<translation id="702463548815491781">‏توصیه در زمانی‌که TalkBack یا «دسترسی کلیدی» روشن است</translation>
 <translation id="7053983685419859001">مسدود کردن</translation>
 <translation id="7066151586745993502">{NUM_SELECTED,plural, =1{۱ مورد انتخاب شد}one{# مورد انتخاب شد}other{# مورد انتخاب شد}}</translation>
 <translation id="7087918508125750058"><ph name="ITEM_COUNT" /> مورد انتخاب شد.  گزینه‌ها در نزدیکی بالای صفحه دردسترس است</translation>
@@ -405,7 +403,7 @@
 <translation id="8197286292360124385"><ph name="PERMISSION_1" /> مجاز است</translation>
 <translation id="8200772114523450471">ازسرگیری</translation>
 <translation id="8206354486702514201">این تنظیم توسط سرپرست شما اجباری شده است.</translation>
-<translation id="8211406090763984747">اتصال امن است</translation>
+<translation id="8211406090763984747">اتصال ایمن است</translation>
 <translation id="8249310407154411074">انتقال به بالا</translation>
 <translation id="8261506727792406068">حذف</translation>
 <translation id="8284326494547611709">زیرنویس‌ها</translation>

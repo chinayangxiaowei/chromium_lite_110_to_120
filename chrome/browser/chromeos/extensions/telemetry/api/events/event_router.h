@@ -27,6 +27,8 @@ constexpr auto kCategoriesWithFocusRestriction =
         crosapi::mojom::TelemetryEventCategoryEnum::kTouchpadConnected,
         crosapi::mojom::TelemetryEventCategoryEnum::kStylusTouch,
         crosapi::mojom::TelemetryEventCategoryEnum::kStylusConnected,
+        crosapi::mojom::TelemetryEventCategoryEnum::kTouchscreenTouch,
+        crosapi::mojom::TelemetryEventCategoryEnum::kTouchscreenConnected,
     });
 
 }  // namespace

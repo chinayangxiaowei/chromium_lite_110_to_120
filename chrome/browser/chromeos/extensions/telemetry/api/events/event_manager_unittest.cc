@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "base/containers/flat_map.h"
+#include "base/memory/scoped_refptr.h"
 #include "build/chromeos_buildflags.h"
 #include "chrome/browser/chromeos/extensions/telemetry/api/common/app_ui_observer.h"
 #include "chrome/browser/chromeos/extensions/telemetry/api/events/event_manager.h"
@@ -21,6 +22,7 @@
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/ssl_status.h"
 #include "extensions/browser/extension_registry.h"
+#include "extensions/common/extension.h"
 #include "extensions/common/extension_builder.h"
 #include "extensions/common/extension_id.h"
 #include "net/base/net_errors.h"
@@ -28,6 +30,7 @@
 #include "net/cert/x509_certificate.h"
 #include "net/test/cert_test_util.h"
 #include "net/test/test_data_directory.h"
+#include "testing/gtest/include/gtest/gtest.h"
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 #include "base/test/scoped_feature_list.h"
@@ -87,8 +90,9 @@ class TelemetryExtensionEventManagerTest : public BrowserWithTestWindowTest {
     ssl.cert_status = cert_status;
   }
 
-  void CreateExtension(const std::string& extension_id,
-                       const std::vector<std::string> external_connectables) {
+  scoped_refptr<const extensions::Extension> CreateExtension(
+      const std::string& extension_id,
+      const std::vector<std::string> external_connectables) {
     base::Value::List matches;
     for (const auto& match : external_connectables) {
       matches.Append(match);
@@ -104,6 +108,8 @@ class TelemetryExtensionEventManagerTest : public BrowserWithTestWindowTest {
             .SetLocation(extensions::mojom::ManifestLocation::kInternal)
             .Build();
     extensions::ExtensionRegistry::Get(profile())->AddEnabled(extension);
+
+    return extension;
   }
 
   void SimulateFocusEvent(const std::string& extension_id, bool is_focused) {
@@ -689,7 +695,8 @@ TEST_F(TelemetryExtensionEventManagerTest, RegisterRegularEventTwoExtension) {
   const extensions::ExtensionId extension_id_1 =
       "gogonhoemckpdpadfnjnpgbjpbjnodgc";
   CreateExtension(extension_id_1, {"*://googlechromelabs.github.io/*"});
-  const std::string extension_id_2 = "alnedpmllcfpgldkagbfbjkloonjlfjb";
+  const extensions::ExtensionId extension_id_2 =
+      "alnedpmllcfpgldkagbfbjkloonjlfjb";
   CreateExtension(extension_id_2, {"https://hpcs-appschr.hpcloud.hp.com/*"});
 
   // Open app UI for extension 1.
@@ -811,6 +818,29 @@ TEST_F(TelemetryExtensionEventManagerTest,
   EXPECT_FALSE(event_router().IsExtensionObserving(extension_id_1));
   EXPECT_FALSE(app_ui_observers().contains(extension_id_2));
   EXPECT_FALSE(event_router().IsExtensionObserving(extension_id_2));
+}
+
+TEST_F(TelemetryExtensionEventManagerTest, RemoveExtensionCutsConnection) {
+  const std::string extension_id = "gogonhoemckpdpadfnjnpgbjpbjnodgc";
+  auto extension =
+      CreateExtension(extension_id, {"*://googlechromelabs.github.io/*"});
+
+  OpenAppUiUrlAndSetCertificateWithStatus(
+      GURL("https://googlechromelabs.github.io/"),
+      /*cert_status=*/net::OK);
+  EXPECT_EQ(EventManager::kSuccess,
+            event_manager()->RegisterExtensionForEvent(
+                extension_id, crosapi::TelemetryEventCategoryEnum::kAudioJack));
+  EXPECT_TRUE(app_ui_observers().contains(extension_id));
+  EXPECT_TRUE(event_router().IsExtensionObserving(extension_id));
+
+  EXPECT_TRUE(extensions::ExtensionRegistry::Get(profile())->RemoveEnabled(
+      extension_id));
+  extensions::ExtensionRegistry::Get(profile())->TriggerOnUnloaded(
+      extension.get(), extensions::UnloadedExtensionReason::TERMINATE);
+
+  EXPECT_FALSE(app_ui_observers().contains(extension_id));
+  EXPECT_FALSE(event_router().IsExtensionObserving(extension_id));
 }
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)

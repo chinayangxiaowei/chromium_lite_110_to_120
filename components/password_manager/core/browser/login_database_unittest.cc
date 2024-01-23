@@ -27,6 +27,7 @@
 #include "components/autofill/core/common/unique_ids.h"
 #include "components/os_crypt/sync/os_crypt.h"
 #include "components/os_crypt/sync/os_crypt_mocker.h"
+#include "components/password_manager/core/browser/features/password_features.h"
 #include "components/password_manager/core/browser/password_form.h"
 #include "components/password_manager/core/browser/password_manager_test_utils.h"
 #include "components/password_manager/core/browser/password_store_change.h"
@@ -1687,6 +1688,37 @@ TEST_F(LoginDatabaseSyncMetadataTest, GetAllSyncMetadata) {
       sync_pb::ModelTypeState_InitialSyncState_INITIAL_SYNC_STATE_UNSPECIFIED);
 }
 
+TEST_F(LoginDatabaseSyncMetadataTest, GetSyncEntityMetadataForStorageKey) {
+  // Construct metadata with at least one field set to test deserialization.
+  sync_pb::EntityMetadata metadata;
+  metadata.set_is_deleted(true);
+
+  PasswordStoreSync::MetadataStore& password_sync_metadata_store =
+      db().password_sync_metadata_store();
+
+  // Storage keys must be integers.
+  const std::string kStorageKey1 = "1";
+  metadata.set_sequence_number(1);
+
+  ASSERT_TRUE(password_sync_metadata_store.UpdateEntityMetadata(
+      SyncModelType(), kStorageKey1, metadata));
+
+  LoginDatabase::SyncMetadataStore& store_impl =
+      static_cast<LoginDatabase::SyncMetadataStore&>(
+          password_sync_metadata_store);
+
+  const std::unique_ptr<sync_pb::EntityMetadata> entity_metadata =
+      store_impl.GetSyncEntityMetadataForStorageKeyForTest(syncer::PASSWORDS,
+                                                           kStorageKey1);
+  ASSERT_THAT(entity_metadata, testing::NotNull());
+  EXPECT_TRUE(entity_metadata->is_deleted());
+
+  // Other arbitrary storage keys should return no metadata.
+  EXPECT_THAT(store_impl.GetSyncEntityMetadataForStorageKeyForTest(
+                  syncer::PASSWORDS, "5"),
+              testing::IsNull());
+}
+
 TEST_F(LoginDatabaseSyncMetadataTest, DeleteAllSyncMetadata) {
   sync_pb::EntityMetadata metadata;
   PasswordStoreSync::MetadataStore& password_sync_metadata_store =
@@ -1762,6 +1794,38 @@ TEST_F(LoginDatabaseSyncMetadataTest, WriteThenDeleteSyncMetadata) {
 
   EXPECT_EQ(sync_pb::ModelTypeState().SerializeAsString(),
             metadata_batch->GetModelTypeState().SerializeAsString());
+}
+
+TEST_F(LoginDatabaseSyncMetadataTest, HasUnsyncedPasswordDeletions) {
+  sync_pb::EntityMetadata tombstone_metadata;
+  tombstone_metadata.set_is_deleted(true);
+  tombstone_metadata.set_sequence_number(1);
+
+  sync_pb::EntityMetadata non_tombstone_metadata;
+  non_tombstone_metadata.set_is_deleted(false);
+  non_tombstone_metadata.set_sequence_number(1);
+
+  PasswordStoreSync::MetadataStore& password_sync_metadata_store =
+      db().password_sync_metadata_store();
+
+  EXPECT_FALSE(password_sync_metadata_store.HasUnsyncedPasswordDeletions());
+
+  // Storage keys must be integers.
+  const std::string kTombstoneStorageKey = "1";
+  const std::string kNonTombstoneStorageKey = "2";
+
+  ASSERT_TRUE(password_sync_metadata_store.UpdateEntityMetadata(
+      SyncModelType(), kTombstoneStorageKey, tombstone_metadata));
+  ASSERT_TRUE(password_sync_metadata_store.UpdateEntityMetadata(
+      SyncModelType(), kNonTombstoneStorageKey, non_tombstone_metadata));
+
+  EXPECT_TRUE(password_sync_metadata_store.HasUnsyncedPasswordDeletions());
+
+  // Delete the only metadata entry representing a deletion.
+  ASSERT_TRUE(password_sync_metadata_store.ClearEntityMetadata(
+      SyncModelType(), kTombstoneStorageKey));
+
+  EXPECT_FALSE(password_sync_metadata_store.HasUnsyncedPasswordDeletions());
 }
 
 #if BUILDFLAG(IS_POSIX)
@@ -2056,6 +2120,7 @@ INSTANTIATE_TEST_SUITE_P(MigrationToVCurrent,
                          LoginDatabaseMigrationTestBroken,
                          testing::Values(1, 2, 3, 24));
 
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_IOS)
 class LoginDatabaseUndecryptableLoginsTest : public testing::Test {
  protected:
   LoginDatabaseUndecryptableLoginsTest() = default;
@@ -2159,9 +2224,11 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, DeleteUndecryptableLoginsTest) {
   base::HistogramTester histogram_tester;
   ASSERT_TRUE(db.Init());
 
-#if BUILDFLAG(IS_MAC) || (BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_CASTOS))
-  // Make sure that we can't get any logins when database is corrupted.
+#if BUILDFLAG(IS_CASTOS)
   // Disabling the checks in chromecast because encryption is unavailable.
+  EXPECT_EQ(DatabaseCleanupResult::kEncryptionUnavailable,
+            db.DeleteUndecryptableLogins());
+#else
   std::vector<std::unique_ptr<PasswordForm>> result;
   EXPECT_FALSE(db.GetAutofillableLogins(&result));
   EXPECT_TRUE(result.empty());
@@ -2177,16 +2244,6 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, DeleteUndecryptableLoginsTest) {
   EXPECT_TRUE(db.GetBlocklistLogins(&result));
   EXPECT_THAT(result, IsEmpty());
 
-  RunUntilIdle();
-#elif BUILDFLAG(IS_CASTOS)
-  EXPECT_EQ(DatabaseCleanupResult::kEncryptionUnavailable,
-            db.DeleteUndecryptableLogins());
-#else
-  EXPECT_EQ(DatabaseCleanupResult::kSuccess, db.DeleteUndecryptableLogins());
-#endif
-
-// Check histograms.
-#if BUILDFLAG(IS_MAC) || (BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_CASTOS))
   histogram_tester.ExpectUniqueSample(
       "PasswordManager.DeleteUndecryptableLoginsReturnValue",
       metrics_util::DeleteCorruptedPasswordsResult::kSuccessPasswordsDeleted,
@@ -2194,7 +2251,6 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, DeleteUndecryptableLoginsTest) {
 #endif
 }
 
-#if BUILDFLAG(IS_MAC)
 TEST_F(LoginDatabaseUndecryptableLoginsTest,
        PasswordRecoveryDisabledGetLogins) {
   AddDummyLogin("foo1", GURL("https://foo1.com/"), false,
@@ -2211,6 +2267,7 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest,
   RunUntilIdle();
 }
 
+#if BUILDFLAG(IS_MAC)
 TEST_F(LoginDatabaseUndecryptableLoginsTest, KeychainLockedTest) {
   AddDummyLogin("foo1", GURL("https://foo1.com/"), false,
                 /*blocklisted=*/false);
@@ -2229,7 +2286,6 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, KeychainLockedTest) {
 }
 #endif  // BUILDFLAG(IS_MAC)
 
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 // Test getting auto sign in logins when there are undecryptable ones
 TEST_F(LoginDatabaseUndecryptableLoginsTest, GetAutoSignInLogins) {
   std::vector<std::unique_ptr<PasswordForm>> forms;
@@ -2249,8 +2305,8 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, GetAutoSignInLogins) {
 
   EXPECT_FALSE(db.GetAutoSignInLogins(&forms));
 
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndEnableFeature(features::kSkipUndecryptablePasswords);
+  base::test::ScopedFeatureList feature_list(
+      features::kSkipUndecryptablePasswords);
 
   EXPECT_TRUE(db.GetAutoSignInLogins(&forms));
   EXPECT_THAT(forms,
@@ -2274,8 +2330,8 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, GetLogins) {
   EXPECT_FALSE(db.GetLogins(PasswordFormDigest(form),
                             /*should_PSL_matching_apply=*/false, &result));
 
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndEnableFeature(features::kSkipUndecryptablePasswords);
+  base::test::ScopedFeatureList feature_list(
+      features::kSkipUndecryptablePasswords);
   result.clear();
 
   EXPECT_TRUE(db.GetLogins(PasswordFormDigest(form),
@@ -2302,13 +2358,13 @@ TEST_F(LoginDatabaseUndecryptableLoginsTest, GetAutofillableLogins) {
 
   EXPECT_FALSE(db.GetAutofillableLogins(&result));
 
-  base::test::ScopedFeatureList feature_list;
-  feature_list.InitAndEnableFeature(features::kSkipUndecryptablePasswords);
+  base::test::ScopedFeatureList feature_list(
+      features::kSkipUndecryptablePasswords);
 
   EXPECT_TRUE(db.GetAutofillableLogins(&result));
   EXPECT_THAT(result, ElementsAre(Pointee(HasPrimaryKeyAndEquals(form1))));
 }
-#endif
+#endif  // #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_IOS)
 
 // Test encrypted passwords are present in add change lists.
 TEST_F(LoginDatabaseTest, EncryptedPasswordAdd) {

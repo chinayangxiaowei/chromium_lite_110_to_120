@@ -4,14 +4,19 @@
 
 #include "chrome/browser/ui/webui/side_panel/read_anything/read_anything_untrusted_page_handler.h"
 
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include "base/metrics/histogram_functions.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/views/side_panel/read_anything/read_anything_controller.h"
+#include "chrome/browser/ui/webui/side_panel/read_anything/read_anything_prefs.h"
+#include "chrome/common/accessibility/read_anything_constants.h"
+#include "components/prefs/pref_service.h"
 #include "content/public/browser/web_ui.h"
 #include "ui/accessibility/accessibility_features.h"
 #include "ui/accessibility/ax_action_data.h"
@@ -27,11 +32,22 @@ using read_anything::mojom::ReadAnythingTheme;
 using read_anything::mojom::UntrustedPage;
 using read_anything::mojom::UntrustedPageHandler;
 
+namespace {
+
+int GetNormalizedFontScale(double font_scale) {
+  DCHECK(font_scale >= kReadAnythingMinimumFontScale &&
+         font_scale <= kReadAnythingMaximumFontScale);
+  return (font_scale - kReadAnythingMinimumFontScale) *
+         (1 / kReadAnythingFontScaleIncrement);
+}
+
+}  // namespace
+
 ReadAnythingUntrustedPageHandler::ReadAnythingUntrustedPageHandler(
     mojo::PendingRemote<UntrustedPage> page,
     mojo::PendingReceiver<UntrustedPageHandler> receiver,
     content::WebUI* web_ui)
-    : browser_(chrome::FindLastActive()),
+    : browser_(chrome::FindLastActive()->AsWeakPtr()),
       web_ui_(web_ui),
       receiver_(this, std::move(receiver)),
       page_(std::move(page)) {
@@ -40,10 +56,23 @@ ReadAnythingUntrustedPageHandler::ReadAnythingUntrustedPageHandler(
   ax_action_handler_observer_.Observe(
       ui::AXActionHandlerRegistry::GetInstance());
 
-  coordinator_ = ReadAnythingCoordinator::FromBrowser(browser_);
+  coordinator_ = ReadAnythingCoordinator::FromBrowser(browser_.get());
   if (coordinator_) {
     coordinator_->AddObserver(this);
     coordinator_->AddModelObserver(this);
+  }
+
+  if (features::IsReadAnythingWebUIToolbarEnabled()) {
+    PrefService* prefs = browser_->profile()->GetPrefs();
+    page_->OnSettingsRestoredFromPrefs(
+        static_cast<read_anything::mojom::LineSpacing>(
+            prefs->GetInteger(prefs::kAccessibilityReadAnythingLineSpacing)),
+        static_cast<read_anything::mojom::LetterSpacing>(
+            prefs->GetInteger(prefs::kAccessibilityReadAnythingLetterSpacing)),
+        prefs->GetString(prefs::kAccessibilityReadAnythingFontName),
+        prefs->GetDouble(prefs::kAccessibilityReadAnythingFontScale),
+        static_cast<read_anything::mojom::Colors>(
+            prefs->GetInteger(prefs::kAccessibilityReadAnythingColorInfo)));
   }
 
 #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
@@ -65,6 +94,7 @@ ReadAnythingUntrustedPageHandler::ReadAnythingUntrustedPageHandler(
 ReadAnythingUntrustedPageHandler::~ReadAnythingUntrustedPageHandler() {
   TabStripModelObserver::StopObservingAll(this);
   Observe(nullptr);
+  LogTextStyle();
 
   if (!coordinator_) {
     return;
@@ -91,6 +121,44 @@ void ReadAnythingUntrustedPageHandler::TreeRemoved(ui::AXTreeID ax_tree_id) {
 
 void ReadAnythingUntrustedPageHandler::OnCopy() {
   web_contents()->Copy();
+}
+
+void ReadAnythingUntrustedPageHandler::OnLineSpaceChange(
+    read_anything::mojom::LineSpacing line_spacing) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetInteger(
+        prefs::kAccessibilityReadAnythingLineSpacing,
+        static_cast<size_t>(line_spacing));
+  }
+}
+
+void ReadAnythingUntrustedPageHandler::OnLetterSpaceChange(
+    read_anything::mojom::LetterSpacing letter_spacing) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetInteger(
+        prefs::kAccessibilityReadAnythingLetterSpacing,
+        static_cast<size_t>(letter_spacing));
+  }
+}
+void ReadAnythingUntrustedPageHandler::OnFontChange(const std::string& font) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetString(
+        prefs::kAccessibilityReadAnythingFontName, font);
+  }
+}
+void ReadAnythingUntrustedPageHandler::OnFontSizeChange(double font_size) {
+  double saved_font_size = std::min(font_size, kReadAnythingMaximumFontScale);
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetDouble(
+        prefs::kAccessibilityReadAnythingFontScale, saved_font_size);
+  }
+}
+void ReadAnythingUntrustedPageHandler::OnColorChange(
+    read_anything::mojom::Colors color) {
+  if (browser_) {
+    browser_->profile()->GetPrefs()->SetInteger(
+        prefs::kAccessibilityReadAnythingColorInfo, static_cast<size_t>(color));
+  }
 }
 
 void ReadAnythingUntrustedPageHandler::OnLinkClicked(
@@ -129,6 +197,10 @@ void ReadAnythingUntrustedPageHandler::OnSelectionChange(
     return;
   }
   handler->PerformAction(action_data);
+}
+
+void ReadAnythingUntrustedPageHandler::OnCollapseSelection() {
+  web_contents()->CollapseSelection();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -183,7 +255,8 @@ void ReadAnythingUntrustedPageHandler::StateChanged(
   DCHECK(features::IsReadAnythingWithScreen2xEnabled());
   // If Screen AI library is downloaded but not initialized yet, ensure it is
   // loadable and initializes without any problems.
-  if (state == screen_ai::ScreenAIInstallState::State::kDownloaded) {
+  if (state == screen_ai::ScreenAIInstallState::State::kDownloaded &&
+      browser_) {
     screen_ai::ScreenAIServiceRouterFactory::GetForBrowserContext(
         browser_->profile())
         ->InitializeMainContentExtractionIfNeeded();
@@ -242,7 +315,7 @@ void ReadAnythingUntrustedPageHandler::OnActiveWebContentsChanged() {
   // 2. Set an AXContext on the web contents with web contents only mode
   //    enabled.
   content::WebContents* web_contents = nullptr;
-  if (active_) {
+  if (active_ && browser_) {
     web_contents = browser_->tab_strip_model()->GetActiveWebContents();
   }
   Observe(web_contents);
@@ -272,4 +345,42 @@ void ReadAnythingUntrustedPageHandler::OnActiveAXTreeIDChanged() {
   }
 
   page_->OnActiveAXTreeIDChanged(tree_id, ukm_source_id, visible_url);
+}
+
+void ReadAnythingUntrustedPageHandler::LogTextStyle() {
+  if (!browser_) {
+    return;
+  }
+
+  // This is called when the side panel closes, so retrieving the values from
+  // preferences won't happen very often.
+  PrefService* prefs = browser_->profile()->GetPrefs();
+  int maximum_font_scale_logging =
+      GetNormalizedFontScale(kReadAnythingMaximumFontScale);
+  double font_scale =
+      prefs->GetDouble(prefs::kAccessibilityReadAnythingFontScale);
+  base::UmaHistogramExactLinear(string_constants::kFontScaleHistogramName,
+                                GetNormalizedFontScale(font_scale),
+                                maximum_font_scale_logging + 1);
+  std::string font_name =
+      prefs->GetString(prefs::kAccessibilityReadAnythingFontName);
+  if (font_map_.find(font_name) != font_map_.end()) {
+    ReadAnythingFont font = font_map_.at(font_name);
+    base::UmaHistogramEnumeration(string_constants::kFontNameHistogramName,
+                                  font);
+  }
+  read_anything::mojom::Colors color =
+      static_cast<read_anything::mojom::Colors>(
+          prefs->GetInteger(prefs::kAccessibilityReadAnythingColorInfo));
+  base::UmaHistogramEnumeration(string_constants::kColorHistogramName, color);
+  read_anything::mojom::LineSpacing line_spacing =
+      static_cast<read_anything::mojom::LineSpacing>(
+          prefs->GetInteger(prefs::kAccessibilityReadAnythingLineSpacing));
+  base::UmaHistogramEnumeration(string_constants::kLineSpacingHistogramName,
+                                line_spacing);
+  read_anything::mojom::LetterSpacing letter_spacing =
+      static_cast<read_anything::mojom::LetterSpacing>(
+          prefs->GetInteger(prefs::kAccessibilityReadAnythingLetterSpacing));
+  base::UmaHistogramEnumeration(string_constants::kLetterSpacingHistogramName,
+                                letter_spacing);
 }

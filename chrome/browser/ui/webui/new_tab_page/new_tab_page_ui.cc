@@ -289,6 +289,7 @@ content::WebUIDataSource* CreateAndAddNewTabPageUiHtmlSource(Profile* profile) {
       {"backgroundsMenuItem", IDS_NTP_CUSTOMIZE_MENU_BACKGROUND_LABEL},
       {"cancelButton", IDS_CANCEL},
       {"colorPickerLabel", IDS_NTP_CUSTOMIZE_COLOR_PICKER_LABEL},
+      {"hueSliderTitle", IDS_NTP_CUSTOMIZE_COLOR_HUE_SLIDER_TITLE},
       {"customBackgroundDisabled",
        IDS_NTP_CUSTOMIZE_MENU_BACKGROUND_DISABLED_LABEL},
       {"customizeButton", IDS_NTP_CUSTOMIZE_BUTTON_LABEL},
@@ -500,6 +501,8 @@ content::WebUIDataSource* CreateAndAddNewTabPageUiHtmlSource(Profile* profile) {
        IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_OPT_OUT_TOAST},
       {"modulesJourneysShowAll", IDS_NTP_MODULES_SHOW_ALL},
       {"modulesJourneysInfo", IDS_NTP_MODULES_HISTORY_CLUSTERS_INFO},
+      {"modulesHistoryWithDiscountInfo",
+       IDS_NTP_MODULES_HISTORY_CLUSTERS_WITH_DISCOUNT_INFO},
       {"modulesThisTypeOfCardText",
        IDS_NTP_MODULES_HISTORY_CLUSTERS_DISABLE_TOAST_NAME},
       {"modulesJourneyDisable", IDS_NTP_MODULES_HISTORY_CLUSTERS_DISABLE_TEXT},
@@ -594,9 +597,6 @@ content::WebUIDataSource* CreateAndAddNewTabPageUiHtmlSource(Profile* profile) {
       "moduleRecipeExtendedExperimentEnabled",
       !splitExperimentGroup.empty() && (splitExperimentGroup[0] == "historical" || splitExperimentGroup[0] == "mix"));
 
-  source->AddBoolean("removeScrim", base::FeatureList::IsEnabled(
-                                        ntp_features::kNtpRemoveScrim));
-
   source->AddBoolean("modulesChromeCartInHistoryClustersModuleEnabled",
                      base::FeatureList::IsEnabled(
                          ntp_features::kNtpChromeCartInHistoryClusterModule));
@@ -606,6 +606,10 @@ content::WebUIDataSource* CreateAndAddNewTabPageUiHtmlSource(Profile* profile) {
       IsCartModuleEnabled() &&
           base::FeatureList::IsEnabled(
               ntp_features::kNtpChromeCartInHistoryClusterModule));
+
+  source->AddBoolean("historyClustersModuleDiscountsEnabled",
+                     base::FeatureList::IsEnabled(
+                         ntp_features::kNtpHistoryClustersModuleDiscounts));
 
   webui::SetupChromeRefresh2023(source);
 

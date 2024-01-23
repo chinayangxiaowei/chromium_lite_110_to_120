@@ -218,7 +218,7 @@ targets.mixin(
     args = [
         # All features to be launched under CR2023.
         # See go/chrome-cr2023-testing-on-bots
-        "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape",
+        "--enable-features=ChromeRefresh2023,ChromeRefreshSecondary2023,ChromeWebuiRefresh2023,Cr2023ActionChips,Cr2023ActionChipsIcons,kOmniboxCR23SteadyStateIcons,OmniboxExpandedLayout,OmniboxExpandedStateColors,OmniboxExpandedStateHeight,OmniboxExpandedStateShape,OmniboxExpandedStateSuggestIcons,OmniboxSteadyStateBackgroundColor,OmniboxSteadyStateHeight,OmniboxSteadyStateTextColor,OmniboxSuggestionHoverFillShape,IPH_DesktopCustomizeChromeRefresh",
     ],
 )
 
@@ -422,11 +422,6 @@ targets.mixin(
 )
 
 targets.mixin(
-    name = "disable_check_flakiness_web_tests",
-    check_flakiness_for_new_tests = False,
-)
-
-targets.mixin(
     name = "disable_field_trial_config_for_earl_grey",
     args = [
         "--extra-app-args=--disable-field-trial-config",
@@ -498,6 +493,16 @@ targets.mixin(
     args = [
         "--everlasting",
     ],
+    swarming = targets.swarming(
+        # The persistent emulator will only be used on dedicated fuchsia pool so
+        # that there isn't a need of cache affinity.
+        named_caches = [
+            swarming.cache(
+                name = "fuchsia_emulator_cache",
+                path = ".fuchsia_emulator/fuchsia-everlasting-emulator",
+            ),
+        ],
+    ),
 )
 
 targets.mixin(
@@ -1152,6 +1157,16 @@ targets.mixin(
     name = "oreo_fleet",
     swarming = targets.swarming(
         dimensions = {
+            "device_os": "OPR4.170623.020",
+            "device_os_flavor": "google",
+        },
+    ),
+)
+
+targets.mixin(
+    name = "oreo_mr1_fleet",
+    swarming = targets.swarming(
+        dimensions = {
             "device_os": "OPM4.171019.021.P2",
             "device_os_flavor": "google",
         },
@@ -1512,12 +1527,12 @@ targets.mixin(
     name = "xcode_15_beta",
     args = [
         "--xcode-build-version",
-        "15a5209g",
+        "15a5229m",
     ],
     swarming = targets.swarming(
         named_caches = [
             swarming.cache(
-                name = "xcode_ios_15a5209g",
+                name = "xcode_ios_15a5229m",
                 path = "Xcode.app",
             ),
         ],
@@ -1528,12 +1543,12 @@ targets.mixin(
     name = "xcode_15_main",
     args = [
         "--xcode-build-version",
-        "15a5209g",
+        "15a5229m",
     ],
     swarming = targets.swarming(
         named_caches = [
             swarming.cache(
-                name = "xcode_ios_15a5209g",
+                name = "xcode_ios_15a5229m",
                 path = "Xcode.app",
             ),
         ],

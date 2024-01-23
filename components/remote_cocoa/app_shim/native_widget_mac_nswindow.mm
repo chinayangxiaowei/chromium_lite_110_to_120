@@ -4,9 +4,9 @@
 
 #import "components/remote_cocoa/app_shim/native_widget_mac_nswindow.h"
 
+#include "base/apple/foundation_util.h"
 #include "base/auto_reset.h"
 #include "base/debug/dump_without_crashing.h"
-#include "base/mac/foundation_util.h"
 #include "base/mac/mac_util.h"
 #include "base/memory/raw_ptr_exclusion.h"
 #include "base/trace_event/trace_event.h"
@@ -51,8 +51,9 @@ void OrderChildWindow(NSWindow* child_window,
   // `ordered_children` sorts children windows back to front.
   NSArray<NSWindow*>* children = [[child_window parentWindow] childWindows];
   std::vector<std::pair<NSInteger, NSWindow*>> ordered_children;
-  for (NSWindow* child in children)
+  for (NSWindow* child in children) {
     ordered_children.emplace_back([child orderedIndex], child);
+  }
   std::sort(ordered_children.begin(), ordered_children.end(), std::greater<>());
 
   // If `other_window` is nullptr, place `child_window` in front of (or behind)
@@ -63,20 +64,23 @@ void OrderChildWindow(NSWindow* child_window,
                        : parent;
   }
 
-  if (child_window == other_window)
+  if (child_window == other_window) {
     return;
+  }
 
   const bool relative_to_parent = parent == other_window;
   DCHECK(ordering_mode != NSWindowBelow || !relative_to_parent)
       << "Placing a child window behind its parent is not supported.";
 
-  for (NSWindow* child in children)
+  for (NSWindow* child in children) {
     [parent removeChildWindow:child];
+  }
 
   // If `relative_to_parent` is true, `child_window` is the first child of its
   // parent.
-  if (relative_to_parent)
+  if (relative_to_parent) {
     [parent addChildWindow:child_window ordered:NSWindowAbove];
+  }
 
   // Re-parent children windows in the desired order.
   for (auto [ordered_index, child] : ordered_children) {
@@ -174,12 +178,14 @@ void OrderChildWindow(NSWindow* child_window,
   BOOL _preventKeyWindow;
   BOOL _isTooltip;
   BOOL _isHeadless;
+  BOOL _isShufflingForOrdering;
   BOOL _miniaturizationInProgress;
 }
 @synthesize bridgedNativeWidgetId = _bridgedNativeWidgetId;
 @synthesize bridge = _bridge;
 @synthesize isTooltip = _isTooltip;
 @synthesize isHeadless = _isHeadless;
+@synthesize isShufflingForOrdering = _isShufflingForOrdering;
 @synthesize childWindowAddedHandler = _childWindowAddedHandler;
 @synthesize childWindowRemovedHandler = _childWindowRemovedHandler;
 @synthesize commandDispatchParentOverride = _commandDispatchParentOverride;
@@ -236,6 +242,9 @@ void OrderChildWindow(NSWindow* child_window,
 }
 
 - (void)removeChildWindow:(NSWindow*)childWin {
+  if (self != childWin.parentWindow) {
+    return;
+  }
   [super removeChildWindow:childWin];
   if (self.childWindowRemovedHandler) {
     self.childWindowRemovedHandler(childWin);
@@ -279,17 +288,6 @@ void OrderChildWindow(NSWindow* child_window,
   [_commandDispatcher setDelegate:delegate];
 }
 
-- (void)sheetDidEnd:(NSWindow*)sheet
-         returnCode:(NSInteger)returnCode
-        contextInfo:(void*)contextInfo {
-  // Note NativeWidgetNSWindowBridge may have cleared [self delegate], in which
-  // case this will no-op. This indirection is necessary to handle AppKit
-  // invoking this selector via a posted task. See https://crbug.com/851376.
-  [[self viewsNSWindowDelegate] sheetDidEnd:sheet
-                                 returnCode:returnCode
-                                contextInfo:contextInfo];
-}
-
 - (void)setWindowTouchBarDelegate:(id<WindowTouchBarDelegate>)delegate {
   _touchBarDelegate = delegate;
 }
@@ -329,7 +327,7 @@ void OrderChildWindow(NSWindow* child_window,
 // Private methods.
 
 - (ViewsNSWindowDelegate*)viewsNSWindowDelegate {
-  return base::mac::ObjCCastStrict<ViewsNSWindowDelegate>([self delegate]);
+  return base::apple::ObjCCastStrict<ViewsNSWindowDelegate>([self delegate]);
 }
 
 - (BOOL)hasViewsMenuActive {
@@ -471,8 +469,8 @@ void OrderChildWindow(NSWindow* child_window,
   [super sendEvent:event];
 }
 
-- (void)reallyOrderWindow:(NSWindowOrderingMode)orderingMode
-               relativeTo:(NSInteger)otherWindowNumber {
+- (void)orderWindowByShuffling:(NSWindowOrderingMode)orderingMode
+                    relativeTo:(NSInteger)otherWindowNumber {
   NativeWidgetMacNSWindow* parent =
       static_cast<NativeWidgetMacNSWindow*>([self parentWindow]);
 
@@ -482,12 +480,15 @@ void OrderChildWindow(NSWindow* child_window,
     return;
   }
 
+  base::AutoReset<BOOL> shuffling(&_isShufflingForOrdering, YES);
+
   // `otherWindow` is nil if `otherWindowNumber` is 0. In this case, place
   // `self` at the top / bottom, depending on `orderingMode`.
   NSWindow* otherWindow = [NSApp windowWithWindowNumber:otherWindowNumber];
   if (otherWindow == nullptr || parent == [otherWindow parentWindow] ||
-      parent == otherWindow)
+      parent == otherWindow) {
     OrderChildWindow(self, otherWindow, orderingMode);
+  }
 
   [[self viewsNSWindowDelegate] onWindowOrderChanged:nil];
 }
@@ -497,7 +498,7 @@ void OrderChildWindow(NSWindow* child_window,
 // hardly ever calls display, and reports -[NSWindow isVisible] incorrectly
 // when ordering in a window for the first time.
 // Note that this methods has no effect for children windows. Use
-// -reallyOrderWindow:relativeTo: instead.
+// -orderWindowByShuffling:relativeTo: instead.
 - (void)orderWindow:(NSWindowOrderingMode)orderingMode
          relativeTo:(NSInteger)otherWindowNumber {
   [super orderWindow:orderingMode relativeTo:otherWindowNumber];
@@ -505,7 +506,7 @@ void OrderChildWindow(NSWindow* child_window,
 }
 
 - (void)miniaturize:(id)sender {
-  static const BOOL isMacOS13OrHigher = base::mac::IsAtLeastOS13();
+  static const BOOL isMacOS13OrHigher = base::mac::MacOSMajorVersion() >= 13;
   // On macOS 13, the miniaturize operation appears to no longer be "atomic"
   // because of non-blocking roundtrip IPC with the Dock. We want to note here
   // that miniaturization is in progress. The process completes when we
@@ -532,7 +533,7 @@ void OrderChildWindow(NSWindow* child_window,
   // _miniaturizationInProgress is NO, the miniaturization process was
   // cancelled by a call to -makeKeyAndOrderFront:. In that case, we don't want
   // to proceed with miniaturization.
-  static const BOOL isMacOS13OrHigher = base::mac::IsAtLeastOS13();
+  static const BOOL isMacOS13OrHigher = base::mac::MacOSMajorVersion() >= 13;
   if (isMacOS13OrHigher && !_miniaturizationInProgress) {
     return;
   }
@@ -608,7 +609,7 @@ void OrderChildWindow(NSWindow* child_window,
   // https://sector7.computest.nl/post/2022-08-process-injection-breaking-all-macos-security-layers-with-a-single-vulnerability/
   // for more details.
   NSKeyedArchiver* encoder = [[NSKeyedArchiver alloc]
-      initRequiringSecureCoding:base::mac::IsAtLeastOS12()];
+      initRequiringSecureCoding:base::mac::MacOSMajorVersion() >= 12];
   encoder.delegate = self;
   [self encodeRestorableStateWithCoder:encoder];
   [encoder finishEncoding];

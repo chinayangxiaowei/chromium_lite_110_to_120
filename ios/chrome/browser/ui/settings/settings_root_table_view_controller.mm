@@ -4,7 +4,7 @@
 
 #import "ios/chrome/browser/ui/settings/settings_root_table_view_controller.h"
 
-#import "base/mac/foundation_util.h"
+#import "base/apple/foundation_util.h"
 #import "base/notreached.h"
 #import "ios/chrome/browser/net/crurl.h"
 #import "ios/chrome/browser/shared/public/commands/application_commands.h"
@@ -279,7 +279,7 @@ const CGFloat kActivityIndicatorDimensionIPhone = 56;
     return nil;
   }
   SettingsNavigationController* navigationController =
-      base::mac::ObjCCast<SettingsNavigationController>(
+      base::apple::ObjCCast<SettingsNavigationController>(
           self.navigationController);
   UIBarButtonItem* doneButton = [navigationController doneButton];
   if (_shouldDisableDoneButtonOnEdit) {
@@ -419,12 +419,13 @@ const CGFloat kActivityIndicatorDimensionIPhone = 56;
   // Removes the veil that prevents user interaction.
   DCHECK(self.veil);
   [UIView animateWithDuration:0.3
-      animations:^{
-        [self.veil removeFromSuperview];
-      }
-      completion:^(BOOL finished) {
-        self.veil = nil;
-      }];
+                   animations:^{
+                     [self.veil removeFromSuperview];
+                   }
+                   completion:nil];
+  // Need to remove `self.veil` to be able immediately, so
+  // `preventUserInteraction` can be called in less than 0.3s after.
+  self.veil = nil;
 
   DCHECK(self.savedBarButtonItem);
   switch (self.savedBarButtonItemPosition) {
